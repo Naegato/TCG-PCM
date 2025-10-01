@@ -1,0 +1,10 @@
+services:
+  php:
+    build:
+      context: ./api
+      target: dev
+    ports:
+      - "8000:80"
+    working_dir: /app
+    volumes:
+      - ./api:/app
