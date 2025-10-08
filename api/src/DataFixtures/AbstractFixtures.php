@@ -5,12 +5,14 @@ namespace App\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
+/**
+ * @template T of object
+ */
 abstract class AbstractFixtures extends Fixture
 {
     public function __construct(
         protected string $entityFQCN,
-    ) {
-    }
+    ) {}
 
     public function load(ObjectManager $manager): void
     {
@@ -49,6 +51,9 @@ abstract class AbstractFixtures extends Fixture
         $manager->flush();
     }
 
+    /**
+     * @param T $entity
+     */
     protected function postInstantiate(object $entity): void
     {
     }

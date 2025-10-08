@@ -7,7 +7,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends AbstractFixtures
 {
-    private const USER_PASSWORD = 'aaa';
+    private const string USER_PASSWORD = 'aaa';
 
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
@@ -31,7 +31,7 @@ class UserFixtures extends AbstractFixtures
         ];
     }
 
-    protected function postInstantiate($entity): void
+    protected function postInstantiate(object $entity): void
     {
         $entity->setPassword($this->passwordHasher->hashPassword($entity, $entity->getPassword()));
     }

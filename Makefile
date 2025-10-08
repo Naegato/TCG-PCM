@@ -14,3 +14,9 @@ jwt:
 
 fixtures:
 	$(CONSOLE) doctrine:fixtures:load -n
+
+format:
+	$(PHP) vendor/bin/mago format
+
+stan:
+	$(PHP) vendor/bin/mago analyze
