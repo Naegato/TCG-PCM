@@ -18,7 +18,6 @@ CMD ["multirun", "php-fpm -R -F", "nginx -g 'daemon off;'"]
 
 FROM main AS dev
 
-RUN install-php-extensions pcov
 RUN composer install --no-scripts
 
 
