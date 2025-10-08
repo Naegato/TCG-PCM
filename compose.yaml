@@ -8,3 +8,14 @@ services:
     working_dir: /app
     volumes:
       - ./api:/app
+
+  db:
+    image: mariadb:11.8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
