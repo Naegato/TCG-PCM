@@ -24,11 +24,6 @@ final class DeadGameXDCard extends AbstractMonsterCard implements ComputedCardIn
         return 'DeadGameXD';
     }
 
-    public function getImage(): string
-    {
-        return 'https://cdn.discordapp.com/attachments/529955910752141322/1529873488335339683/image.png?ex=6a638537&is=6a6233b7&hm=d256917d2ad0cb535071a5118d5a0340925efaec66b66e297ef5a84e2ba31306';
-    }
-
     public function getBaseAttack(): int
     {
         return $this->attack;

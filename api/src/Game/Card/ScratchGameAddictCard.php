@@ -19,11 +19,6 @@ final class ScratchGameAddictCard extends AbstractPlayableCard implements Comput
         return 'ScratchGameAddict';
     }
 
-    public function getImage(): string
-    {
-        return 'https://media.discordapp.net/attachments/529955910752141322/1529858468490514482/AHRPTWno38OJ35Jt1wksz2vvzh3uyC2Ei0CRNFRh3FYjyRC2jtl6JIw5CfV1RsRI3CpjdixhiQNmyP5fhUBc4PwuNo_90Xl_0ZFA7sI32HvksUm0d0aYtfaUPcErrWyWJWRU5GmBNTGds680-w680-h510.png?ex=6a63773a&is=6a6225ba&hm=64364e2aab5e65075ec08a9fc8aad05e5f10a5ba40c55ac752928fb1c88dabc5&=&format=webp&quality=lossless';
-    }
-
     public function getDescription(): string
     {
         return GameUtils::formatDescription(parent::getDescription(), [

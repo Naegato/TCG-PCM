@@ -9,6 +9,7 @@ if (!process.env.API_INTERNAL_URL) {
     "API_INTERNAL_URL n'est pas configurée (variable d'environnement manquante côté serveur front).",
   );
 }
+
 const API_INTERNAL_URL = process.env.API_INTERNAL_URL;
 
 export class ApiError extends Error {
@@ -20,17 +21,25 @@ export class ApiError extends Error {
   }
 }
 
+type ServerApiFetchOptions = RequestInit & {
+  skipAuth?: boolean;
+  authorizationToken?: string;
+};
+
 export async function getServerToken(): Promise<string | null> {
   const store = await cookies();
   return store.get(SESSION_COOKIE)?.value ?? null;
 }
 
-export async function serverApiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const token = await getServerToken();
+export async function serverApiFetch<T>(
+  endpoint: string,
+  options?: ServerApiFetchOptions,
+): Promise<T> {
+  const token = options?.authorizationToken ?? (await getServerToken());
   const isFormData = options?.body instanceof FormData;
   const headers: HeadersInit = {
     ...(!isFormData && { "Content-Type": "application/json" }),
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(token && !options?.skipAuth && { Authorization: `Bearer ${token}` }),
     ...options?.headers,
   };
 
@@ -49,8 +58,6 @@ export async function serverApiFetch<T>(endpoint: string, options?: RequestInit)
       throw new ApiError(errorBody.detail, response.status);
     }
 
-    // Lexik's login failure handler (invalid credentials, throttling) returns
-    // { code, message } instead of API Platform's { detail }.
     if (errorBody?.message) {
       throw new ApiError(errorBody.message, response.status);
     }

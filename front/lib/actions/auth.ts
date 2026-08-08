@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { ApiError, serverApiPost } from "@/lib/api/server";
+import { ApiError, serverApiFetch, serverApiPost } from "@/lib/api/server";
 import { PASSWORD_EXPIRED_COOKIE, REFRESH_TOKEN_COOKIE, SESSION_COOKIE } from "@/lib/auth/constants";
 
 export type AuthActionState = {
@@ -208,17 +208,22 @@ export async function completeGoogleLoginAction(
   redirect("/boosters");
 }
 
-export async function refreshAccessToken(): Promise<boolean> {
+export async function refreshAccessToken(): Promise<{
+  token: string;
+  refreshToken: string;
+} | null> {
   const store = await cookies();
   const refreshToken = store.get(REFRESH_TOKEN_COOKIE)?.value;
   if (!refreshToken) {
-    return false;
+    return null;
   }
 
   let pending = inflightRefreshes.get(refreshToken);
   if (!pending) {
-    pending = serverApiPost<{ token: string; refresh_token: string }>("/token/refresh", {
-      refresh_token: refreshToken,
+    pending = serverApiFetch<{ token: string; refresh_token: string }>("/token/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+      skipAuth: true,
     })
       .then((response) => ({ token: response.token, refreshToken: response.refresh_token }))
       .finally(() => {
@@ -231,12 +236,12 @@ export async function refreshAccessToken(): Promise<boolean> {
     const result = await pending;
     await setSessionCookie(result.token);
     await setRefreshTokenCookie(result.refreshToken);
-    return true;
+    return result;
   } catch (err) {
     if (err instanceof ApiError && err.status === 401 && store.get(REFRESH_TOKEN_COOKIE)?.value === refreshToken) {
       store.delete(REFRESH_TOKEN_COOKIE);
     }
-    return false;
+    return null;
   }
 }
 

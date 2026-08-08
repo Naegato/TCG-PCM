@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { loginAction, type AuthActionState } from "@/lib/actions/auth";
@@ -22,13 +22,19 @@ function SubmitButton() {
 
 export default function LoginForm() {
 	const [state, formAction] = useActionState(loginAction, initialState);
+	const [username, setUsername] = useState("");
 
 	return (
 		<form action={formAction} className="w-full max-w-sm">
 			<FieldGroup>
 				<Field>
 					<FieldLabel htmlFor="username">Username</FieldLabel>
-					<Input id="username" name="username" />
+					<Input
+						id="username"
+						name="username"
+						value={username}
+						onChange={(event) => setUsername(event.target.value)}
+					/>
 				</Field>
 
 				<Field>
