@@ -42,7 +42,7 @@ final class CamoBloonCard extends AbstractMonsterCard
 
     public function reduceDamage(GameContext $context, int $damage): int
     {
-        if ($context->randomIntBetween(0, 100) < self::DODGE_CHANCE) {
+        if ($context->randomIntBetween(0, 100) < $this->getValue(self::DODGE_CHANCE, true)) {
             return $damage;
         }
 
