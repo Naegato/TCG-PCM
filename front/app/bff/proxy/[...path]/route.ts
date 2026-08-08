@@ -25,12 +25,20 @@ async function handle(request: NextRequest, path: string[]) {
   try {
     return NextResponse.json(await forward());
   } catch (err) {
-    if (!(err instanceof ApiError) || err.status !== 401 || !(await refreshAccessToken())) {
+    const refreshed = err instanceof ApiError && err.status === 401 ? await refreshAccessToken() : null;
+    if (!refreshed) {
       return errorResponse(err);
     }
 
     try {
-      return NextResponse.json(await forward());
+      return NextResponse.json(
+        await serverApiFetch(endpoint, {
+          method: request.method,
+          body,
+          headers: contentType ? { "Content-Type": contentType } : undefined,
+          authorizationToken: refreshed.token,
+        }),
+      );
     } catch (retryErr) {
       return errorResponse(retryErr);
     }

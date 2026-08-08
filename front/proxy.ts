@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { PASSWORD_EXPIRED_COOKIE, SESSION_COOKIE } from "@/lib/auth/constants";
+import { isJwtExpired } from "@/lib/auth/jwt";
 
 // Pages (ou sections, via préfixe) accessibles sans session, en plus de rester consultables une fois connecté.
 const PUBLIC_PATHS = ["/how-to-play", "/legal", "/oauth/callback"];
@@ -16,12 +17,7 @@ const CHANGE_PASSWORD_PATH = "/change-password";
 // token pendant son render) le renvoie vers /login, que le middleware renvoie vers /boosters
 // puisque le cookie est là — boucle de redirection infinie.
 function isSessionExpired(token: string): boolean {
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return typeof payload.exp === "number" && payload.exp * 1000 <= Date.now();
-  } catch {
-    return true;
-  }
+  return isJwtExpired(token);
 }
 
 export function proxy(request: NextRequest) {

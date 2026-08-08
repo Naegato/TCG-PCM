@@ -134,9 +134,11 @@ export function BoosterTokensProvider({
     }
 
     // eslint-disable-next-line react-hooks/set-state-in-effect -- refresh() awaits a network call before setIsLoading resolves, it isn't synchronous
-    refresh().finally(() => {
-      setIsLoading(false);
-    });
+    refresh()
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [enabled, refresh]);
 
   useEffect(() => {

@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { completeGoogleLoginAction } from "@/lib/actions/auth";
-
 const ERROR_MESSAGES: Record<string, string> = {
   oauth_cancelled: "Connexion annulée.",
   invalid_state: "La demande de connexion a expiré, réessaie.",
@@ -28,8 +26,23 @@ export default function GoogleOAuthCallbackPage() {
         return "Une erreur est survenue.";
       }
 
-      const result = await completeGoogleLoginAction(token, refreshToken);
-      return result?.error ?? null;
+      const response = await fetch("/bff/oauth/google/complete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, refreshToken }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as
+          | { detail?: string }
+          | null;
+        return payload?.detail ?? "Une erreur est survenue.";
+      }
+
+      window.location.replace("/boosters");
+      return null;
     }
 
     run().then(setError);
