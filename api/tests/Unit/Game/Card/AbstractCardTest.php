@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Game\Card;
 
 use App\Enum\CardEffectEnum;
+use App\Enum\CardTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\CardState;
 use App\Game\Card\Effect\EffectState;
@@ -76,6 +77,11 @@ class DummyCard extends AbstractCard
     public function getDescription(): string
     {
         return 'This is a dummy card for testing purposes.';
+    }
+
+    public function getType(): CardTypeEnum
+    {
+        return CardTypeEnum::MONSTER;
     }
 
     public function getEffects(): EffectCollection

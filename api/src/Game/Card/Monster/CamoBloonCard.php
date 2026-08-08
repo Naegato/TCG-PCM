@@ -40,6 +40,11 @@ final class CamoBloonCard extends AbstractMonsterCard
         return self::HEALTH_POINTS;
     }
 
+    public static function getGroups(): array
+    {
+        return ['bloon'];
+    }
+
     public function reduceDamage(GameContext $context, int $damage): int
     {
         if ($context->randomIntBetween(0, 100) < $this->getValue(self::DODGE_CHANCE, true)) {

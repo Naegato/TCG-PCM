@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Game\Card\Trait;
 
+use App\Enum\CardTypeEnum;
 use App\Enum\GameEventTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\CardState;
@@ -68,6 +69,11 @@ class TestCard extends AbstractCard
     public function getName(): string
     {
         return '';
+    }
+
+    public function getType(): CardTypeEnum
+    {
+        return CardTypeEnum::MONSTER;
     }
 
     public function getTurnDelay(): int

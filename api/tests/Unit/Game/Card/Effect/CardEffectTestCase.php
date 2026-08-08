@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Game\Card\Effect;
 
+use App\Enum\CardTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\Effect\AbstractCardEffect;
 use PHPUnit\Framework\TestCase;
@@ -36,5 +37,10 @@ class TestCard extends AbstractCard
     public function getDescription(): string
     {
         return 'test';
+    }
+
+    public function getType(): CardTypeEnum
+    {
+        return CardTypeEnum::MONSTER;
     }
 }

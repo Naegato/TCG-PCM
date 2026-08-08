@@ -27,4 +27,9 @@ final class RedBloonsMonsterCard extends AbstractMonsterCard
     {
         return self::HEALTH_POINTS;
     }
+
+    public static function getGroups(): array
+    {
+        return ['bloon'];
+    }
 }

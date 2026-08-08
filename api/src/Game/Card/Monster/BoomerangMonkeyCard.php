@@ -40,6 +40,11 @@ final class BoomerangMonkeyCard extends AbstractMonsterCard
         return self::HEALTH_POINTS;
     }
 
+    public static function getGroups(): array
+    {
+        return ['monkey'];
+    }
+
     public function onAttack(GameContext $context): void
     {
         $instanceId = $this->getInstanceId();

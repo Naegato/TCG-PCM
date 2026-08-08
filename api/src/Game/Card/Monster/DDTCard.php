@@ -42,6 +42,11 @@ final class DDTCard extends AbstractMonsterCard
         return self::HEALTH_POINTS;
     }
 
+    public static function getGroups(): array
+    {
+        return ['bloon'];
+    }
+
     public function reduceDamage(GameContext $context, int $damage): int
     {
         if (0 === $context->randomIntBetween(0, 1)) {
