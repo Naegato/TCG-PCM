@@ -37,6 +37,11 @@ final class GrilledClottyCard extends AbstractMonsterCard implements TurnAwareIn
         return self::HEALTH_POINTS;
     }
 
+    public static function getGroups(): array
+    {
+        return ['clotty'];
+    }
+
     public function onTurnEnd(GameEvent $event, GameContext $gameContext): void
     {
         $instanceId = $this->getInstanceId();

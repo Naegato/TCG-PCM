@@ -41,4 +41,9 @@ final class CardHelper
     {
         return $this->cardRegistry->getAllBy($criterias);
     }
+
+    public function getCardsInGroup(string $group): array
+    {
+        return $this->cardRegistry->getAllBy(['groups' => [$group]]);
+    }
 }

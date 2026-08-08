@@ -21,11 +21,10 @@ final class MegaClottyCard extends AbstractMonsterCard
     private const BONUS_PER_CLOTTY = 7;
     private const NUMBER_OF_CLOTTIES_SPAWNED = 2;
 
-    private const CLOTTY_IDS = [
-        'Clotty',
-        'MegaClotty',
-        'GrilledClotty',
-    ];
+    public static function getGroups(): array
+    {
+        return ['clotty'];
+    }
 
     private int $playBonus = 0;
 
@@ -64,10 +63,11 @@ final class MegaClottyCard extends AbstractMonsterCard
 
         $clottiesOnBoard = 0;
 
+        $clottyIds = GameUtils::getService('cards')->getCardsInGroup('clotty');
         foreach ($this->getAllActivePlayAreaCards($context) as $cardId) {
             $templateId = $context->state->getCardState($cardId)?->templateId;
 
-            if (\is_string($templateId) && \in_array($templateId, self::CLOTTY_IDS, true) && $cardId !== $instanceId) {
+            if (\is_string($templateId) && \in_array($templateId, $clottyIds, true) && $cardId !== $instanceId) {
                 $clottiesOnBoard++;
                 $context->discardCard($cardId);
             }

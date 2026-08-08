@@ -36,6 +36,11 @@ final class NinjaMonkeyCard extends AbstractMonsterCard
         return self::HEALTH_POINTS;
     }
 
+    public static function getGroups(): array
+    {
+        return ['monkey'];
+    }
+
     public function setState(CardState $state): void
     {
         parent::setState($state);

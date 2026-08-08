@@ -40,6 +40,11 @@ final class WizardMonkeyCard extends AbstractMonsterCard
         return self::HEALTH_POINTS;
     }
 
+    public static function getGroups(): array
+    {
+        return ['monkey'];
+    }
+
     public function onMonsterPlayed(GameContext $context): void
     {
         $this->damageAllOpponents($context);

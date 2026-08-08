@@ -35,6 +35,7 @@ class CardRegistry implements CardRegistryInterface
         $serie = $criteria['serie'] ?? null;
         $type = $criteria['type'] ?? null;
         $excludeType = $criteria['excludeType'] ?? null;
+        $groups = $criteria['groups'] ?? null;
 
         if (null !== $rarity && !$rarity instanceof CardRarityEnum) {
             throw new \InvalidArgumentException(sprintf('Rarity must be an instance of %s', CardRarityEnum::class));
@@ -69,6 +70,10 @@ class CardRegistry implements CardRegistryInterface
             }
 
             if (\is_string($excludeType) && is_a($cardClass, $excludeType, true)) {
+                continue;
+            }
+
+            if (\is_array($groups) && [] !== $groups && [] === array_intersect($groups, $cardClass::getGroups())) {
                 continue;
             }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Game\Card\Monster;
 
 use App\Enum\CardEffectEnum;
+use App\Enum\CardTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\CardState;
 use App\Game\Card\Effect\PowerBoostEffect;
@@ -19,6 +20,11 @@ abstract class AbstractMonsterCard extends AbstractCard
 
     protected int $bonusAttack = 0;
     protected ?int $forcedAttack = null;
+
+    public function getType(): CardTypeEnum
+    {
+        return CardTypeEnum::MONSTER;
+    }
 
     public function getAttack(): int
     {

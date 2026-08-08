@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Service;
 
 use App\Enum\CardRarityEnum;
 use App\Enum\CardSetEnum;
+use App\Enum\CardTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\Character\PierrotCard;
 use App\Game\GameContext;
@@ -101,6 +102,11 @@ class CommonCardStub extends AbstractCard
         return 'A stub for common card testing.';
     }
 
+    public function getType(): CardTypeEnum
+    {
+        return CardTypeEnum::MONSTER;
+    }
+
     public function play(GameContext $context): void
     {
         // No-op for testing
@@ -124,6 +130,11 @@ class LegendaryCardStub extends AbstractCard
     public function getDescription(): string
     {
         return 'A stub for legendary card testing.';
+    }
+
+    public function getType(): CardTypeEnum
+    {
+        return CardTypeEnum::MONSTER;
     }
 
     public function play(GameContext $context): void

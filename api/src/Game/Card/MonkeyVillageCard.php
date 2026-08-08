@@ -22,15 +22,10 @@ final class MonkeyVillageCard extends AbstractPassiveCard implements TurnAwareIn
 
     private const ATTACK_BUFF = 2;
 
-    private const MONKEY_IDS = [
-        'DartMonkey',
-        'BoomerangMonkey',
-        'SuperMonkey',
-        'AlchemistMonkey',
-        'NinjaMonkey',
-        'SniperMonkey',
-        'WizardMonkey',
-    ];
+    public static function getGroups(): array
+    {
+        return ['monkey'];
+    }
 
     public function getId(): string
     {
@@ -61,7 +56,8 @@ final class MonkeyVillageCard extends AbstractPassiveCard implements TurnAwareIn
         foreach ($ownerState->playArea->monsterCards as $cardId) {
             $cardState = $gameContext->state->getCardState($cardId);
 
-            if (null === $cardState || !\in_array($cardState->templateId, self::MONKEY_IDS, true)) {
+            $monkeyIds = GameUtils::getService('cards')->getCardsInGroup('monkey');
+            if (null === $cardState || !\in_array($cardState->templateId, $monkeyIds, true)) {
                 continue;
             }
 

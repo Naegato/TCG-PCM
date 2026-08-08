@@ -46,6 +46,11 @@ final class AlchemistMonkeyCard extends AbstractMonsterCard implements TurnAware
         return self::HEALTH_POINTS;
     }
 
+    public static function getGroups(): array
+    {
+        return ['monkey'];
+    }
+
     public function onTurnEnd(GameEvent $event, GameContext $gameContext): void
     {
         $instanceId = $this->getInstanceId();

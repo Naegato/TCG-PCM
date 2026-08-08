@@ -19,15 +19,10 @@ final class SuperMonkeyCard extends AbstractMonsterCard
     private const ATTACK = 20;
     private const BONUS_PER_MONKEY = 5;
 
-    private const MONKEY_IDS = [
-        'DartMonkey',
-        'BoomerangMonkey',
-        'SuperMonkey',
-        'AlchemistMonkey',
-        'NinjaMonkey',
-        'SniperMonkey',
-        'WizardMonkey',
-    ];
+    public static function getGroups(): array
+    {
+        return ['monkey'];
+    }
 
     private int $playBonus = 0;
 
@@ -65,10 +60,11 @@ final class SuperMonkeyCard extends AbstractMonsterCard
         $ownerState = $context->getPlayerStateById($ownerId);
         $monkeysOnBoard = 1;
 
+        $monkeyIds = GameUtils::getService('cards')->getCardsInGroup('monkey');
         foreach ($ownerState->playArea->monsterCards as $cardId) {
             $templateId = $context->state->getCardState($cardId)?->templateId;
 
-            if (\is_string($templateId) && \in_array($templateId, self::MONKEY_IDS, true)) {
+            if (\is_string($templateId) && \in_array($templateId, $monkeyIds, true)) {
                 $monkeysOnBoard++;
             }
         }

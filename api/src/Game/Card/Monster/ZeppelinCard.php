@@ -19,17 +19,6 @@ final class ZeppelinCard extends AbstractMonsterCard
     private const ATTACK = 12;
     private const BUFF_AMOUNT = 10;
 
-    private const BLOON_IDS = [
-        'Redbloons',
-        'MOAB',
-        'LeadBloon',
-        'CamoBloon',
-        'BlackBloon',
-        'CeramicBloon',
-        'DDT',
-        'BFB',
-    ];
-
     public function getId(): string
     {
         return 'Zeppelin';
@@ -57,7 +46,8 @@ final class ZeppelinCard extends AbstractMonsterCard
         foreach ($context->getMonsters() as $cardId) {
             $cardState = $context->state->getCardState($cardId);
 
-            if (null === $cardState || !\in_array($cardState->templateId, self::BLOON_IDS, true)) {
+            $bloonIds = GameUtils::getService('cards')->getCardsInGroup('bloon');
+            if (null === $cardState || !\in_array($cardState->templateId, $bloonIds, true)) {
                 continue;
             }
 
