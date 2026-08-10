@@ -6,13 +6,13 @@ namespace App\Service\Game;
 
 use App\Enum\GameEventTypeEnum;
 use App\Game\AbstractCard;
-use App\Game\Card\AbstractPassiveCard;
-use App\Game\Card\AbstractPlayableCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\DeathAwareInterface;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\Card\MonsterCardState;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Exception\CardCannotAttackExpcetion;
 use App\Game\Exception\NotEnoughCoinsException;
 use App\Game\State\GameEvent;
@@ -94,7 +94,7 @@ class GameEventResolver
         )) {
             $idToRemove = GameEventTypeEnum::MONSTER_DIED === $event->type ? $event->data['cardId'] : $event->data['characterCardId'];
 
-            $this->pendingDeath = array_filter($this->pendingDeath, static fn($a) => $idToRemove === $a);
+            $this->pendingDeath = array_filter($this->pendingDeath, static fn($a) => $idToRemove !== $a);
         }
 
         return $state;
@@ -263,7 +263,7 @@ class GameEventResolver
             'amount' => $cardCost,
         ]);
 
-        if ($card instanceof AbstractPlayableCard) {
+        if ($card instanceof AbstractConsumableCard) {
             $card->play($ctx, \is_array($data) ? $data : []);
 
             $events[] = GameEvent::game(GameEventTypeEnum::CARD_DISCARDED, [
@@ -456,8 +456,8 @@ class GameEventResolver
                 if (!\is_string($cardId)) {
                     throw new \LogicException('cardId is required for CARD_DRAWN event');
                 }
-                $state = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
-                $playedCard = $this->cardRuntimeMap->getByState($state);
+                $cardState = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
+                $playedCard = $this->cardRuntimeMap->getByState($cardState);
 
                 foreach ($cards as $card) {
                     $card->onCardPlayed($playedCard, $ctx);
@@ -470,8 +470,8 @@ class GameEventResolver
                 if (!\is_string($cardId)) {
                     throw new \LogicException('cardId is required for CARD_DRAWN event');
                 }
-                $state = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
-                $playedCard = $this->cardRuntimeMap->getByState($state);
+                $cardState = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
+                $playedCard = $this->cardRuntimeMap->getByState($cardState);
 
                 foreach ($cards as $card) {
                     $card->onCardDeath($playedCard, $ctx);

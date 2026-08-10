@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Game\AbstractCard;
-use App\Game\Card\AbstractPassiveCard;
-use App\Game\Card\AbstractPlayableCard;
 use App\Game\Card\CardHelper;
 use App\Game\Card\CardState;
 use App\Game\Card\Character\AbstractCharacterCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\EffectCollection;
 use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\Card\MonsterCardState;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
@@ -28,7 +28,7 @@ final class UpdateCardListCommand
         AbstractMonsterCard::class,
         AbstractCharacterCard::class,
         AbstractPassiveCard::class,
-        AbstractPlayableCard::class,
+        AbstractConsumableCard::class,
         CardState::class,
         CardHelper::class,
         MonsterCardState::class,

@@ -252,11 +252,11 @@ class GameEventApplier implements GameEventApplierInterface
     private function applyCardPlaceInPlayArea(GameEvent $event, GameState $gameState): GameState
     {
         if (null === ($cardId = $event->data['cardId'] ?? null) || !\is_string($cardId)) {
-            throw new \LogicException('DiscardCard requires a cardId');
+            throw new \LogicException('CardPlaceInPlayArea requires a cardId');
         }
 
         if (null === ($playerId = $event->data['playerId'] ?? null) || !\is_string($playerId)) {
-            throw new \LogicException('DiscardCard requires a playerId');
+            throw new \LogicException('CardPlaceInPlayArea requires a playerId');
         }
 
         $player = $gameState->getPlayer($playerId);
@@ -268,19 +268,19 @@ class GameEventApplier implements GameEventApplierInterface
     private function applyCardPlaceInMonsterArea(GameEvent $event, GameState $gameState): GameState
     {
         if (null === ($cardId = $event->data['cardId'] ?? null) || !\is_string($cardId)) {
-            throw new \LogicException('DiscardCard requires a cardId');
+            throw new \LogicException('CardPlaceInMonsterArea requires a cardId');
         }
 
         if (null === ($playerId = $event->data['playerId'] ?? null) || !\is_string($playerId)) {
-            throw new \LogicException('DiscardCard requires a playerId');
+            throw new \LogicException('CardPlaceInMonsterArea requires a playerId');
         }
 
         if (null === ($healthpoints = $event->data['cardHealthPoints'] ?? null) || !\is_int($healthpoints)) {
-            throw new \LogicException('DiscardCard requires a cardHealthPoints');
+            throw new \LogicException('CardPlaceInMonsterArea requires a cardHealthPoints');
         }
 
         if (!($cardState = $gameState->getCardState($cardId))) {
-            throw new \LogicException('DiscardCard requires a valid cardId');
+            throw new \LogicException('CardPlaceInMonsterArea requires a valid cardId');
         }
 
         $player = $gameState->getPlayer($playerId);
@@ -323,7 +323,7 @@ class GameEventApplier implements GameEventApplierInterface
         }
 
         if (null === ($amount = $event->data['amount'] ?? null) || !\is_int($amount)) {
-            throw new \LogicException('Coins changed requires a cardId');
+            throw new \LogicException('Coins changed requires an amount');
         }
 
         $player = $state->getPlayer($playerId);
@@ -426,11 +426,13 @@ class GameEventApplier implements GameEventApplierInterface
             throw new \LogicException('CardStolen requires a toPlayerId');
         }
 
-        $cardState = $state->getCardState($cardId)->updateOwner($toPlayerId);
+        $cardState = $state->getCardState($cardId);
 
         if (!$cardState) {
             throw new \LogicException('CardStolen requires a valid cardId');
         }
+
+        $cardState = $cardState->updateOwner($toPlayerId);
 
         $fromPlayer = $state->getPlayer($fromPlayerId);
         $toPlayer = $state->getPlayer($toPlayerId);

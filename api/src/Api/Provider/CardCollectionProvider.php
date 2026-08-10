@@ -10,10 +10,10 @@ use App\Api\DTO\CardCollectionDTO;
 use App\Api\DTO\CollectionCardDTO;
 use App\Enum\CardRarityEnum;
 use App\Game\AbstractCard;
-use App\Game\Card\AbstractPassiveCard;
-use App\Game\Card\AbstractPlayableCard;
 use App\Game\Card\Character\AbstractCharacterCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Monster\AbstractMonsterCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Service\Auth\CurrentUserProviderInterface;
 use App\Service\Game\CardRegistryInterface;
 
@@ -134,7 +134,7 @@ final class CardCollectionProvider implements ProviderInterface
             $card instanceof AbstractCharacterCard => 0,
             $card instanceof AbstractMonsterCard => 1,
             $card instanceof AbstractPassiveCard => 2,
-            $card instanceof AbstractPlayableCard => 3,
+            $card instanceof AbstractConsumableCard => 3,
             default => 4,
         };
     }

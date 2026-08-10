@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Service\Game;
 
 use App\Enum\GameEventTypeEnum;
-use App\Game\Card\AbstractPlayableCard;
 use App\Game\Card\CardState;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Monster\RedBloonsMonsterCard;
 use App\Game\Card\MonsterCardState;
@@ -298,6 +298,47 @@ final class GameEventResolverTest extends TestCase
         self::assertCount(1, SpyAwareCard::$calls);
     }
 
+    public function testSimultaneousMonsterDeathsDoNotProduceDuplicateDeathEvents(): void
+    {
+        $ger = $this->getSut();
+        $gameState = new GameState(
+            new PlayerState(new Player('1', 'Player 1'), 10, 10, 'player1', [], [], 0, new PlayArea()),
+            new PlayerState(
+                new Player('2', 'Player 2'),
+                10,
+                10,
+                'player1',
+                [],
+                [
+                    'draw2' => DummyCard::class,
+                ],
+                0,
+                new PlayArea([], [
+                    'bloons1',
+                    'bloons2',
+                ]),
+            ),
+            0,
+            0,
+            null,
+            [
+                'bloons1' => new MonsterCardState('bloons1', 'Redbloons', '2', 0),
+                'bloons2' => new MonsterCardState('bloons2', 'Redbloons', '2', 0),
+            ],
+        );
+
+        // Both monsters are already at 0 HP (e.g. following an AOE damage event),
+        // so the very first event resolved should detect and queue both deaths at once.
+        $event = new GameEvent(0, GameEventTypeEnum::TURN_ENDED, GameEvent::PLAYER_EVENT, ['playerId' => $gameState->player1->player->id]);
+
+        $events = $ger->resolve($event, $gameState)->events;
+
+        $deathEvents = array_values(array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::MONSTER_DIED === $e->type));
+
+        self::assertCount(2, $deathEvents);
+        self::assertEqualsCanonicalizing(['bloons1', 'bloons2'], array_map(static fn(GameEvent $e) => $e->data['cardId'], $deathEvents));
+    }
+
     public function testAttackPlayerCreatesDamageEvent(): void
     {
         $ger = $this->getSut();
@@ -403,7 +444,7 @@ final class GameEventResolverTest extends TestCase
     }
 }
 
-class SpyCard extends AbstractPlayableCard implements TurnAwareInterface
+class SpyCard extends AbstractConsumableCard implements TurnAwareInterface
 {
     use TurnAwareTrait;
 

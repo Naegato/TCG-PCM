@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\GameReplay;
 
 use App\Game\AbstractCard;
+use App\Game\State\GameState;
 use App\Service\Game\CardFactoryInterface;
 use App\Service\Game\CardRegistryInterface;
 use App\Service\Game\CardRuntimeMap;
@@ -38,8 +39,16 @@ final class GameReplayTest extends KernelTestCase
         $gameReplayer = $this->getGameStateRebuilder();
         $gameState = $gameReplayer->rebuild($gameState, $events);
 
-        $property = new \ReflectionClass($gameState)->getProperty('lastAddedCardId');
-        $property->setValue($gameState, null);
+        // lastAddedCardId is a transient field not persisted in fixtures; rebuild a clean
+        // state the same way ExportGameReplayCommand does when generating them.
+        $gameState = new GameState(
+            $gameState->player1,
+            $gameState->player2,
+            $gameState->lastEventId,
+            $gameState->seed,
+            $gameState->currentPlayer,
+            $gameState->cards,
+        );
 
         self::assertEquals($data['finalGameState'], $gameState);
     }

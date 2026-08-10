@@ -87,7 +87,7 @@ class CardRegistry implements CardRegistryInterface
     {
         $this->loadCards();
 
-        return null !== $this->cards[$cardId] ?? null;
+        return array_key_exists($cardId, $this->cards);
     }
 
     /**
