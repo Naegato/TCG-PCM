@@ -94,7 +94,7 @@ class GameEventResolver
         )) {
             $idToRemove = GameEventTypeEnum::MONSTER_DIED === $event->type ? $event->data['cardId'] : $event->data['characterCardId'];
 
-            $this->pendingDeath = array_filter($this->pendingDeath, static fn($a) => $idToRemove === $a);
+            $this->pendingDeath = array_filter($this->pendingDeath, static fn($a) => $idToRemove !== $a);
         }
 
         return $state;
@@ -456,8 +456,8 @@ class GameEventResolver
                 if (!\is_string($cardId)) {
                     throw new \LogicException('cardId is required for CARD_DRAWN event');
                 }
-                $state = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
-                $playedCard = $this->cardRuntimeMap->getByState($state);
+                $cardState = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
+                $playedCard = $this->cardRuntimeMap->getByState($cardState);
 
                 foreach ($cards as $card) {
                     $card->onCardPlayed($playedCard, $ctx);
@@ -470,8 +470,8 @@ class GameEventResolver
                 if (!\is_string($cardId)) {
                     throw new \LogicException('cardId is required for CARD_DRAWN event');
                 }
-                $state = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
-                $playedCard = $this->cardRuntimeMap->getByState($state);
+                $cardState = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
+                $playedCard = $this->cardRuntimeMap->getByState($cardState);
 
                 foreach ($cards as $card) {
                     $card->onCardDeath($playedCard, $ctx);

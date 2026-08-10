@@ -55,4 +55,22 @@ final class CardRegistryTest extends TestCase
 
         self::assertSame(['monkey-card'], $cards);
     }
+
+    public function testHasReturnsTrueForExistingCard(): void
+    {
+        $registry = new MockCardRegistry([
+            'monster-card' => DartMonkeyCard::class,
+        ]);
+
+        self::assertTrue($registry->has('monster-card'));
+    }
+
+    public function testHasReturnsFalseForUnknownCard(): void
+    {
+        $registry = new MockCardRegistry([
+            'monster-card' => DartMonkeyCard::class,
+        ]);
+
+        self::assertFalse($registry->has('unknown-card'));
+    }
 }

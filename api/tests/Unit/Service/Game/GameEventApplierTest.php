@@ -297,6 +297,41 @@ final class GameEventApplierTest extends TestCase
         self::assertCount(2, $newState->cards);
     }
 
+    public function testApplyCardStolenMovesMonsterCardBetweenPlayers(): void
+    {
+        $eventApplier = $this->getSut(['Redbloons' => RedBloonsMonsterCard::class]);
+        $state = $this->getInitialGameState();
+
+        $event = new GameEvent(1, GameEventTypeEnum::CARD_STOLEN, GameEvent::GAME_EVENT, [
+            'cardId' => 'monster',
+            'fromPlayerId' => 'player1',
+            'toPlayerId' => 'player2',
+        ]);
+
+        $newState = $eventApplier->apply($event, $state);
+
+        self::assertCount(0, $newState->getPlayer('player1')->playArea->monsterCards);
+        self::assertContains('monster', $newState->getPlayer('player2')->playArea->monsterCards);
+        self::assertSame('player2', $newState->getCardState('monster')->ownerId);
+    }
+
+    public function testApplyCardStolenThrowsForInvalidCardIdInsteadOfFatalError(): void
+    {
+        $eventApplier = $this->getSut();
+        $state = $this->getInitialGameState();
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('CardStolen requires a valid cardId');
+
+        $event = new GameEvent(1, GameEventTypeEnum::CARD_STOLEN, GameEvent::GAME_EVENT, [
+            'cardId' => 'does-not-exist',
+            'fromPlayerId' => 'player1',
+            'toPlayerId' => 'player2',
+        ]);
+
+        $eventApplier->apply($event, $state);
+    }
+
     public function testApplyCardRedrawn()
     {
         $eventApplier = $this->getSut();
