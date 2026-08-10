@@ -10,7 +10,7 @@ use App\Entity\Inventory\CardInventory;
 use App\Entity\Inventory\Inventory;
 use App\Entity\User;
 use App\Enum\CardSetEnum;
-use App\Game\Card\AbstractPlayableCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\GameContext;
 use App\Service\Auth\CurrentUserProviderInterface;
 use App\Service\Game\CardRegistryInterface;
@@ -58,7 +58,7 @@ final class CardCollectionProviderTest extends TestCase
     }
 }
 
-final class AliasCardStub extends AbstractPlayableCard
+final class AliasCardStub extends AbstractConsumableCard
 {
     public static CardSetEnum $serie = CardSetEnum::ORIGINAL;
 

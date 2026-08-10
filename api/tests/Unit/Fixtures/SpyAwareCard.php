@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Fixtures;
 
 use App\Game\AbstractCard;
-use App\Game\Card\AbstractPassiveCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\DeathAwareInterface;
 use App\Game\Card\Interface\TurnAwareInterface;

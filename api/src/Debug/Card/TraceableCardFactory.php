@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Debug\Card;
 
 use App\Game\AbstractCard;
-use App\Game\Card\AbstractPassiveCard;
-use App\Game\Card\AbstractPlayableCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\CardState;
 use App\Game\Card\Character\AbstractCharacterCard;
 use App\Game\Card\Monster\AbstractMonsterCard;
@@ -61,8 +61,8 @@ final class TraceableCardFactory implements CardFactoryInterface
 
     private function trackCard(AbstractCard $card): AbstractCard
     {
-        if ($card instanceof AbstractPlayableCard) {
-            $card = TraceablePlayableCard::create($card, $this->stopwatch);
+        if ($card instanceof AbstractConsumableCard) {
+            $card = TraceableConsumableCard::create($card, $this->stopwatch);
         } elseif ($card instanceof AbstractPassiveCard) {
             $card = TraceablePassiveCard::create($card, $this->stopwatch);
         } elseif ($card instanceof AbstractCharacterCard) {

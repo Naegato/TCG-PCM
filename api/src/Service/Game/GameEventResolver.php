@@ -6,8 +6,8 @@ namespace App\Service\Game;
 
 use App\Enum\GameEventTypeEnum;
 use App\Game\AbstractCard;
-use App\Game\Card\AbstractPassiveCard;
-use App\Game\Card\AbstractPlayableCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\DeathAwareInterface;
 use App\Game\Card\Interface\TurnAwareInterface;
@@ -263,7 +263,7 @@ class GameEventResolver
             'amount' => $cardCost,
         ]);
 
-        if ($card instanceof AbstractPlayableCard) {
+        if ($card instanceof AbstractConsumableCard) {
             $card->play($ctx, \is_array($data) ? $data : []);
 
             $events[] = GameEvent::game(GameEventTypeEnum::CARD_DISCARDED, [

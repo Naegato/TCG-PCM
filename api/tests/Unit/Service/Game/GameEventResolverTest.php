@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Service\Game;
 
 use App\Enum\GameEventTypeEnum;
-use App\Game\Card\AbstractPlayableCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\CardState;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Monster\RedBloonsMonsterCard;
@@ -447,7 +447,7 @@ final class GameEventResolverTest extends TestCase
     }
 }
 
-class SpyCard extends AbstractPlayableCard implements TurnAwareInterface
+class SpyCard extends AbstractConsumableCard implements TurnAwareInterface
 {
     use TurnAwareTrait;
 

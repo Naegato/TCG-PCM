@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Dev;
 
-use App\Game\Card\AbstractPassiveCard;
-use App\Game\Card\AbstractPlayableCard;
 use App\Game\Card\Character\AbstractCharacterCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Monster\AbstractMonsterCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Card\Trait\CardAwareTrait;
 use App\Game\Card\Trait\TurnAwareTrait;
 use App\Tests\Unit\Game\Card\CardTestCase;
@@ -30,7 +30,7 @@ final class MakeCard extends AbstractMaker
 {
     private const CARD_TYPES = [
         'character' => AbstractCharacterCard::class,
-        'playable' => AbstractPlayableCard::class,
+        'consumable' => AbstractConsumableCard::class,
         'passive' => AbstractPassiveCard::class,
         'monster' => AbstractMonsterCard::class,
     ];
@@ -145,6 +145,8 @@ final class MakeCard extends AbstractMaker
         return match ($type) {
             'character' => self::BASE_NAMESPACE.'\\Character',
             'monster' => self::BASE_NAMESPACE.'\\Monster',
+            'consumable' => self::BASE_NAMESPACE.'\\Consumable',
+            'passive' => self::BASE_NAMESPACE.'\\Passive',
             default => self::BASE_NAMESPACE,
         };
     }

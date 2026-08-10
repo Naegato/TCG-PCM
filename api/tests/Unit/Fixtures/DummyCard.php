@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Fixtures;
 
 use App\Enum\CardTypeEnum;
-use App\Game\Card\AbstractPlayableCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\GameContext;
 
-class DummyCard extends AbstractPlayableCard
+class DummyCard extends AbstractConsumableCard
 {
     public function getName(): string
     {

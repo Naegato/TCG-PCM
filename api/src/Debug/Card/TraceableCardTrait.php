@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Debug\Card;
 
 use App\Game\AbstractCard;
-use App\Game\Card\AbstractPassiveCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Card\CardState;
 use App\Game\Card\EffectCollection;
 use App\Game\Card\Interface\CardAwareInterface;

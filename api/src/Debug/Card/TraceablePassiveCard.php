@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Debug\Card;
 
-use App\Game\Card\AbstractPassiveCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\ComputedCardInterface;
 use App\Game\Card\Interface\DeathAwareInterface;
