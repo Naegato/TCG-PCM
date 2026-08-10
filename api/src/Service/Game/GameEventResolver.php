@@ -6,13 +6,13 @@ namespace App\Service\Game;
 
 use App\Enum\GameEventTypeEnum;
 use App\Game\AbstractCard;
-use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\DeathAwareInterface;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\Card\MonsterCardState;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Exception\CardCannotAttackExpcetion;
 use App\Game\Exception\NotEnoughCoinsException;
 use App\Game\State\GameEvent;

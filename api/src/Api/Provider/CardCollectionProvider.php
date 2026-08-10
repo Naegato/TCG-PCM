@@ -10,10 +10,10 @@ use App\Api\DTO\CardCollectionDTO;
 use App\Api\DTO\CollectionCardDTO;
 use App\Enum\CardRarityEnum;
 use App\Game\AbstractCard;
-use App\Game\Card\Passive\AbstractPassiveCard;
-use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Character\AbstractCharacterCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Monster\AbstractMonsterCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Service\Auth\CurrentUserProviderInterface;
 use App\Service\Game\CardRegistryInterface;
 

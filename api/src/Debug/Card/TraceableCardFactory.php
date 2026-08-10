@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Debug\Card;
 
 use App\Game\AbstractCard;
-use App\Game\Card\Passive\AbstractPassiveCard;
-use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\CardState;
 use App\Game\Card\Character\AbstractCharacterCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Monster\AbstractMonsterCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Service\Game\CardFactoryInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 

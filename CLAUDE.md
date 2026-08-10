@@ -14,3 +14,24 @@ Si tu rajoutes des cartes, il faut regénérer la liste
 ```bash
 make card-list
 ```
+
+Après avoir modifié le code API,
+format
+```bash
+make format
+
+```
+lint
+```bash
+make lint
+```
+
+lint-fix
+```bash
+make lint-fix
+```
+
+static analysis
+```bash
+make stan
+```

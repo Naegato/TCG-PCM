@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Service\Game;
 
 use App\Enum\GameEventTypeEnum;
-use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\CardState;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Monster\RedBloonsMonsterCard;
 use App\Game\Card\MonsterCardState;
@@ -336,10 +336,7 @@ final class GameEventResolverTest extends TestCase
         $deathEvents = array_values(array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::MONSTER_DIED === $e->type));
 
         self::assertCount(2, $deathEvents);
-        self::assertEqualsCanonicalizing(
-            ['bloons1', 'bloons2'],
-            array_map(static fn(GameEvent $e) => $e->data['cardId'], $deathEvents),
-        );
+        self::assertEqualsCanonicalizing(['bloons1', 'bloons2'], array_map(static fn(GameEvent $e) => $e->data['cardId'], $deathEvents));
     }
 
     public function testAttackPlayerCreatesDamageEvent(): void

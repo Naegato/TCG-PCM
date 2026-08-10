@@ -157,30 +157,6 @@ message = "Attempting to access a method on a non-object type (`mixed`)."
 count = 1
 
 [[issues]]
-file = "src/Game/Card/ChaosCard.php"
-code = "mixed-method-access"
-message = "Attempting to access a method on a non-object type (`mixed`)."
-count = 2
-
-[[issues]]
-file = "src/Game/Card/ChaosCard.php"
-code = "mixed-property-type-coercion"
-message = "Mixed property type coercion"
-count = 2
-
-[[issues]]
-file = "src/Game/Card/ChaosCard.php"
-code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\game\card\chaoscard::getmonstertemplatepool`. Saw type `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Game/Card/ChaosCard.php"
-code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\game\card\chaoscard::getpassivetemplatepool`. Saw type `mixed`.'
-count = 1
-
-[[issues]]
 file = "src/Game/Card/Character/CharlieCard.php"
 code = "incompatible-parameter-name"
 message = 'Parameter #1 of `App\Game\Card\Character\CharlieCard::onturnaction()` is named `$context` but parent `App\Game\Card\Trait\BaseOnTurnTrait::onturnaction()` names it `$gameContext`'
@@ -217,27 +193,57 @@ message = 'Argument #1 of method `App\Game\State\GameState::getplayer` is possib
 count = 1
 
 [[issues]]
-file = "src/Game/Card/ImStillStandingCard.php"
-code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\GameContext::discardcard` is possibly `null`, but parameter type `string` does not accept it.'
-count = 1
-
-[[issues]]
-file = "src/Game/Card/ImStillStandingCard.php"
-code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\State\GameState::getplayer` is possibly `null`, but parameter type `string` does not accept it.'
-count = 1
-
-[[issues]]
-file = "src/Game/Card/MonkeyVillageCard.php"
-code = "mixed-argument"
-message = "Invalid argument type for argument #2 of `in_array`: expected `array<array-key, string>`, but found `mixed`."
-count = 1
-
-[[issues]]
-file = "src/Game/Card/MonkeyVillageCard.php"
+file = "src/Game/Card/Consumable/ChaosCard.php"
 code = "mixed-method-access"
 message = "Attempting to access a method on a non-object type (`mixed`)."
+count = 2
+
+[[issues]]
+file = "src/Game/Card/Consumable/ChaosCard.php"
+code = "mixed-property-type-coercion"
+message = "Mixed property type coercion"
+count = 2
+
+[[issues]]
+file = "src/Game/Card/Consumable/ChaosCard.php"
+code = "mixed-return-statement"
+message = 'Could not infer a precise return type for function `app\game\card\consumable\chaoscard::getmonstertemplatepool`. Saw type `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Consumable/ChaosCard.php"
+code = "mixed-return-statement"
+message = 'Could not infer a precise return type for function `app\game\card\consumable\chaoscard::getpassivetemplatepool`. Saw type `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Consumable/ScratchGameAddictCard.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `array_reverse`: expected `array<('K.array_reverse() extends array-key), ('V.array_reverse() extends mixed)>`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Consumable/ScratchGameAddictCard.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `round`: expected `float|int`, but found `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Consumable/ScratchGameAddictCard.php"
+code = "mixed-array-access"
+message = "Unsafe array access on type `mixed`."
+count = 6
+
+[[issues]]
+file = "src/Game/Card/Consumable/ScratchGameAddictCard.php"
+code = "mixed-operand"
+message = "Right operand in binary operation has type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Consumable/ScratchGameAddictCard.php"
+code = "redundant-null-coalesce"
+message = "Redundant null coalesce: left-hand side can never be `null` or undefined."
 count = 1
 
 [[issues]]
@@ -319,37 +325,31 @@ message = "Attempting to access a method on a non-object type (`mixed`)."
 count = 1
 
 [[issues]]
-file = "src/Game/Card/ScratchGameAddictCard.php"
+file = "src/Game/Card/Passive/ImStillStandingCard.php"
+code = "possibly-null-argument"
+message = 'Argument #1 of method `App\Game\GameContext::discardcard` is possibly `null`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Passive/ImStillStandingCard.php"
+code = "possibly-null-argument"
+message = 'Argument #1 of method `App\Game\State\GameState::getplayer` is possibly `null`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Passive/MonkeyVillageCard.php"
 code = "mixed-argument"
-message = "Invalid argument type for argument #1 of `array_reverse`: expected `array<('K.array_reverse() extends array-key), ('V.array_reverse() extends mixed)>`, but found `mixed`."
+message = "Invalid argument type for argument #2 of `in_array`: expected `array<array-key, string>`, but found `mixed`."
 count = 1
 
 [[issues]]
-file = "src/Game/Card/ScratchGameAddictCard.php"
-code = "mixed-argument"
-message = "Invalid argument type for argument #1 of `round`: expected `float|int`, but found `nonnull`."
+file = "src/Game/Card/Passive/MonkeyVillageCard.php"
+code = "mixed-method-access"
+message = "Attempting to access a method on a non-object type (`mixed`)."
 count = 1
 
 [[issues]]
-file = "src/Game/Card/ScratchGameAddictCard.php"
-code = "mixed-array-access"
-message = "Unsafe array access on type `mixed`."
-count = 6
-
-[[issues]]
-file = "src/Game/Card/ScratchGameAddictCard.php"
-code = "mixed-operand"
-message = "Right operand in binary operation has type `mixed`."
-count = 1
-
-[[issues]]
-file = "src/Game/Card/ScratchGameAddictCard.php"
-code = "redundant-null-coalesce"
-message = "Redundant null coalesce: left-hand side can never be `null` or undefined."
-count = 1
-
-[[issues]]
-file = "src/Game/Card/StackyStackitoCard.php"
+file = "src/Game/Card/Passive/StackyStackitoCard.php"
 code = "possibly-null-argument"
 message = 'Argument #1 of method `App\Game\State\GameState::getplayer` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
@@ -475,18 +475,6 @@ message = 'Could not infer a precise return type for function `app\service\game\
 count = 1
 
 [[issues]]
-file = "src/Service/Game/CardRegistry.php"
-code = "redundant-comparison"
-message = "Redundant `!==` comparison: left-hand side is always not identical to right-hand side."
-count = 1
-
-[[issues]]
-file = "src/Service/Game/CardRegistry.php"
-code = "redundant-null-coalesce"
-message = "Redundant null coalesce: left-hand side can never be `null` or undefined."
-count = 1
-
-[[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "less-specific-nested-argument-type"
 message = 'Argument type mismatch for argument #1 of `App\Game\State\PlayerState::withnewhandanddeck`: expected `array<array-key, string>`, but provided type `list{nonnull, ...<string>}` is less specific.'
@@ -513,19 +501,7 @@ count = 1
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `App\Game\State\GameState::withupdatedcardstate`: expected `App\Game\Card\CardState`, but found `truthy-mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Service/Game/GameEventApplier.php"
-code = "mixed-argument"
 message = 'Invalid argument type for argument #2 of `app\game\card\effect\effectstate::__construct`: expected `array<array-key, mixed>`, but found `nonnull`.'
-count = 1
-
-[[issues]]
-file = "src/Service/Game/GameEventApplier.php"
-code = "possible-method-access-on-null"
-message = "Attempting to call a method on `null`."
 count = 1
 
 [[issues]]
