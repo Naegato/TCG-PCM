@@ -37,7 +37,7 @@ final class GameDataProvider implements ProviderInterface
             CardEffectEnum::cases(),
             function (array $acc, CardEffectEnum $cardEffect) {
                 $name = $this->translator->trans(\sprintf('effects.%s.name', $cardEffect->value), [], 'game');
-                $acc[$name] = new CardEffect($name, $this->translator->trans(\sprintf('effects.%s.description', $cardEffect->value), [], 'game'));
+                $acc[$cardEffect->value] = new CardEffect($name, $this->translator->trans(\sprintf('effects.%s.description', $cardEffect->value), [], 'game'));
 
                 return $acc;
             },

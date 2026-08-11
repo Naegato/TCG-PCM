@@ -167,8 +167,6 @@ const getEffectHoverText = (
   const effectId = content.trim();
   const effect = lookupData?.cardEffects?.[effectId];
 
-  console.log(effect, effectId, lookupData?.cardEffects)
-
   if (!effect) {
     return `Effet: ${effectId}`;
   }

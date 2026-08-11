@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import Card from "./Card";
+import CardEffectBadges from "@/components/molecules/game/CardEffectBadges";
 import { BasicCard } from "@/lib/cards/types/card";
 import {
   clamp,
@@ -156,8 +157,15 @@ export default function InteractiveCard({
       }}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
-      className="cursor-pointer"
+      className="relative cursor-pointer"
     >
+      {card.effects.length > 0 && (
+        <CardEffectBadges
+          effects={card.effects}
+          size="lg"
+          className="absolute -top-3 left-2 z-30 pointer-events-none"
+        />
+      )}
       <Card
         card={card}
         size={size}
