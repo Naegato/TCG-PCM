@@ -4,6 +4,7 @@ import { CSSProperties, memo, useContext } from "react";
 import { CardSize, CardTargetType, CardType } from "@/constants/card";
 import type { BasicCard } from "@/lib/cards/types/card";
 import CardWithZoom from "@/components/organisms/card/CardWithZoom";
+import CardEffectBadges from "@/components/molecules/game/CardEffectBadges";
 import { GameContext } from "@/contexts/GameContext";
 
 type GameCardProps = {
@@ -141,9 +142,15 @@ function GameCard({
         }
       }}
       onMouseLeave={() => targetingActions.hoverTarget(null)}
-      className={`card-selected ${canSelectSource || isTargeting ? "cursor-pointer" : ""} ${isPulseTarget ? "target-pulse" : ""} ${className ?? ""}`}
+      className={`relative card-selected ${canSelectSource || isTargeting ? "cursor-pointer" : ""} ${isPulseTarget ? "target-pulse" : ""} ${className ?? ""}`}
       style={{ ...(animatedStyle ?? {}), ...(style ?? {}) }}
     >
+      {card.effects.length > 0 && (
+        <CardEffectBadges
+          effects={card.effects}
+          className="absolute -top-2 left-1 z-30 pointer-events-none"
+        />
+      )}
       <CardWithZoom card={card} size={size} />
     </div>
   );
