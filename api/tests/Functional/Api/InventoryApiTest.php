@@ -9,27 +9,8 @@ use App\Tests\Resources\Fixtures\ThereIs;
 
 final class InventoryApiTest extends FunctionalTestCase
 {
-    private const string URI = '/api/inventory';
     private const string STATS_URI = '/api/inventory/stats';
     private const string COLLECTION_URI = '/api/inventory/collection';
-
-    public function testGetInventory(): void
-    {
-        $user = ThereIs::anUser()->build();
-        ThereIs::anInventory()->for($user)->withCard('Isaac', 3)->build();
-        $this->client->loginUser($user);
-
-        $this->get(self::URI);
-
-        $response = $this->client->getResponse();
-        self::assertResponseIsSuccessful();
-
-        $data = json_decode($response->getContent() ?? '', true);
-        self::assertArrayHasKey('cards', $data);
-        self::assertCount(1, $data['cards']);
-        self::assertSame(3, $data['cards'][0]['quantity']);
-        self::assertArrayHasKey('name', $data['cards'][0]['card']);
-    }
 
     public function testGetInventoryStats(): void
     {

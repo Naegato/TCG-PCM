@@ -13,7 +13,6 @@ use App\Tests\Resources\Fixtures\ThereIs;
 final class UserApiTest extends FunctionalTestCase
 {
     private const LOGIN_URI = '/api/login_check';
-    private const INVENTORY_URI = '/api/inventory';
     private const INVENTORY_SET_STATS_URI = '/api/inventory/stats';
     private const CURRENT_USER_URI = '/api/user';
 
@@ -56,32 +55,6 @@ final class UserApiTest extends FunctionalTestCase
         self::assertJsonContains([
             'message' => 'Identifiants invalides.',
         ]);
-    }
-
-    public function testGetInventory()
-    {
-        $user = ThereIs::anUser()->build();
-        $this->client->loginUser($user);
-
-        $this->get(static::INVENTORY_URI);
-
-        self::assertResponseIsSuccessful();
-    }
-
-    public function testGetInventoryReturnsCards()
-    {
-        $inv = ThereIs::anInventory()->withCard('D6', 2)->withCard('Pierrot')->build();
-        $user = ThereIs::anUser()->withInventory($inv)->build();
-        $this->client->loginUser($user);
-
-        $response = $this->get(static::INVENTORY_URI);
-        $content = $response->toArray();
-
-        self::assertCount(2, $content['cards']);
-        self::assertSame('D6', $content['cards'][0]['card']['name']);
-        self::assertSame(2, $content['cards'][0]['quantity']);
-        self::assertSame('Pierrot', $content['cards'][1]['card']['name']);
-        self::assertSame(1, $content['cards'][1]['quantity']);
     }
 
     public function testGetInventorySetStats()

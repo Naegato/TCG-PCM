@@ -15,6 +15,7 @@ use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Service\Auth\CurrentUserProviderInterface;
+use App\Service\Game\CardFactoryInterface;
 use App\Service\Game\CardRegistryInterface;
 
 /**
@@ -25,6 +26,7 @@ final class CardCollectionProvider implements ProviderInterface
     public function __construct(
         private CurrentUserProviderInterface $currentUserProvider,
         private CardRegistryInterface $cardRegistry,
+        private CardFactoryInterface $cardFactory,
     ) {}
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): CardCollectionDTO
@@ -44,7 +46,7 @@ final class CardCollectionProvider implements ProviderInterface
         $quantityByResolvedId = [];
         $cardByResolvedId = [];
         foreach ($cardIds as $cardId) {
-            $card = $this->cardRegistry->getCardTemplateById($cardId);
+            $card = $this->cardFactory->create($cardId);
             $resolvedId = $card->getId();
 
             $cardByResolvedId[$resolvedId] ??= $card;
