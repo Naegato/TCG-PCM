@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Debug\Card;
 
+use App\Enum\CardTargetTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\CardState;
 use App\Game\Card\EffectCollection;
@@ -192,6 +193,16 @@ trait TraceableCardTrait
     public function getCost(): int
     {
         return $this->card->getCost();
+    }
+
+    public function requiresTarget(): bool
+    {
+        return $this->card->requiresTarget();
+    }
+
+    public function getTargetType(): ?CardTargetTypeEnum
+    {
+        return $this->card->getTargetType();
     }
 
     public function __clone()
