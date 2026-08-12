@@ -27,7 +27,7 @@ final class SpicyD6CardTest extends CardTestCase
 
         $event = $ctx->flushEvents()[0];
 
-        self::assertSame($event->type, GameEventTypeEnum::DAMAGE);
+        self::assertSame($event->type, GameEventTypeEnum::DAMAGE_DEALT);
         self::assertSame($event->data['damage'], $roll * 10);
     }
 

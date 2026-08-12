@@ -35,7 +35,7 @@ trait BaseOnTurnTrait
             $this->turnRemainingBeforeAction = $this->getTurnDelay();
         }
 
-        $gameContext->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $gameContext->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $this->getInstanceId(),
             'stateToUpdate' => [
                 'turnRemainingBeforeAction' => $this->turnRemainingBeforeAction,

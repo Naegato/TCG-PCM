@@ -20,7 +20,7 @@ final class RedisGameStateRepositoryTest extends TestCase
     public function testGet()
     {
         $gameState = new GameState($this->createStub(PlayerState::class), $this->createStub(PlayerState::class), null, 0, '');
-        $gameEvent = new GameEvent(1, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, []);
+        $gameEvent = new GameEvent(1, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, []);
         $room = $this->createStub(Room::class);
         $sut = $this->createSut($room, $gameState, [$gameEvent]);
         $gameState = $sut->get((string) spl_object_id($room));
@@ -31,10 +31,10 @@ final class RedisGameStateRepositoryTest extends TestCase
     public function testGetWithExistingGameState()
     {
         $gameState = new GameState($this->createStub(PlayerState::class), $this->createStub(PlayerState::class), null, 0, '');
-        $gameEvent = new GameEvent(4, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, []);
+        $gameEvent = new GameEvent(4, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, []);
         $events = [
-            new GameEvent(2, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, []),
-            new GameEvent(3, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, []),
+            new GameEvent(2, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, []),
+            new GameEvent(3, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, []),
         ];
         $room = $this->createStub(Room::class);
         $allEvents = array_merge($events, [$gameEvent]);

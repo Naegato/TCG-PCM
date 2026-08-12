@@ -36,14 +36,14 @@ class GameContext
     {
         $playerId ??= $this->getOpponent()->id;
 
-        $this->pushGameEvent(GameEventTypeEnum::DAMAGE, ['targetId' => $playerId, 'damage' => $damage]);
+        $this->pushGameEvent(GameEventTypeEnum::DAMAGE_DEALT, ['targetId' => $playerId, 'damage' => $damage]);
     }
 
     public function heal(int $amount, ?string $playerId = null): void
     {
         $playerId ??= $this->playerId;
 
-        $this->pushGameEvent(GameEventTypeEnum::HEAL, ['targetId' => $playerId, 'amount' => $amount]);
+        $this->pushGameEvent(GameEventTypeEnum::HEAL_APPLIED, ['targetId' => $playerId, 'amount' => $amount]);
     }
 
     /**
@@ -245,7 +245,7 @@ class GameContext
 
     public function damageCard(string $targetId, int $damage): void
     {
-        $this->pushGameEvent(GameEventTypeEnum::DAMAGE, ['targetId' => $targetId, 'damage' => $damage]);
+        $this->pushGameEvent(GameEventTypeEnum::DAMAGE_DEALT, ['targetId' => $targetId, 'damage' => $damage]);
     }
 
     public function getPlayerStateById(string $playerId): PlayerState

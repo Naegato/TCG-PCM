@@ -24,7 +24,7 @@ final class BananaCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::HEAL, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::HEAL_APPLIED, $events[0]->type);
         self::assertSame('1', $events[0]->data['targetId']);
         self::assertSame(10, $events[0]->data['amount']);
     }

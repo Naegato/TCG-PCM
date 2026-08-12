@@ -66,7 +66,7 @@ final class CharlieCardTest extends CardTestCase
         self::assertCount(2, $events);
         self::assertSame(GameEventTypeEnum::CARD_GENERATED, $events[0]->type);
         self::assertSame('SomePassive', $events[0]->data['cardTemplateId']);
-        self::assertSame(GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, $events[1]->type);
     }
 
     public function testTurnActionDoesNothingWhenNotCurrentPlayer()

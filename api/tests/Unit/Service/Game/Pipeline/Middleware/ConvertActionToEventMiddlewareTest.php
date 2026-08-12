@@ -85,7 +85,7 @@ final class ConvertActionToEventMiddlewareTest extends TestCase
 
         $sut->handle($gamePipelineContext, new GamePipelineMiddlewareStack([]));
 
-        $expectedEvent = GameEvent::player(GameEventTypeEnum::ATTACK, [
+        $expectedEvent = GameEvent::player(GameEventTypeEnum::ATTACKED, [
             'attackerId' => 'cardId',
             'targetId' => 'targetId',
         ]);

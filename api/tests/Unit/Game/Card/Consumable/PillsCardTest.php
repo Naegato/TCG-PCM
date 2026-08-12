@@ -60,18 +60,18 @@ final class PillsCardTest extends CardTestCase
 
     public static function withoutMonsterEffectsProvider(): \Generator
     {
-        yield 'self damage' => [1, GameEventTypeEnum::DAMAGE, ['targetId' => '1', 'damage' => 5]];
-        yield 'self heal' => [2, GameEventTypeEnum::HEAL, ['targetId' => '1', 'amount' => 10]];
+        yield 'self damage' => [1, GameEventTypeEnum::DAMAGE_DEALT, ['targetId' => '1', 'damage' => 5]];
+        yield 'self heal' => [2, GameEventTypeEnum::HEAL_APPLIED, ['targetId' => '1', 'amount' => 10]];
     }
 
     public static function withMonsterEffectsProvider(): \Generator
     {
-        yield 'self damage' => [1, GameEventTypeEnum::DAMAGE, ['targetId' => '1', 'damage' => 5]];
-        yield 'self heal' => [2, GameEventTypeEnum::HEAL, ['targetId' => '1', 'amount' => 10]];
-        yield 'monster damage buff' => [3, GameEventTypeEnum::UPDATE_CARD_STATE, ['cardId' => 'monster1', 'stateToUpdate' => ['bonusAttack' => 5]]];
-        yield 'monster heal' => [4, GameEventTypeEnum::HEAL, ['targetId' => 'monster1', 'amount' => 5]];
-        yield 'monster damage debuff' => [5, GameEventTypeEnum::UPDATE_CARD_STATE, ['cardId' => 'monster1', 'stateToUpdate' => ['bonusAttack' => -3]]];
-        yield 'monster damage' => [6, GameEventTypeEnum::DAMAGE, ['targetId' => 'monster1', 'damage' => 3]];
+        yield 'self damage' => [1, GameEventTypeEnum::DAMAGE_DEALT, ['targetId' => '1', 'damage' => 5]];
+        yield 'self heal' => [2, GameEventTypeEnum::HEAL_APPLIED, ['targetId' => '1', 'amount' => 10]];
+        yield 'monster damage buff' => [3, GameEventTypeEnum::CARD_STATE_UPDATED, ['cardId' => 'monster1', 'stateToUpdate' => ['bonusAttack' => 5]]];
+        yield 'monster heal' => [4, GameEventTypeEnum::HEAL_APPLIED, ['targetId' => 'monster1', 'amount' => 5]];
+        yield 'monster damage debuff' => [5, GameEventTypeEnum::CARD_STATE_UPDATED, ['cardId' => 'monster1', 'stateToUpdate' => ['bonusAttack' => -3]]];
+        yield 'monster damage' => [6, GameEventTypeEnum::DAMAGE_DEALT, ['targetId' => 'monster1', 'damage' => 3]];
     }
 
     private function createDeterministicContext(?GameState $state = null): TestableGameContext

@@ -125,7 +125,7 @@ final class HorsepillCard extends AbstractConsumableCard
 
     private function setMonsterAttack(GameContext $context, string $targetId, int $attack): void
     {
-        $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $targetId,
             'stateToUpdate' => [
                 'forcedAttack' => $attack,

@@ -70,7 +70,7 @@ final class MaximeCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame(2, $events[0]->data['stateToUpdate']['turnRemainingBeforeAction']);
     }
 
@@ -86,10 +86,10 @@ final class MaximeCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(2, $events);
-        self::assertSame(GameEventTypeEnum::DAMAGE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::DAMAGE_DEALT, $events[0]->type);
         self::assertSame('2', $events[0]->data['targetId']);
         self::assertSame(25, $events[0]->data['damage']);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[1]->type);
         self::assertSame(3, $events[1]->data['stateToUpdate']['turnRemainingBeforeAction']);
     }
 
@@ -105,7 +105,7 @@ final class MaximeCardTest extends CardTestCase
         self::assertCount(2, $events);
         self::assertSame(GameEventTypeEnum::CARD_DISCARDED, $events[0]->type);
         self::assertSame('opponent_card', $events[0]->data['cardId']);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[1]->type);
     }
 
     private function buildCard(int $turnRemainingBeforeAction): MaximeCard

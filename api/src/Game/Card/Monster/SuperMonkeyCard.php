@@ -72,7 +72,7 @@ final class SuperMonkeyCard extends AbstractMonsterCard
 
         $this->playBonus = $this->getValue($monkeysOnBoard * self::BONUS_PER_MONKEY, true);
 
-        $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $instanceId,
             'stateToUpdate' => [
                 'bonusAttack' => $this->playBonus,

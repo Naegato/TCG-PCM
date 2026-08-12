@@ -66,7 +66,7 @@ final class PierrotCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame(1, $events[0]->data['stateToUpdate']['turnRemainingBeforeAction']);
     }
 
@@ -85,7 +85,7 @@ final class PierrotCardTest extends CardTestCase
         self::assertSame(GameEventTypeEnum::EFFECT_ADDED, $events[0]->type);
         self::assertSame(CardEffectEnum::TORNED->value, $events[0]->data['effect']);
         self::assertSame('char2', $events[0]->data['cardId']);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[1]->type);
         self::assertSame(2, $events[1]->data['stateToUpdate']['turnRemainingBeforeAction']);
     }
 

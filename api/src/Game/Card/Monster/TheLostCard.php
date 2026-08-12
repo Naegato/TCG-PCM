@@ -56,7 +56,7 @@ final class TheLostCard extends AbstractMonsterCard
         $instanceId = $this->getInstanceId();
 
         if (null !== $instanceId) {
-            $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+            $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
                 'cardId' => $instanceId,
                 'stateToUpdate' => [
                     'hasDodged' => true,

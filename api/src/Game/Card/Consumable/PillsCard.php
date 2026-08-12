@@ -100,7 +100,7 @@ final class PillsCard extends AbstractConsumableCard
 
         $currentBonus = (int) ($targetState->values['bonusAttack'] ?? 0);
 
-        $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $targetId,
             'stateToUpdate' => [
                 'bonusAttack' => $currentBonus + $delta,

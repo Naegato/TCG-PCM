@@ -100,7 +100,7 @@ final class MimeticPrismAmethystCardTest extends CardTestCase
         self::assertSame(40, $card->getBaseAttack());
         self::assertSame(1, $card->getHealPoints());
 
-        $updateEvent = array_values(array_filter($events, static fn($event) => GameEventTypeEnum::UPDATE_CARD_STATE === $event->type));
+        $updateEvent = array_values(array_filter($events, static fn($event) => GameEventTypeEnum::CARD_STATE_UPDATED === $event->type));
         self::assertCount(1, $updateEvent);
         self::assertSame('ViciousBee', $updateEvent[0]->data['stateToUpdate']['templateId']);
     }

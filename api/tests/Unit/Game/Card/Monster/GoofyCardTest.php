@@ -38,7 +38,7 @@ final class GoofyCardTest extends CardTestCase
 
         self::assertSame(15, $card->getBaseAttack());
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame('test_card', $events[0]->data['cardId']);
         self::assertSame(15, $events[0]->data['currentHealthPoints']);
         self::assertSame(['attack' => 15], $events[0]->data['stateToUpdate']);

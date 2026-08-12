@@ -71,7 +71,7 @@ final class ConvertActionToEventMiddleware implements GameMiddlewareInterface
             throw new \InvalidArgumentException('targetId is required in payload');
         }
 
-        return GameEvent::player(GameEventTypeEnum::ATTACK, [
+        return GameEvent::player(GameEventTypeEnum::ATTACKED, [
             'attackerId' => $cardId,
             'targetId' => $targetId,
         ]);

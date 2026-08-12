@@ -27,7 +27,7 @@ final class GitmanCardTest extends CardTestCase
         self::assertCount(2, $events);
         self::assertSame(GameEventTypeEnum::CARD_RUNTIME_VALUE, $events[0]->type);
         self::assertSame(2, $events[0]->data['value']);
-        self::assertSame(GameEventTypeEnum::DAMAGE, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::DAMAGE_DEALT, $events[1]->type);
         self::assertSame(2, $events[1]->data['damage']);
         self::assertSame($ctx->getOpponent()->id, $events[1]->data['targetId']);
     }

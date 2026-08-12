@@ -33,7 +33,7 @@ final class SaveGameEventsMiddlewareTest extends TestCase
             [
                 GameEvent::player(GameEventTypeEnum::CARD_PLAYED, []),
                 GameEvent::game(GameEventTypeEnum::CARD_RUNTIME_VALUE, []),
-                GameEvent::game(GameEventTypeEnum::DAMAGE, []),
+                GameEvent::game(GameEventTypeEnum::DAMAGE_DEALT, []),
             ],
             new GameState(
                 new PlayerState(new Player('1', 'otherUsername'), 0, 0, '', [], [], 0, new PlayArea()),

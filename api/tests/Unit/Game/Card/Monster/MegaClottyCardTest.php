@@ -44,7 +44,7 @@ final class MegaClottyCardTest extends CardTestCase
         self::assertSame(GameEventTypeEnum::CARD_DISCARDED, $events[0]->type);
         self::assertSame('clotty_a', $events[0]->data['cardId']);
 
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[1]->type);
         self::assertSame('test_card', $events[1]->data['cardId']);
         self::assertSame(7, $events[1]->data['stateToUpdate']['bonusAttack']);
         self::assertSame(7, $events[1]->data['stateToUpdate']['bonusHealth']);
@@ -62,7 +62,7 @@ final class MegaClottyCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame(0, $events[0]->data['stateToUpdate']['bonusAttack']);
         self::assertSame(0, $events[0]->data['stateToUpdate']['bonusHealth']);
     }
@@ -80,13 +80,13 @@ final class MegaClottyCardTest extends CardTestCase
         self::assertSame(GameEventTypeEnum::CARD_GENERATED, $events[0]->type);
         self::assertSame('Clotty', $events[0]->data['cardTemplateId']);
         self::assertSame($card->getOwnerId(), $events[0]->data['playerId']);
-        self::assertSame(GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, $events[1]->type);
         self::assertSame($card->getOwnerId(), $events[1]->data['playerId']);
         self::assertSame($events[0]->data['cardInstanceId'], $events[1]->data['cardId']);
 
         self::assertSame(GameEventTypeEnum::CARD_GENERATED, $events[2]->type);
         self::assertSame('Clotty', $events[2]->data['cardTemplateId']);
-        self::assertSame(GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, $events[3]->type);
+        self::assertSame(GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, $events[3]->type);
         self::assertSame($events[2]->data['cardInstanceId'], $events[3]->data['cardId']);
     }
 

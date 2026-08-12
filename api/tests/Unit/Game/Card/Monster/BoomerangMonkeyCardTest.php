@@ -33,7 +33,7 @@ final class BoomerangMonkeyCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::DAMAGE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::DAMAGE_DEALT, $events[0]->type);
         self::assertSame($card->getInstanceId(), $events[0]->data['targetId']);
         self::assertSame(3, $events[0]->data['damage']);
     }

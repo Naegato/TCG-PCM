@@ -182,15 +182,15 @@ class GameEventResolver
             case GameEventTypeEnum::CARD_PLAYED:
                 $events = $this->doGenerateReactionsForCardPlayed($event, $state);
                 break;
-            case GameEventTypeEnum::ATTACK:
+            case GameEventTypeEnum::ATTACKED:
                 $events = $this->doGenerateReactionsForAttack($event, $state);
                 break;
             case GameEventTypeEnum::PLAYER_DIED:
             case GameEventTypeEnum::MONSTER_DIED:
                 $events = $this->doGenerareReactionsForDeath($event, $state);
                 break;
-            case GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA:
-            case GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA:
+            case GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA:
+            case GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA:
             case GameEventTypeEnum::CARD_CONSUMED:
                 $cardId = $event->data['cardId'];
                 /** @var AbstractMonsterCard|AbstractPassiveCard|AbstractConsumableCard $card */
@@ -233,7 +233,7 @@ class GameEventResolver
                 continue;
             }
 
-            $events[] = GameEvent::game(GameEventTypeEnum::UPDATE_CARD_STATE, [
+            $events[] = GameEvent::game(GameEventTypeEnum::CARD_STATE_UPDATED, [
                 'cardId' => $cardId,
                 'canAttack' => true,
             ]);
@@ -279,12 +279,12 @@ class GameEventResolver
                 'cardId' => $event->data['cardId'],
             ]);
         } elseif ($card instanceof AbstractPassiveCard) {
-            $events[] = GameEvent::game(GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, [
+            $events[] = GameEvent::game(GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, [
                 'playerId' => $event->data['playerId'],
                 'cardId' => $event->data['cardId'],
             ]);
         } elseif ($card instanceof AbstractMonsterCard) {
-            $events[] = GameEvent::game(GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, [
+            $events[] = GameEvent::game(GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, [
                 'playerId' => $event->data['playerId'],
                 'cardId' => $event->data['cardId'],
                 'cardHealthPoints' => $card->getHealPoints(),
@@ -329,7 +329,7 @@ class GameEventResolver
         $targetId = $event->data['targetId'];
         // if player
         if (\in_array($targetId, [$state->getOtherPlayerState()->characterCardId, $state->getOtherPlayerState()->player->id], true)) {
-            $events[] = GameEvent::game(GameEventTypeEnum::DAMAGE, [
+            $events[] = GameEvent::game(GameEventTypeEnum::DAMAGE_DEALT, [
                 'targetId' => $targetId,
                 'damage' => $card->getAttack(),
                 'sourceId' => $attackerId,
@@ -345,7 +345,7 @@ class GameEventResolver
             $ctx = $this->gameContextFactory->createGameContext($state, $attackerCardState->ownerId);
             $reducedDamage = $target->reduceDamage($ctx, $baseDamage);
 
-            $events[] = GameEvent::game(GameEventTypeEnum::DAMAGE, [
+            $events[] = GameEvent::game(GameEventTypeEnum::DAMAGE_DEALT, [
                 'targetId' => $targetId,
                 'damage' => $reducedDamage,
                 'sourceId' => $attackerId,
@@ -361,7 +361,7 @@ class GameEventResolver
 
         return array_merge(
             [
-                GameEvent::game(GameEventTypeEnum::UPDATE_CARD_STATE, [
+                GameEvent::game(GameEventTypeEnum::CARD_STATE_UPDATED, [
                     'cardId' => $attackerId,
                     'canAttack' => false,
                 ]),

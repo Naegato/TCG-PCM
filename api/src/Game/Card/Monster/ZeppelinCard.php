@@ -54,7 +54,7 @@ final class ZeppelinCard extends AbstractMonsterCard
 
             $currentBonusAttack = (int) ($cardState->values['bonusAttack'] ?? 0);
 
-            $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+            $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
                 'cardId' => $cardId,
                 'stateToUpdate' => [
                     'bonusAttack' => $currentBonusAttack + $this->getValue(self::BUFF_AMOUNT, true),

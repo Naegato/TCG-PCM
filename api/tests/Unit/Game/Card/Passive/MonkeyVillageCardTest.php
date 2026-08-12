@@ -37,7 +37,7 @@ final class MonkeyVillageCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame('dartMonkey1', $events[0]->data['cardId']);
         self::assertSame(2, $events[0]->data['stateToUpdate']['bonusAttack']);
     }

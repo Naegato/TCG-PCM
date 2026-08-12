@@ -56,7 +56,7 @@ final class MechaPainterCardTest extends CardTestCase
         $events = $gameContext->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::DAMAGE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::DAMAGE_DEALT, $events[0]->type);
         self::assertSame('other_card', $events[0]->data['targetId']);
         self::assertSame(10, $events[0]->data['damage']);
     }

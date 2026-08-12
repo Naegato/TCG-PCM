@@ -29,6 +29,6 @@ final class PlacentaCardTest extends CardTestCase
         $events = $gameContext->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::HEAL, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::HEAL_APPLIED, $events[0]->type);
     }
 }

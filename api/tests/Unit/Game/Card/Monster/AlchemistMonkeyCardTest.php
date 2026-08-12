@@ -40,7 +40,7 @@ final class AlchemistMonkeyCardTest extends CardTestCase
         $events = $gameContext->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame('target_card', $events[0]->data['cardId']);
         self::assertSame(9, $events[0]->data['stateToUpdate']['bonusAttack']);
     }

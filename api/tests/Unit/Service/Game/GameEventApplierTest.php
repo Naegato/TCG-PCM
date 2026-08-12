@@ -38,7 +38,7 @@ final class GameEventApplierTest extends TestCase
     {
         $eventApplier = $this->getSut();
         $state = $this->getInitialGameState();
-        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, [
             'targetId' => 'player2',
             'damage' => 15,
         ]);
@@ -52,7 +52,7 @@ final class GameEventApplierTest extends TestCase
     {
         $eventApplier = $this->getSut();
         $state = $this->getInitialGameState();
-        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, [
             'targetId' => 'character_2',
             'damage' => 15,
         ]);
@@ -66,7 +66,7 @@ final class GameEventApplierTest extends TestCase
     {
         $eventApplier = $this->getSut(['Redbloons' => RedBloonsMonsterCard::class]);
         $state = $this->getInitialGameState();
-        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, [
             'targetId' => 'monster',
             'damage' => 1,
         ]);
@@ -81,7 +81,7 @@ final class GameEventApplierTest extends TestCase
     {
         $eventApplier = $this->getSut(['Redbloons' => RedBloonsMonsterCard::class]);
         $state = $this->getInitialGameState();
-        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::PLAYER_EVENT, [
             'targetId' => 'monster',
             'damage' => 999,
         ]);
@@ -144,7 +144,7 @@ final class GameEventApplierTest extends TestCase
         $eventApplier = $this->getSut();
         $state = $this->getInitialGameState();
 
-        $event = new GameEvent(1, GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, GameEvent::GAME_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, GameEvent::GAME_EVENT, [
             'playerId' => 'player2',
             'cardId' => 'D6',
         ]);
@@ -162,7 +162,7 @@ final class GameEventApplierTest extends TestCase
         $cardState = new CardState('test', '', '', [], ['turnRemainingBeforeAction' => 2]);
         $state = $state->addCard($cardState);
 
-        $event = new GameEvent(1, GameEventTypeEnum::UPDATE_CARD_STATE, GameEvent::GAME_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::CARD_STATE_UPDATED, GameEvent::GAME_EVENT, [
             'cardId' => 'test',
             'stateToUpdate' => [
                 'turnRemainingBeforeAction' => 1,
@@ -181,7 +181,7 @@ final class GameEventApplierTest extends TestCase
         $cardState = new MonsterCardState('test', '', '', 1, [], [], true);
         $state = $state->addCard($cardState);
 
-        $event = new GameEvent(1, GameEventTypeEnum::UPDATE_CARD_STATE, GameEvent::GAME_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::CARD_STATE_UPDATED, GameEvent::GAME_EVENT, [
             'cardId' => 'test',
             'canAttack' => false,
         ]);
@@ -197,7 +197,7 @@ final class GameEventApplierTest extends TestCase
         $state = $this->getInitialGameState();
         $state = $state->addCard(new CardState('test', '', '', []));
 
-        $event = new GameEvent(1, GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, GameEvent::GAME_EVENT, [
+        $event = new GameEvent(1, GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, GameEvent::GAME_EVENT, [
             'cardId' => 'test',
             'playerId' => '1',
             'cardHealthPoints' => 5,
@@ -217,12 +217,12 @@ final class GameEventApplierTest extends TestCase
         $state = $state->withUpdatedPlayer($state->player1->withPlayArea(new PlayArea()));
 
         $events = [
-            new GameEvent(1, GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, GameEvent::GAME_EVENT, [
+            new GameEvent(1, GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, GameEvent::GAME_EVENT, [
                 'cardId' => 'test',
                 'playerId' => 'player1',
                 'cardHealthPoints' => 5,
             ]),
-            new GameEvent(2, GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, GameEvent::GAME_EVENT, [
+            new GameEvent(2, GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, GameEvent::GAME_EVENT, [
                 'cardId' => 'test',
                 'playerId' => 'player1',
                 'cardHealthPoints' => 5,

@@ -82,7 +82,7 @@ final class ChaosCardTest extends CardTestCase
         self::assertSame(GameEventTypeEnum::CARD_DISCARDED, $events[0]->type);
         self::assertSame(GameEventTypeEnum::CARD_GENERATED, $events[1]->type);
         self::assertSame('ViciousBee', $events[1]->data['cardTemplateId']);
-        self::assertSame(GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, $events[2]->type);
+        self::assertSame(GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, $events[2]->type);
         self::assertSame(10, $events[2]->data['cardHealthPoints']);
     }
 
