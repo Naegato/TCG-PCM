@@ -38,4 +38,11 @@ final class BombCard extends AbstractConsumableCard
             $context->damageCard($monster, $this->getValue(self::DAMAGE, true));
         }
     }
+
+    public static function getGroups(): array
+    {
+        return [
+            'bomb',
+        ];
+    }
 }

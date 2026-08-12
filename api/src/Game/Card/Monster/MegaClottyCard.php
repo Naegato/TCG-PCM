@@ -63,14 +63,14 @@ final class MegaClottyCard extends AbstractMonsterCard
 
         $clottiesOnBoard = 0;
 
-        $clottyIds = GameUtils::getService('cards')->getCardsInGroup('clotty');
+        $clottyCards = CardHelper::getAllCardInGroups($context, 'clotty');
         foreach ($this->getAllActivePlayAreaCards($context) as $cardId) {
-            $templateId = $context->state->getCardState($cardId)?->templateId;
-
-            if (\is_string($templateId) && \in_array($templateId, $clottyIds, true) && $cardId !== $instanceId) {
-                $clottiesOnBoard++;
-                $context->discardCard($cardId);
+            if (!(isset($clottyCards[$cardId]) && $cardId !== $instanceId)) {
+                continue;
             }
+
+            $clottiesOnBoard++;
+            $context->discardCard($cardId);
         }
 
         $this->playBonus = $this->getValue($clottiesOnBoard * self::BONUS_PER_CLOTTY, true);

@@ -7,6 +7,7 @@ namespace App\Game\Card\Monster;
 use App\Enum\CardRarityEnum;
 use App\Enum\CardSetEnum;
 use App\Enum\GameEventTypeEnum;
+use App\Game\Card\CardHelper;
 use App\Game\GameContext;
 use App\Game\GameUtils;
 
@@ -60,13 +61,13 @@ final class SuperMonkeyCard extends AbstractMonsterCard
         $ownerState = $context->getPlayerStateById($ownerId);
         $monkeysOnBoard = 1;
 
-        $monkeyIds = GameUtils::getService('cards')->getCardsInGroup('monkey');
+        $monkeyCards = CardHelper::getAllCardInGroups($context, 'monkey');
         foreach ($ownerState->playArea->monsterCards as $cardId) {
-            $templateId = $context->state->getCardState($cardId)?->templateId;
-
-            if (\is_string($templateId) && \in_array($templateId, $monkeyIds, true)) {
-                $monkeysOnBoard++;
+            if (!isset($monkeyCards[$cardId])) {
+                continue;
             }
+
+            $monkeysOnBoard++;
         }
 
         $this->playBonus = $this->getValue($monkeysOnBoard * self::BONUS_PER_MONKEY, true);
