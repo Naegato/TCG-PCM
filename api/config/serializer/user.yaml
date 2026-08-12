@@ -27,6 +27,9 @@ App\Entity\User:
         userWallet:
             groups:
                 - api:user:read
+        admin:
+            groups:
+                - api:user:read
         userIdentifier:
             ignore: true
         roles:

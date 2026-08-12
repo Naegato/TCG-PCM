@@ -84,6 +84,14 @@ type Props = {
   game?: GameState | null;
   username?: string;
   mercureToken?: string;
+  /** Overrides the locally-derived topic subscription (which only ever grants the
+   * connected player's own private topic). Use this when the caller already knows
+   * the full, correctly-scoped set of topics to subscribe to — e.g. the admin debug
+   * view, which has no `username` and needs both players' private topics. */
+  mercureUrl?: string;
+  /** True when this viewer is subscribed to every player's private topic (the admin
+   * debug view). See `applyGameView`'s `omniscient` param for why this matters. */
+  omniscient?: boolean;
   chatHistory?: ChatMessage[];
 };
 
@@ -154,6 +162,8 @@ export const GameProvider = ({
   game: initialGame,
   username,
   mercureToken,
+  mercureUrl: mercureUrlOverride,
+  omniscient = false,
   chatHistory,
 }: Props) => {
   useEffect(() => {
@@ -331,7 +341,7 @@ export const GameProvider = ({
           pushAnnouncement(announcement);
         }
 
-        next = applyGameView(next, event, username);
+        next = applyGameView(next, event, username, omniscient);
       }
 
       const normalizedNext = normalizeGameState(next);
@@ -339,7 +349,7 @@ export const GameProvider = ({
       gameRef.current = normalizedNext;
       setGame(normalizedNext);
     },
-    [normalizeGameState, pushAnnouncement, username],
+    [normalizeGameState, pushAnnouncement, username, omniscient],
   );
 
   useEffect(() => {
@@ -507,9 +517,11 @@ export const GameProvider = ({
     return username === initialGame.player1.player.name ? "1" : "2";
   }, [initialGame, username]);
 
-  const mercureUrl = playerNumber
-    ? `${process.env.NEXT_PUBLIC_MERCURE_URL}?topic=game/${gameId}&topic=game/${gameId}-${playerNumber}`
-    : `${process.env.NEXT_PUBLIC_MERCURE_URL}?topic=game/${gameId}`;
+  const mercureUrl =
+    mercureUrlOverride ??
+    (playerNumber
+      ? `${process.env.NEXT_PUBLIC_MERCURE_URL}?topic=game/${gameId}&topic=game/${gameId}-${playerNumber}`
+      : `${process.env.NEXT_PUBLIC_MERCURE_URL}?topic=game/${gameId}`);
 
   useMercure(mercureUrl, {
     game_events: (e: { events: GameEvent[] }) => {

@@ -33,6 +33,7 @@ class GameEventApplier implements GameEventApplierInterface
             GameEventTypeEnum::CARD_GENERATED => $this->applyCardGenerated($event, $gameState),
             GameEventTypeEnum::CARD_REDRAWN => $this->applyCardRedrawn($event, $gameState),
             GameEventTypeEnum::CARD_STOLEN => $this->ApplyCardStolen($event, $gameState),
+            GameEventTypeEnum::CURRENT_PLAYER_SET => $this->applyCurrentPlayerSet($event, $gameState),
             GameEventTypeEnum::PLAYER_DIED,
             GameEventTypeEnum::CARD_CONSUMED,
             GameEventTypeEnum::ATTACKED,
@@ -411,6 +412,15 @@ class GameEventApplier implements GameEventApplierInterface
         $player = $player->withNewHandAndDeck([...$player->hand, $cardId], $player->drawPile);
 
         return $state->addCard(new CardState($cardId, $templateId, $playerId))->withUpdatedPlayer($player);
+    }
+
+    private function applyCurrentPlayerSet(GameEvent $event, GameState $state): GameState
+    {
+        if (null === ($playerId = $event->data['playerId'] ?? null) || !\is_string($playerId)) {
+            throw new \LogicException('CurrentPlayerSet requires a playerId');
+        }
+
+        return $state->withCurrentPlayer($playerId);
     }
 
     private function applyCardStolen(GameEvent $event, GameState $state): GameState

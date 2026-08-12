@@ -3,6 +3,7 @@ import { BadgeResource } from "./resources/BadgeResource";
 import { BoosterResource } from "./resources/BoosterResource";
 import { DeckResource } from "./resources/DeckResource";
 import { FriendResource } from "./resources/FriendResource";
+import { GameDebugResource } from "./resources/GameDebugResource";
 import { GameResource } from "./resources/GameResource";
 import { RoomResource } from "./resources/RoomResource";
 import { TradeResource } from "./resources/TradeResource";
@@ -16,6 +17,7 @@ export class ApiClient {
   deck: DeckResource;
   friend: FriendResource;
   game: GameResource;
+  gameDebug: GameDebugResource;
   user: UserResource;
   room: RoomResource;
   trade: TradeResource;
@@ -26,6 +28,7 @@ export class ApiClient {
     this.deck = new DeckResource(this);
     this.friend = new FriendResource(this);
     this.game = new GameResource(this);
+    this.gameDebug = new GameDebugResource(this);
     this.user = new UserResource(this);
     this.room = new RoomResource(this);
     this.trade = new TradeResource(this);

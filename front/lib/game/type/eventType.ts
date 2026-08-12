@@ -20,6 +20,7 @@ export const GameEventType = {
   COINS_LOST: "COINS_LOST",
   CARD_STOLEN: "CARD_STOLEN",
   CARD_REDRAWN: "CARD_REDRAWN",
+  CURRENT_PLAYER_SET: "CURRENT_PLAYER_SET",
 } as const;
 
 export type GameEventTypeEnum =

@@ -8,9 +8,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use App\Api\Provider\ChatHistoryProvider;
+use App\Api\Provider\GameDebugProvider;
 use App\Api\Provider\GameProvider;
 use App\Api\Provider\UserActiveRoomProvider;
 use App\Api\Provider\WaitingRoomProvider;
+use App\Domain\Command\Game\Debug\DebugGameActionCommand;
 use App\Domain\Command\Game\PlayGameCommand;
 use App\Domain\Command\Game\SendChatMessageCommand;
 use App\Domain\Command\Room\ChangeDeckCommand;
@@ -57,6 +59,21 @@ use Symfony\Component\Uid\Uuid;
     new Post(uriTemplate: '/game/{id}/play', messenger: 'input', input: PlayGameCommand::class, status: 200),
     new GetCollection(uriTemplate: '/game/{id}/chat', provider: ChatHistoryProvider::class, normalizationContext: ['groups' => ['api:chat:read']]),
     new Post(uriTemplate: '/game/{id}/chat', messenger: 'input', input: SendChatMessageCommand::class, status: 204),
+    new Get(
+        uriTemplate: '/game/{id}/debug',
+        provider: GameDebugProvider::class,
+        uriVariables: ['id' => new Link(fromProperty: 'id', fromClass: InitialGameState::class)],
+        security: "is_granted('ROLE_ADMIN')",
+        condition: "get_env('kernel.debug')",
+    ),
+    new Post(
+        uriTemplate: '/game/{id}/debug',
+        messenger: 'input',
+        input: DebugGameActionCommand::class,
+        security: "is_granted('ROLE_ADMIN')",
+        status: 200,
+        condition: "get_env('kernel.debug')",
+    ),
 ])]
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 class Room

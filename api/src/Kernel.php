@@ -63,6 +63,16 @@ class Kernel extends BaseKernel
             ->addTag('routing.expression_language_function', [
                 'function' => 'is_enable',
             ]);
+
+        $container
+            ->register('kernel.get_env', \Closure::class)
+            ->setFactory([\Closure::class, 'fromCallable'])
+            ->setArguments([
+                [new Reference('kernel'), 'getEnvironment'],
+            ])
+            ->addTag('routing.expression_language_function', [
+                'function' => 'get_env',
+            ]);
     }
 
     public function boot(): void

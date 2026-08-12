@@ -31,6 +31,19 @@ final class GameStateConverter
         );
     }
 
+    /**
+     * Same as convertGameState(), but exposes both players' hands unfiltered — for admin/debug tooling only.
+     */
+    public function convertGameStateForAdmin(GameState $gameState): GameStateDTO
+    {
+        return new GameStateDTO(
+            player1: PlayerStateDTO::fromPlayerState($gameState->player1),
+            player2: PlayerStateDTO::fromPlayerState($gameState->player2),
+            currentPlayer: $gameState->currentPlayer,
+            cards: $this->convertCards($gameState->cards),
+        );
+    }
+
     public function createCardDTO(CardState $state): CardDTO
     {
         $template = $this->cardFactory->createWithState($state->templateId, $state);
