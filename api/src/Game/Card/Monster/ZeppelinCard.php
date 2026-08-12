@@ -7,6 +7,7 @@ namespace App\Game\Card\Monster;
 use App\Enum\CardRarityEnum;
 use App\Enum\CardSetEnum;
 use App\Enum\GameEventTypeEnum;
+use App\Game\Card\CardHelper;
 use App\Game\GameContext;
 use App\Game\GameUtils;
 
@@ -43,11 +44,11 @@ final class ZeppelinCard extends AbstractMonsterCard
 
     public function onMonsterPlayed(GameContext $context): void
     {
+        $bloonCards = CardHelper::getAllCardInGroups($context, 'bloon');
         foreach ($context->getMonsters() as $cardId) {
             $cardState = $context->state->getCardState($cardId);
 
-            $bloonIds = GameUtils::getService('cards')->getCardsInGroup('bloon');
-            if (null === $cardState || !\in_array($cardState->templateId, $bloonIds, true)) {
+            if (null === $cardState || !isset($bloonCards[$cardId])) {
                 continue;
             }
 

@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Game\Card\Consumable;
+
+use App\Enum\CardRarityEnum;
+use App\Enum\GameEventTypeEnum;
+use App\Game\Card\CardHelper;
+use App\Game\GameContext;
+
+final class BombFestCard extends AbstractConsumableCard
+{
+    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
+
+    public function getId(): string
+    {
+        return 'BombFest';
+    }
+
+    public function getImage(): string
+    {
+        return 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Thomas_C._Lea_III_-_That_Two-Thousand_Yard_Stare_-_Original.jpg/960px-Thomas_C._Lea_III_-_That_Two-Thousand_Yard_Stare_-_Original.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail';
+    }
+
+    public function play(GameContext $context, array $data = []): void
+    {
+        $cards = CardHelper::getAllCardInGroups($context, 'bomb');
+
+        foreach ($cards as $card) {
+            $context->pushGameEvent(GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, [
+                'cardId' => $card->instanceId,
+                'playerId' => $card->ownerId,
+            ]);
+        }
+
+        $context->addCoins(\count($cards));
+    }
+}

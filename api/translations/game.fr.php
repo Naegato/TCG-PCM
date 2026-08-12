@@ -161,23 +161,23 @@ return [
         'Clotty' => [
             'name' => 'Coagulé',
             'description' => 'Un potit monstre.',
+    ],
+        'GrilledClotty' => [
+            'name' => 'Coagulé grillé',
+            'description' => 'Perd 1 PV à la fin de chaque tour.',
         ],
-            'GrilledClotty' => [
-                'name' => 'Coagulé grillé',
-                'description' => 'Perd 1 PV à la fin de chaque tour.',
-            ],
-            'Henry' => [
-                'name' => 'Henry',
-                'description' => 'Est défaussé au début du prochain tour de son propriétaire.',
-            ],
-            'HoneyBee' => [
-                'name' => 'Abeille à miel',
-                'description' => 'Quand elle attaque, soigne votre personnage de {{value}} PV.',
-            ],
-            'RadicalRat' => [
-                'name' => 'Rat Radical',
-                'description' => 'Lorsqu\'il est joué ou qu\'il meurt, inflige {{value}} dégâts à tous les monstres et personnages adverses.',
-            ],
+        'Henry' => [
+            'name' => 'Henry',
+            'description' => 'Est défaussé au début du prochain tour de son propriétaire.',
+        ],
+        'HoneyBee' => [
+            'name' => 'Abeille à miel',
+            'description' => 'Quand elle attaque, soigne votre personnage de {{value}} PV.',
+        ],
+        'RadicalRat' => [
+            'name' => 'Rat Radical',
+            'description' => 'Lorsqu\'il est joué ou qu\'il meurt, inflige {{value}} dégâts à tous les monstres et personnages adverses.',
+        ],
         'ConsolationPrice' => [
             'name' => 'Prix de consolation',
             'description' => 'Chaque mort de monstre accorde {{value}} pièces au joueur.',
@@ -281,6 +281,10 @@ return [
         'DeadGameXD' => [
             'name' => 'DeadGameXD',
             'description' => 'Les pvs équivaut aux nombre de joueurs / 10, et les dégats le score Metacritic / 10 jeux: <const>paladins</const>.',
+        ],
+        'BombFest' => [
+            'name' => 'Festival de Bombes',
+            'description' => 'Pose toutes les bombes sur le terrain, vous gagnez {{value}} dégâts pour chaque bombe posée.',
         ],
     ],
     // Effects

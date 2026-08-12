@@ -8,9 +8,11 @@ use App\Enum\GameEventTypeEnum;
 use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\GameContext;
 use App\Game\GameUtils;
+use App\Service\Game\Helper\CardHelper as HelperCardHelper;
 
 /**
  * @todo add tests but I'm a little sad rn
+ * @todo rename
  */
 final /* static */ class CardHelper
 {
@@ -66,5 +68,17 @@ final /* static */ class CardHelper
             'playerId' => $playerId,
             'cardId' => $newInstanceId,
         ]);
+    }
+
+    /**
+     * @return CardState[]
+     */
+    public static function getAllCardInGroups(GameContext $ctx, string $group): array
+    {
+        /** @var HelperCardHelper $helper */
+        $helper = GameUtils::getService('cards');
+        $cards = $helper->getCardsInGroup($group);
+
+        return array_filter($ctx->state->cards, static fn(CardState $s) => \in_array($s->templateId, $cards, true));
     }
 }
