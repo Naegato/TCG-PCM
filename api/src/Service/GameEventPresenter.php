@@ -17,6 +17,16 @@ final class GameEventPresenter
     private int $player1Offset = 0;
     private int $player2Offset = 0;
 
+    /**
+     * present() is called once per topic a given event is broadcast to (e.g. once for
+     * the public topic, once more for a private topic), but an inferred CARD_DRAWN
+     * cardId must only ever be computed — and its offset consumed — once per event,
+     * not once per presentation. Keyed by spl_object_id() of the event.
+     *
+     * @var array<int, string|null>
+     */
+    private array $inferredCardIdByEvent = [];
+
     public function __construct(
         private GameStateConverter $gameStateConverter,
     ) {}
@@ -45,7 +55,7 @@ final class GameEventPresenter
 
         return match ($event->type) {
             GameEventTypeEnum::CARD_DRAWN => $this->cardDrawnView($event, $state, $isPrivate, $viewerId),
-            GameEventTypeEnum::TURN_STARTED => [
+            GameEventTypeEnum::TURN_STARTED, GameEventTypeEnum::CURRENT_PLAYER_SET => [
                 'currentPlayer' => $state->currentPlayer,
             ],
             GameEventTypeEnum::CARD_DISCARDED, GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA => [
@@ -101,11 +111,30 @@ final class GameEventPresenter
     {
         /** @var string $playerId */
         $playerId = $event->data['playerId'];
-        // this sucks as fck
         $player = $state->getPlayer($playerId);
-        $cardId = array_slice($player->hand, -($player === $state->player1 ? $this->player1Offset : $this->player2Offset), 1)[0];
 
-        $player === $state->player1 ? ++$this->player1Offset : ++$this->player2Offset;
+        if (\is_string($event->data['cardId'] ?? null)) {
+            // the event already knows which card it is (e.g. explicit draws, debug tooling) — trust it
+            $cardId = $event->data['cardId'];
+        } else {
+            // random deck draw: the drawn card isn't known ahead of time, so infer it from the
+            // (already-updated) hand by counting back from the end as we process each draw in the batch.
+            // present() is called once per topic this event is broadcast to, so cache the result the
+            // first time and consume the offset only once, or a second (private-topic) presentation of
+            // the same draw would shift the offset and resolve to the wrong card.
+            $eventKey = spl_object_id($event);
+
+            if (\array_key_exists($eventKey, $this->inferredCardIdByEvent)) {
+                $cardId = $this->inferredCardIdByEvent[$eventKey];
+            } else {
+                $offset = $player === $state->player1 ? $this->player1Offset : $this->player2Offset;
+                $cardId = array_slice($player->hand, -($offset + 1), 1)[0] ?? null;
+
+                $player === $state->player1 ? ++$this->player1Offset : ++$this->player2Offset;
+
+                $this->inferredCardIdByEvent[$eventKey] = $cardId;
+            }
+        }
 
         if (!$playerId || !$cardId) {
             throw new \LogicException('CARD_DRAWN requires playerId and cardId');
@@ -117,11 +146,6 @@ final class GameEventPresenter
         ];
 
         if ($isPrivate && $viewerId === $playerId) {
-            // this still sucks ass btw
-            $player === $state->player1 ? --$this->player1Offset : --$this->player2Offset;
-            $cardId = array_slice($player->hand, -($player === $state->player1 ? $this->player1Offset : $this->player2Offset), 1)[0];
-            $player === $state->player1 ? --$this->player1Offset : --$this->player2Offset;
-
             $cardState = $state->cards[$cardId] ?? null;
 
             if (!$cardState) {

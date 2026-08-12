@@ -166,6 +166,11 @@ export function applyGameView(
   state: GameState,
   event: GameEvent,
   currentUsername?: string,
+  // True for viewers subscribed to every player's private topic (e.g. the admin debug
+  // view). Such a viewer always receives the enriched private version of an event
+  // like CARD_DRAWN in addition to the bare public one, so the public one must always
+  // be skipped for them — not just when it happens to match "their" player.
+  omniscient = false,
 ): GameState {
   if (event.type === GameEventType.CARD_STATE_UPDATED) {
     const updateCardId = event.view?.cardId ?? event.data?.cardId;
@@ -247,8 +252,10 @@ export function applyGameView(
     case GameEventType.CARD_DRAWN: {
       const playerKey = getPlayerKey(state, view.playerId);
       const player = state[playerKey];
-      // skip
-      if (!view.card && player.player.name === currentUsername) {
+      // the enriched private version of this event (with view.card) is always
+      // delivered separately to whoever can see this player's hand — skip the bare
+      // public one to avoid double-applying the same draw
+      if (!view.card && (omniscient || player.player.name === currentUsername)) {
         return next;
       }
 
@@ -294,6 +301,13 @@ export function applyGameView(
     }
 
     case GameEventType.TURN_STARTED: {
+      return {
+        ...state,
+        currentPlayerId: String(view.currentPlayer),
+      };
+    }
+
+    case GameEventType.CURRENT_PLAYER_SET: {
       return {
         ...state,
         currentPlayerId: String(view.currentPlayer),

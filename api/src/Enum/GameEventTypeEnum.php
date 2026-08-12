@@ -29,4 +29,5 @@ enum GameEventTypeEnum: string
     case CARD_GENERATED = 'CARD_GENERATED';
     case CARD_REDRAWN = 'CARD_REDRAWN';
     case CARD_STOLEN = 'CARD_STOLEN';
+    case CURRENT_PLAYER_SET = 'CURRENT_PLAYER_SET';
 }

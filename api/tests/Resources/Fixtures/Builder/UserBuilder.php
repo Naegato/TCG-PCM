@@ -18,6 +18,7 @@ final class UserBuilder extends AbstractBuilder
     private Inventory $inventory;
     private int $boosterTokens = 1;
     private \DateTimeImmutable $lastBoosterTokensAt;
+    private array $roles = [];
 
     public function build(): object
     {
@@ -54,6 +55,18 @@ final class UserBuilder extends AbstractBuilder
         return $this;
     }
 
+    public function withRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function asAdmin(): self
+    {
+        return $this->withRoles(['ROLE_ADMIN']);
+    }
+
     protected function doBuild(): void
     {
         $id = 'user_'.spl_object_id($this);
@@ -65,5 +78,6 @@ final class UserBuilder extends AbstractBuilder
 
         $this->entity = new User($id, $id.'@test.local');
         $this->entity->setPassword('password');
+        $this->entity->setRoles($this->roles);
     }
 }

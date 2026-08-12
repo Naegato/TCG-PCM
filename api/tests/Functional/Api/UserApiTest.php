@@ -100,6 +100,28 @@ final class UserApiTest extends FunctionalTestCase
         self::assertSame($user->getUsername(), $content['username']);
     }
 
+    public function testGetCurrentUserIsAdminFalseByDefault()
+    {
+        $user = ThereIs::anUser()->build();
+        $this->client->loginUser($user);
+
+        $response = $this->get(static::CURRENT_USER_URI);
+        $content = $response->toArray();
+
+        self::assertFalse($content['isAdmin']);
+    }
+
+    public function testGetCurrentUserIsAdminTrueForAdminRole()
+    {
+        $user = ThereIs::anUser()->asAdmin()->build();
+        $this->client->loginUser($user);
+
+        $response = $this->get(static::CURRENT_USER_URI);
+        $content = $response->toArray();
+
+        self::assertTrue($content['isAdmin']);
+    }
+
     public function testGetCurrentUserTokens()
     {
         $user = ThereIs::anUser()->withBoosterTokens(100)->build();

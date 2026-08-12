@@ -345,6 +345,34 @@ final class GameEventApplierTest extends TestCase
         self::assertContains('card', $newState->player2->hand);
     }
 
+    public function testApplyCurrentPlayerSet()
+    {
+        $eventApplier = $this->getSut();
+        $state = $this->getInitialGameState();
+
+        $event = new GameEvent(1, GameEventTypeEnum::CURRENT_PLAYER_SET, GameEvent::PLAYER_EVENT, [
+            'playerId' => 'player2',
+        ]);
+
+        $newState = $eventApplier->apply($event, $state);
+
+        self::assertSame('player2', $newState->currentPlayer);
+    }
+
+    public function testApplyCurrentPlayerSetThrowsForUnknownPlayer()
+    {
+        $eventApplier = $this->getSut();
+        $state = $this->getInitialGameState();
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $event = new GameEvent(1, GameEventTypeEnum::CURRENT_PLAYER_SET, GameEvent::PLAYER_EVENT, [
+            'playerId' => 'does-not-exist',
+        ]);
+
+        $eventApplier->apply($event, $state);
+    }
+
     private function getSut(array $cards = []): GameEventApplier
     {
         return new GameEventApplier(new CardRuntimeMap(new CardFactory(new MockCardRegistry($cards))));
