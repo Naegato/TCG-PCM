@@ -74,11 +74,11 @@ final class BombFestCardTest extends CardTestCase
 
         self::assertCount(3, $events);
 
-        self::assertSame(GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_CONSUMED, $events[0]->type);
         self::assertSame('bomb1', $events[0]->data['cardId']);
         self::assertSame('1', $events[0]->data['playerId']);
 
-        self::assertSame(GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_CONSUMED, $events[1]->type);
         self::assertSame('bomb2', $events[1]->data['cardId']);
         self::assertSame('2', $events[1]->data['playerId']);
 

@@ -34,6 +34,7 @@ class GameEventApplier implements GameEventApplierInterface
             GameEventTypeEnum::CARD_REDRAWN => $this->applyCardRedrawn($event, $gameState),
             GameEventTypeEnum::CARD_STOLEN => $this->ApplyCardStolen($event, $gameState),
             GameEventTypeEnum::PLAYER_DIED,
+            GameEventTypeEnum::CARD_CONSUMED,
             GameEventTypeEnum::ATTACK,
             GameEventTypeEnum::CARD_RUNTIME_VALUE,
             GameEventTypeEnum::DICE_ROLLED,

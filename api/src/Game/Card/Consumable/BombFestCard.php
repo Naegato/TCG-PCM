@@ -26,7 +26,7 @@ final class BombFestCard extends AbstractConsumableCard
         $cards = CardHelper::getAllCardInGroups($context, 'bomb');
 
         foreach ($cards as $card) {
-            $context->pushGameEvent(GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, [
+            $context->pushGameEvent(GameEventTypeEnum::CARD_CONSUMED, [
                 'cardId' => $card->instanceId,
                 'playerId' => $card->ownerId,
             ]);
