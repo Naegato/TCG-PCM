@@ -87,6 +87,22 @@ final class GameEventResolverTest extends TestCase
         );
     }
 
+    public function testHandlePlayActionThreadsTargetDataToCard(): void
+    {
+        $gm = $this->getSut();
+
+        $gameState = $this->createGameState();
+        $event = new GameEvent(0, GameEventTypeEnum::CARD_PLAYED, GameEvent::PLAYER_EVENT, [
+            'playerId' => $gameState->player1->player->id,
+            'cardId' => 'card2',
+            'data' => ['target' => 'some-target-card'],
+        ]);
+
+        $gm->resolve($event, $gameState)->events;
+
+        self::assertSame(['target' => 'some-target-card'], SpyCard::$receivedData);
+    }
+
     public function testEndTurn()
     {
         $gm = $this->getSut();
@@ -450,6 +466,7 @@ class SpyCard extends AbstractConsumableCard implements TurnAwareInterface
     use TurnAwareTrait;
 
     public static ?GameContext $receivedContext = null;
+    public static array $receivedData = [];
     public static bool $turnStartCalled = false;
 
     public function getId(): string
@@ -470,6 +487,7 @@ class SpyCard extends AbstractConsumableCard implements TurnAwareInterface
     public function play(GameContext $ctx, array $data = []): void
     {
         self::$receivedContext = $ctx;
+        self::$receivedData = $data;
 
         if ($data['other'] ?? false) {
             $ctx->pushGameEvent(GameEventTypeEnum::CARD_PLAYED, ['playerId' => $ctx->playerId, 'cardId' => 'other-spy']);

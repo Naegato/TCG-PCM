@@ -200,7 +200,8 @@ class GameEventResolver
                 match (true) {
                     $card instanceof AbstractMonsterCard => $card->onMonsterPlayed($ctx),
                     $card instanceof AbstractPassiveCard => $card->onCardPlace($ctx),
-                    $card instanceof AbstractConsumableCard => $card->play($ctx, []),
+                    // @todo introduce target on card to guess data
+                    $card instanceof AbstractConsumableCard => $card->play($ctx, \is_array($event->data['data'] ?? null) ? $event->data['data'] : []),
                 };
 
                 $events = $ctx->flushEvents();
@@ -277,6 +278,7 @@ class GameEventResolver
             $events[] = GameEvent::game(GameEventTypeEnum::CARD_CONSUMED, [
                 'playerId' => $event->data['playerId'],
                 'cardId' => $event->data['cardId'],
+                'data' => $event->data['data'] ?? [],
             ]);
         } elseif ($card instanceof AbstractPassiveCard) {
             $events[] = GameEvent::game(GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, [
