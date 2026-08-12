@@ -61,7 +61,7 @@ final class FortniteCard extends AbstractConsumableCard
         $context->heal($this->getValue(self::VICTORY_ROYALE_HEALTH, true), $targetId);
 
         $currentBonusAttack = (int) ($targetState->values['bonusAttack'] ?? 0);
-        $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $targetId,
             'stateToUpdate' => [
                 'bonusAttack' => $currentBonusAttack + $this->getValue(self::VICTORY_ROYALE_ATTACK, true),

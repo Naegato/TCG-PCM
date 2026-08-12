@@ -64,7 +64,7 @@ final class MonkeyVillageCard extends AbstractPassiveCard implements TurnAwareIn
 
             $currentBonusAttack = (int) ($cardState->values['bonusAttack'] ?? 0);
 
-            $gameContext->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+            $gameContext->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
                 'cardId' => $cardId,
                 'stateToUpdate' => [
                     'bonusAttack' => $currentBonusAttack + $this->getValue(self::ATTACK_BUFF, true),

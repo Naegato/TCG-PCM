@@ -41,13 +41,13 @@ final /* static */ class CardHelper
                 throw new \LogicException('Chaos picked a non-monster template for a monster slot');
             }
 
-            $context->pushGameEvent(GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA, [
+            $context->pushGameEvent(GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, [
                 'playerId' => $playerId,
                 'cardId' => $newInstanceId,
                 'cardHealthPoints' => $replacementMonster->getHealPoints(),
             ]);
         } else {
-            $context->pushGameEvent(GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, [
+            $context->pushGameEvent(GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, [
                 'playerId' => $playerId,
                 'cardId' => $newInstanceId,
             ]);

@@ -24,9 +24,9 @@ final class Play2HurtCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(2, $events);
-        self::assertSame(GameEventTypeEnum::DAMAGE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::DAMAGE_DEALT, $events[0]->type);
         self::assertSame('2', $events[0]->data['targetId']);
-        self::assertSame(GameEventTypeEnum::DAMAGE, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::DAMAGE_DEALT, $events[1]->type);
         self::assertSame('target', $events[1]->data['targetId']);
     }
 }

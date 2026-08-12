@@ -56,7 +56,7 @@ final class GameStateProviderTest extends TestCase
             0,
             '',
         );
-        $event = new GameEvent(2, GameEventTypeEnum::ATTACK, 'playerEvent', []);
+        $event = new GameEvent(2, GameEventTypeEnum::ATTACKED, 'playerEvent', []);
         $repo = $this->createStub(GameStateRepositoryInterface::class);
         $repo->method('get')->willReturn($gameState);
         $eventRepo = $this->createStub(GameEventRepositoryInterface::class);

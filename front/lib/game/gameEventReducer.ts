@@ -54,8 +54,8 @@ export function animateGameEvent(
         tone: "neutral",
       };
     }
-    case GameEventType.CARD_PLACE_IN_MONSTER_AREA:
-    case GameEventType.CARD_PLACE_IN_PLAY_AREA: {
+    case GameEventType.CARD_PLACED_IN_MONSTER_AREA:
+    case GameEventType.CARD_PLACED_IN_PLAY_AREA: {
       const card = event.view.card || getCard(state, view.cardId);
       const player = getPlayer(state, view.playerId);
       if (card && player) {
@@ -98,9 +98,9 @@ export function animateGameEvent(
       return null;
     }
 
-    case GameEventType.HEAL:
-    case GameEventType.DAMAGE: {
-      if (event.type === GameEventType.DAMAGE && event.data.sourceId) {
+    case GameEventType.HEAL_APPLIED:
+    case GameEventType.DAMAGE_DEALT: {
+      if (event.type === GameEventType.DAMAGE_DEALT && event.data.sourceId) {
         const attackerCard = getCard(state, event.data.sourceId);
         const targetId = view.cardId ?? view.playerId;
         const targetPlayer = getPlayer(state, view.playerId);
@@ -167,7 +167,7 @@ export function applyGameView(
   event: GameEvent,
   currentUsername?: string,
 ): GameState {
-  if (event.type === GameEventType.UPDATE_CARD_STATE) {
+  if (event.type === GameEventType.CARD_STATE_UPDATED) {
     const updateCardId = event.view?.cardId ?? event.data?.cardId;
     const cardToUpdate = updateCardId ? state.cards[updateCardId] : undefined;
 
@@ -301,8 +301,8 @@ export function applyGameView(
     }
 
     case GameEventType.CARD_DISCARDED:
-    case GameEventType.CARD_PLACE_IN_PLAY_AREA:
-    case GameEventType.CARD_PLACE_IN_MONSTER_AREA: {
+    case GameEventType.CARD_PLACED_IN_PLAY_AREA:
+    case GameEventType.CARD_PLACED_IN_MONSTER_AREA: {
       const cardId = view.cardId;
       const card = state.cards[cardId];
 
@@ -354,11 +354,11 @@ export function applyGameView(
           ...nextPlayer,
           playArea: {
             passiveCards:
-              event.type === GameEventType.CARD_PLACE_IN_PLAY_AREA
+              event.type === GameEventType.CARD_PLACED_IN_PLAY_AREA
                 ? [...player.playArea.passiveCards, cardId]
                 : player.playArea.passiveCards,
             monsterCards:
-              event.type === GameEventType.CARD_PLACE_IN_MONSTER_AREA
+              event.type === GameEventType.CARD_PLACED_IN_MONSTER_AREA
                 ? [...player.playArea.monsterCards, cardId]
                 : player.playArea.monsterCards,
           },
@@ -393,8 +393,8 @@ export function applyGameView(
       };
     }
 
-    case GameEventType.HEAL:
-    case GameEventType.DAMAGE: {
+    case GameEventType.HEAL_APPLIED:
+    case GameEventType.DAMAGE_DEALT: {
       if (view.cardId && view.card) {
         const newCards = { ...state.cards };
         newCards[view.cardId] = { ...newCards[view.cardId], ...view.card };
@@ -419,7 +419,7 @@ export function applyGameView(
       emitter.emit("game:health-changed", {
         playerId: view.playerId,
         delta,
-        type: event.type === GameEventType.DAMAGE ? "damage" : "heal",
+        type: event.type === GameEventType.DAMAGE_DEALT ? "damage" : "heal",
       });
 
       return {
@@ -432,7 +432,7 @@ export function applyGameView(
     }
 
     case GameEventType.EFFECT_ADDED:
-    case GameEventType.UPDATE_CARD_STATE: {
+    case GameEventType.CARD_STATE_UPDATED: {
       const cardId = view.cardId;
 
       if (!cardId || !view.card) {

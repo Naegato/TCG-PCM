@@ -57,7 +57,7 @@ final class SirenCardTest extends CardTestCase
         self::assertSame('2', $events[0]->data['fromPlayerId']);
         self::assertSame('1', $events[0]->data['toPlayerId']);
 
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[1]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[1]->type);
         self::assertSame('test_card', $events[1]->data['cardId']);
         self::assertSame(['turnRemainingBeforeAction' => 2], $events[1]->data['stateToUpdate']);
     }
@@ -71,7 +71,7 @@ final class SirenCardTest extends CardTestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertSame(GameEventTypeEnum::UPDATE_CARD_STATE, $events[0]->type);
+        self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame(['turnRemainingBeforeAction' => 2], $events[0]->data['stateToUpdate']);
     }
 

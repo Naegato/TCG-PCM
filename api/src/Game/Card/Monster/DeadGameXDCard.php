@@ -79,7 +79,7 @@ final class DeadGameXDCard extends AbstractMonsterCard implements ComputedCardIn
 
     public function onMonsterPlayed(GameContext $context): void
     {
-        $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $this->getInstanceId(),
             'stateToUpdate' => [
                 'attack' => $this->attack,

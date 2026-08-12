@@ -53,11 +53,11 @@ final class HorsepillCardTest extends CardTestCase
 
     public static function effectsProvider(): \Generator
     {
-        yield 'self damage' => [1, GameEventTypeEnum::DAMAGE, ['targetId' => '1', 'damage' => 50]];
-        yield 'self heal' => [2, GameEventTypeEnum::HEAL, ['targetId' => '1', 'amount' => 50]];
+        yield 'self damage' => [1, GameEventTypeEnum::DAMAGE_DEALT, ['targetId' => '1', 'damage' => 50]];
+        yield 'self heal' => [2, GameEventTypeEnum::HEAL_APPLIED, ['targetId' => '1', 'amount' => 50]];
         yield 'discard random board card' => [3, GameEventTypeEnum::CARD_DISCARDED, ['cardId' => 'monster1', 'playerId' => null]];
-        yield 'set monster attack 99' => [4, GameEventTypeEnum::UPDATE_CARD_STATE, ['cardId' => 'monster1', 'stateToUpdate' => ['forcedAttack' => 99]]];
-        yield 'set monster attack 0' => [5, GameEventTypeEnum::UPDATE_CARD_STATE, ['cardId' => 'monster1', 'stateToUpdate' => ['forcedAttack' => 0]]];
+        yield 'set monster attack 99' => [4, GameEventTypeEnum::CARD_STATE_UPDATED, ['cardId' => 'monster1', 'stateToUpdate' => ['forcedAttack' => 99]]];
+        yield 'set monster attack 0' => [5, GameEventTypeEnum::CARD_STATE_UPDATED, ['cardId' => 'monster1', 'stateToUpdate' => ['forcedAttack' => 0]]];
         yield 'discard owner hand' => [6, GameEventTypeEnum::CARD_DISCARDED, ['cardId' => 'ownerHandCard', 'playerId' => '1']];
         yield 'discard opponent hand' => [7, GameEventTypeEnum::CARD_DISCARDED, ['cardId' => 'oppHandCard', 'playerId' => '2']];
     }

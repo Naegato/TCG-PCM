@@ -71,7 +71,7 @@ final class MechaPainterCard extends AbstractMonsterCard implements TurnAwareInt
 
         $targetId = $gameContext->selectRandomCardIn($pool);
 
-        $gameContext->pushGameEvent(GameEventTypeEnum::DAMAGE, [
+        $gameContext->pushGameEvent(GameEventTypeEnum::DAMAGE_DEALT, [
             'targetId' => $targetId,
             'damage' => $this->getValue(self::SELF_TEAM_DAMAGE, true),
         ]);

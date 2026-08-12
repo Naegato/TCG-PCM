@@ -71,7 +71,7 @@ final class GoofyCard extends AbstractMonsterCard implements TurnAwareInterface
             $this->attack = 0;
         }
 
-        $gameContext->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $gameContext->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $this->getInstanceId(),
             'currentHealthPoints' => $this->currentHealthPoints,
             'stateToUpdate' => [

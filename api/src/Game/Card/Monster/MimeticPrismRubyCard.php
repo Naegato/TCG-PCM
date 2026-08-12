@@ -63,7 +63,7 @@ class MimeticPrismRubyCard extends AbstractMonsterCard
         $this->copyTemplateId = $state->templateId;
         $this->getMimedCard();
 
-        $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $this->getInstanceId(),
             'stateToUpdate' => [
                 'templateId' => $this->copyTemplateId,

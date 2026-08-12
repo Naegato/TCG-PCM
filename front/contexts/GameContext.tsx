@@ -519,7 +519,7 @@ export const GameProvider = ({
       }
 
       const attackEvent = e.events.find(
-        (ev) => ev.type === GameEventType.ATTACK,
+        (ev) => ev.type === GameEventType.ATTACKED,
       );
       if (attackEvent) {
         const attackerId = attackEvent.data.attackerId;

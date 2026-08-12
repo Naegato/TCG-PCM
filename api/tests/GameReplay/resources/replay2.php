@@ -430,7 +430,7 @@ return
             ],
             'type' => [
                 21 => \App\Enum\GameEventTypeEnum::CARD_PLAYED,
-                \App\Enum\GameEventTypeEnum::DAMAGE,
+                \App\Enum\GameEventTypeEnum::DAMAGE_DEALT,
                 \App\Enum\GameEventTypeEnum::TURN_ENDED,
                 \App\Enum\GameEventTypeEnum::CARD_PLAYED,
                 \App\Enum\GameEventTypeEnum::CARD_PLAYED,

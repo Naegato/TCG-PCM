@@ -75,7 +75,7 @@ final class MegaClottyCard extends AbstractMonsterCard
 
         $this->playBonus = $this->getValue($clottiesOnBoard * self::BONUS_PER_CLOTTY, true);
 
-        $context->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $context->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $instanceId,
             'stateToUpdate' => [
                 'bonusAttack' => $this->playBonus,

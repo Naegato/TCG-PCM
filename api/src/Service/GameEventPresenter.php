@@ -48,7 +48,7 @@ final class GameEventPresenter
             GameEventTypeEnum::TURN_STARTED => [
                 'currentPlayer' => $state->currentPlayer,
             ],
-            GameEventTypeEnum::CARD_DISCARDED, GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA, GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA => [
+            GameEventTypeEnum::CARD_DISCARDED, GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA => [
                 'cardId' => $event->data['cardId'] ?? null,
                 'card' => GameEventTypeEnum::CARD_DISCARDED === $event->type
                     ? null
@@ -57,7 +57,7 @@ final class GameEventPresenter
             GameEventTypeEnum::COINS_GAINED, GameEventTypeEnum::COINS_LOST => [
                 'total' => $state->getPlayer($player)->coins,
             ],
-            GameEventTypeEnum::HEAL, GameEventTypeEnum::DAMAGE => $this->healthView($event, $state),
+            GameEventTypeEnum::HEAL_APPLIED, GameEventTypeEnum::DAMAGE_DEALT => $this->healthView($event, $state),
             GameEventTypeEnum::MONSTER_DIED => [
                 'cardId' => $event->data['cardId'] ?? null,
             ],
@@ -76,7 +76,7 @@ final class GameEventPresenter
     private function handleAnonymousEvent(GameEvent $event, GameState $state, bool $isPrivate, ?string $viewerId): array
     {
         return match ($event->type) {
-            GameEventTypeEnum::EFFECT_ADDED, GameEventTypeEnum::UPDATE_CARD_STATE => $this->cardStateView($event, $state),
+            GameEventTypeEnum::EFFECT_ADDED, GameEventTypeEnum::CARD_STATE_UPDATED => $this->cardStateView($event, $state),
             default => [],
         };
     }

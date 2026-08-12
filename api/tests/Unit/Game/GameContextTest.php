@@ -31,7 +31,7 @@ final class GameContextTest extends TestCase
         self::assertEquals(new GameEvent(0, GameEventTypeEnum::CARD_DRAWN, GameEvent::GAME_EVENT, [
             'playerId' => '1',
         ]), $events[1]);
-        self::assertEquals(new GameEvent(0, GameEventTypeEnum::DAMAGE, GameEvent::GAME_EVENT, [
+        self::assertEquals(new GameEvent(0, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::GAME_EVENT, [
             'targetId' => '2',
             'damage' => 2,
         ]), $events[2]);
@@ -75,7 +75,7 @@ final class GameContextTest extends TestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertEquals(new GameEvent(0, GameEventTypeEnum::DAMAGE, GameEvent::GAME_EVENT, [
+        self::assertEquals(new GameEvent(0, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::GAME_EVENT, [
             'targetId' => '2',
             'damage' => 2,
         ]), $events[0]);
@@ -90,7 +90,7 @@ final class GameContextTest extends TestCase
         $events = $ctx->flushEvents();
 
         self::assertCount(1, $events);
-        self::assertEquals(new GameEvent(0, GameEventTypeEnum::DAMAGE, GameEvent::GAME_EVENT, [
+        self::assertEquals(new GameEvent(0, GameEventTypeEnum::DAMAGE_DEALT, GameEvent::GAME_EVENT, [
             'targetId' => '1',
             'damage' => 2,
         ]), $events[0]);

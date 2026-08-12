@@ -210,7 +210,7 @@ final class GameEventResolverTest extends TestCase
             ],
         );
 
-        $event = new GameEvent(0, GameEventTypeEnum::ATTACK, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(0, GameEventTypeEnum::ATTACKED, GameEvent::PLAYER_EVENT, [
             'targetId' => 'bloons',
             'attackerId' => 'attacker',
         ]);
@@ -250,7 +250,7 @@ final class GameEventResolverTest extends TestCase
             ],
         );
 
-        $event = new GameEvent(0, GameEventTypeEnum::ATTACK, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(0, GameEventTypeEnum::ATTACKED, GameEvent::PLAYER_EVENT, [
             'targetId' => 'bloons',
             'attackerId' => 'attacker',
         ]);
@@ -288,7 +288,7 @@ final class GameEventResolverTest extends TestCase
             ],
         );
 
-        $event = new GameEvent(0, GameEventTypeEnum::ATTACK, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(0, GameEventTypeEnum::ATTACKED, GameEvent::PLAYER_EVENT, [
             'targetId' => '2',
             'attackerId' => 'attacker',
         ]);
@@ -365,20 +365,20 @@ final class GameEventResolverTest extends TestCase
             ],
         );
 
-        $event = new GameEvent(0, GameEventTypeEnum::ATTACK, GameEvent::PLAYER_EVENT, [
+        $event = new GameEvent(0, GameEventTypeEnum::ATTACKED, GameEvent::PLAYER_EVENT, [
             'targetId' => '2',
             'attackerId' => 'attacker',
         ]);
 
         $events = $ger->resolve($event, $gameState)->events;
 
-        $damageEvents = array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::DAMAGE === $e->type);
+        $damageEvents = array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::DAMAGE_DEALT === $e->type);
         self::assertNotEmpty($damageEvents);
         $de = array_values($damageEvents)[0];
         self::assertEquals('2', $de->data['targetId']);
         self::assertEquals(5, $de->data['damage']);
 
-        $updateEvents = array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::UPDATE_CARD_STATE === $e->type);
+        $updateEvents = array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::CARD_STATE_UPDATED === $e->type);
         self::assertNotEmpty($updateEvents);
     }
 

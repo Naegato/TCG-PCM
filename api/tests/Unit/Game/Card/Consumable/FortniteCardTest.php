@@ -44,12 +44,12 @@ final class FortniteCardTest extends CardTestCase
         self::assertContains('passive1', $discardedIds);
         self::assertContains('passive2', $discardedIds);
 
-        $healEvents = array_values(array_filter($events, static fn($e) => GameEventTypeEnum::HEAL === $e->type));
+        $healEvents = array_values(array_filter($events, static fn($e) => GameEventTypeEnum::HEAL_APPLIED === $e->type));
         self::assertCount(1, $healEvents);
         self::assertSame('monster1', $healEvents[0]->data['targetId']);
         self::assertSame(6, $healEvents[0]->data['amount']);
 
-        $updateEvents = array_values(array_filter($events, static fn($e) => GameEventTypeEnum::UPDATE_CARD_STATE === $e->type));
+        $updateEvents = array_values(array_filter($events, static fn($e) => GameEventTypeEnum::CARD_STATE_UPDATED === $e->type));
         self::assertCount(1, $updateEvents);
         self::assertSame('monster1', $updateEvents[0]->data['cardId']);
         self::assertSame(8, $updateEvents[0]->data['stateToUpdate']['bonusAttack']);

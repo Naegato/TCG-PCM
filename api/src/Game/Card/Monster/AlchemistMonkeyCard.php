@@ -80,7 +80,7 @@ final class AlchemistMonkeyCard extends AbstractMonsterCard implements TurnAware
 
         $currentBonus = (int) ($targetState->values['bonusAttack'] ?? 0);
 
-        $gameContext->pushGameEvent(GameEventTypeEnum::UPDATE_CARD_STATE, [
+        $gameContext->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $targetId,
             'stateToUpdate' => [
                 'bonusAttack' => $currentBonus + $this->getValue(self::ATTACK_BUFF, true),
