@@ -191,14 +191,26 @@ class GameEventResolver
                 break;
             case GameEventTypeEnum::CARD_PLACE_IN_MONSTER_AREA:
             case GameEventTypeEnum::CARD_PLACE_IN_PLAY_AREA:
+            case GameEventTypeEnum::CARD_CONSUMED:
                 $cardId = $event->data['cardId'];
-                /** @var AbstractMonsterCard|AbstractPassiveCard $card */
+                /** @var AbstractMonsterCard|AbstractPassiveCard|AbstractConsumableCard $card */
                 $card = $this->cardRuntimeMap->getByState($state->getCardState($cardId));
                 $ctx = $this->gameContextFactory->createGameContext($state, $playerId);
 
-                $card instanceof AbstractMonsterCard ? $card->onMonsterPlayed($ctx) : $card->onCardPlace($ctx);
+                match (true) {
+                    $card instanceof AbstractMonsterCard => $card->onMonsterPlayed($ctx),
+                    $card instanceof AbstractPassiveCard => $card->onCardPlace($ctx),
+                    $card instanceof AbstractConsumableCard => $card->play($ctx, []),
+                };
 
                 $events = $ctx->flushEvents();
+
+                if ($card instanceof AbstractConsumableCard) {
+                    $events[] = GameEvent::game(GameEventTypeEnum::CARD_DISCARDED, [
+                        'cardId' => $cardId,
+                        'playerId' => $playerId,
+                    ]);
+                }
                 break;
             default:
                 break;
@@ -243,13 +255,11 @@ class GameEventResolver
             throw new \LogicException(\sprintf('Card with id %s not found in game state', $cardId));
         }
 
-        if (!\is_string($playerId = $event->data['playerId'] ?? null)) {
+        if (!\is_string($event->data['playerId'] ?? null)) {
             throw new \LogicException('playerId is required to play a card');
         }
 
         $card = $this->cardRuntimeMap->getByState($cardState);
-        $ctx = $this->gameContextFactory->createGameContext($state, $playerId);
-        $data = $event->data['data'] ?? [];
         $events = [];
 
         $cardCost = $card->getCost();
@@ -264,9 +274,7 @@ class GameEventResolver
         ]);
 
         if ($card instanceof AbstractConsumableCard) {
-            $card->play($ctx, \is_array($data) ? $data : []);
-
-            $events[] = GameEvent::game(GameEventTypeEnum::CARD_DISCARDED, [
+            $events[] = GameEvent::game(GameEventTypeEnum::CARD_CONSUMED, [
                 'playerId' => $event->data['playerId'],
                 'cardId' => $event->data['cardId'],
             ]);
@@ -285,7 +293,7 @@ class GameEventResolver
             throw new \LogicException('Card must be either a playable or passive card');
         }
 
-        return array_merge($events, $ctx->flushEvents());
+        return $events;
     }
 
     /**

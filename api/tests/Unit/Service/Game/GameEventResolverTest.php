@@ -75,11 +75,12 @@ final class GameEventResolverTest extends TestCase
         $events = $gm->resolve($event, $gameState)->events;
 
         self::assertNotNull(SpyCard::$receivedContext);
-        self::assertCount(3, $events);
+        self::assertCount(4, $events);
         self::assertEquals(
             [
                 GameEventTypeEnum::CARD_PLAYED,
                 GameEventTypeEnum::COINS_LOST,
+                GameEventTypeEnum::CARD_CONSUMED,
                 GameEventTypeEnum::CARD_DISCARDED,
             ],
             array_map(static fn(GameEvent $event) => $event->type, $events),
@@ -141,7 +142,7 @@ final class GameEventResolverTest extends TestCase
 
         $resolution = $gm->resolve($event, $gameState);
 
-        self::assertCount(3, $resolution->events);
+        self::assertCount(4, $resolution->events);
     }
 
     public function testEndTurnCallTurnAwareCard()
