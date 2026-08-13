@@ -12,6 +12,7 @@ return [
 	'Banana' => Card\Consumable\BananaCard::class,
 	'Benjamin' => Card\Consumable\BenjaminCard::class,
 	'Bomb' => Card\Consumable\BombCard::class,
+	'BombFest' => Card\Consumable\BombFestCard::class,
 	'Chaos' => Card\Consumable\ChaosCard::class,
 	'Coins' => Card\Consumable\CoinsCard::class,
 	'Communism' => Card\Consumable\CommunismCard::class,
