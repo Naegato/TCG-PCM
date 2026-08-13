@@ -10,6 +10,7 @@ use App\Api\DTO\CardDTO;
 use App\Api\DTO\GameDataDTO;
 use App\Domain\Model\CardEffect;
 use App\Enum\CardEffectEnum;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Service\Game\CardRegistryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -59,8 +60,8 @@ final class GameDataProvider implements ProviderInterface
                     name: $template->getName(),
                     description: $template->getDescription(),
                     image: $template->getImage(),
-                    requiresTarget: $template->requiresTarget(),
-                    targetType: $template->getTargetType(),
+                    requiresTarget: $template instanceof AbstractConsumableCard && $template->requiresTarget(),
+                    targetType: $template instanceof AbstractConsumableCard ? $template->getTargetType() : null,
                     rarity: $template->getRarity(),
                     set: $template->getSerie(),
                     instanceId: '',

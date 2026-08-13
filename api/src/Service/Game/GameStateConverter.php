@@ -9,6 +9,7 @@ use App\Api\DTO\GameStateDTO;
 use App\Api\DTO\PlayerStateDTO;
 use App\Game\Card\CardState;
 use App\Game\Card\Character\AbstractCharacterCard;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\Card\MonsterCardState;
 use App\Game\State\GameState;
@@ -65,8 +66,8 @@ final class GameStateConverter
             name: $template->getName(),
             description: $template->getDescription(),
             image: $template->getImage(),
-            requiresTarget: $template->requiresTarget(),
-            targetType: $template->getTargetType(),
+            requiresTarget: $template instanceof AbstractConsumableCard && $template->requiresTarget(),
+            targetType: $template instanceof AbstractConsumableCard ? $template->getTargetType() : null,
             rarity: $template->getRarity(),
             set: $template->getSerie(),
             instanceId: $state->instanceId,

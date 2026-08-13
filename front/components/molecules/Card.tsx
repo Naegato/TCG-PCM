@@ -228,6 +228,7 @@ const Card = ({
         cardRarity={card.rarity}
         cardStats={{ hp: card.hp, attack: card.attack, cost: card.cost }}
         turnRemainingBeforeAction={turnRemainingBeforeAction}
+        requiresTarget={card.requiresTarget}
         onReadyStateChange={
           showLoadingUntilReady
             ? (isReady) => setIsCardReady(isReady)

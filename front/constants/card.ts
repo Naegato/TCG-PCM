@@ -34,10 +34,19 @@ export enum CardType {
   CONSUMABLE = "CONSUMABLE",
 }
 
-export enum CardTargetType {
-  MONSTER = "MONSTER",
-  MONSTER_AND_PASSIVE = "MONSTER_AND_PASSIVE",
-}
+/**
+ * Bitmask flags mirroring AbstractConsumableCard's TARGET_TYPE_* constants
+ * on the API. A card's targetType combines flags with `|`, e.g. a card that
+ * can only target the opponent's monsters is MONSTER | OPPONENT_CARDS.
+ */
+export const CardTargetFlag = {
+  NONE: 0,
+  MONSTER: 1,
+  PASSIVE: 2,
+  CHARACTER: 4,
+  SELF_CARDS: 8,
+  OPPONENT_CARDS: 16,
+} as const;
 
 export const CardSizeMap: Record<CardSize, string> = {
   [CardSize.XS]: "w-card-xs",
