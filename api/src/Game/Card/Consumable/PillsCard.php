@@ -10,7 +10,10 @@ use App\Game\GameContext;
 
 final class PillsCard extends AbstractConsumableCard
 {
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const SELF_DAMAGE = 5;
     private const SELF_HEAL = 10;

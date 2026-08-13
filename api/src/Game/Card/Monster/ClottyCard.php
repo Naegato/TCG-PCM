@@ -8,7 +8,10 @@ use App\Enum\CardSetEnum;
 
 final class ClottyCard extends AbstractMonsterCard
 {
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const HEALTH_POINTS = 7;
     private const ATTACK = 7;

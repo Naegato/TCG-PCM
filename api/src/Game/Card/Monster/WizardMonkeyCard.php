@@ -11,8 +11,15 @@ use App\Game\GameUtils;
 
 final class WizardMonkeyCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEALTH_POINTS = 15;
     private const ATTACK = 8;

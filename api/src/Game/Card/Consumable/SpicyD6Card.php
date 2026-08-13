@@ -11,8 +11,15 @@ use App\Game\GameUtils;
 
 final class SpicyD6Card extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::UNCOMMON;
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::UNCOMMON;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const DAMAGE_MULTIPLIER = 10;
 

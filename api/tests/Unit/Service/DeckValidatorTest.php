@@ -320,7 +320,10 @@ final class DeckValidatorTest extends TestCase
 
 class LegendaryCard extends DummyCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::LEGENDARY;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::LEGENDARY;
+    }
 }
 
 class CharacterDummyCard extends \App\Game\Card\Character\AbstractCharacterCard

@@ -13,7 +13,10 @@ final class BloodSuckerCard extends AbstractPassiveCard implements TurnAwareInte
 {
     use TurnAwareTrait;
 
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     public const int DAMAGE = 10;
 

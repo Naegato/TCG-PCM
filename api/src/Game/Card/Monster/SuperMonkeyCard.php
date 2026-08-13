@@ -13,8 +13,15 @@ use App\Game\GameUtils;
 
 final class SuperMonkeyCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::LEGENDARY;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::LEGENDARY;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEALTH_POINTS = 20;
     private const ATTACK = 20;

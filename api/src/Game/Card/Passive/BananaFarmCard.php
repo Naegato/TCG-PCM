@@ -16,8 +16,15 @@ final class BananaFarmCard extends AbstractPassiveCard implements TurnAwareInter
 {
     use TurnAwareTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const COINS_GAIN = 1;
 

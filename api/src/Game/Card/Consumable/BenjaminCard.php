@@ -13,7 +13,10 @@ use App\Game\GameUtils;
 
 final class BenjaminCard extends AbstractConsumableCard
 {
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const int CARD_COUNT = 1;
 

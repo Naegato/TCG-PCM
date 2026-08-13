@@ -61,8 +61,8 @@ final class GameDataProvider implements ProviderInterface
                     image: $template->getImage(),
                     requiresTarget: $template->requiresTarget(),
                     targetType: $template->getTargetType(),
-                    rarity: $template::$rarity,
-                    set: $template::$serie,
+                    rarity: $template->getRarity(),
+                    set: $template->getSerie(),
                     instanceId: '',
                     effects: [],
                 );

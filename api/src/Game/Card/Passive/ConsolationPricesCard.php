@@ -15,7 +15,10 @@ final class ConsolationPricesCard extends AbstractPassiveCard implements DeathAw
 {
     use DeathAwareTrait;
 
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const int COINS_PER_DEATH = 1;
 

@@ -11,8 +11,15 @@ use App\Game\GameUtils;
 
 final class RadicalRatCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const HEALTH_POINTS = 11;
     private const ATTACK = 10;

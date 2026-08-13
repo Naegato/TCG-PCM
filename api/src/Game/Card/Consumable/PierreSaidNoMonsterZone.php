@@ -12,7 +12,10 @@ final class PierreSaidNoMonsterZone extends AbstractConsumableCard
 {
     use CardAwareTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::LEGENDARY;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::LEGENDARY;
+    }
 
     public function getId(): string
     {

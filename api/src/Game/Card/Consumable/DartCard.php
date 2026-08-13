@@ -12,8 +12,15 @@ use App\Game\GameUtils;
 
 final class DartCard extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::COMMON;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::COMMON;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const DAMAGE = 7;
 

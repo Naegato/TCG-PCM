@@ -13,8 +13,15 @@ use App\Game\GameContext;
 
 final class TheLostCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::UNCOMMON;
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::UNCOMMON;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const HEALTH_POINTS = 1;
     private const ATTACK = 20;

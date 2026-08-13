@@ -9,8 +9,15 @@ use App\Enum\CardSetEnum;
 
 final class MOABCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEALTH_POINTS = 60;
     private const ATTACK = 10;

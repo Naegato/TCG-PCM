@@ -27,9 +27,15 @@ abstract class AbstractCard
         $this->effects = new EffectCollection();
     }
 
-    public static CardRarityEnum $rarity = CardRarityEnum::COMMON;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::COMMON;
+    }
 
-    public static CardSetEnum $serie = CardSetEnum::ORIGINAL;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::ORIGINAL;
+    }
 
     public static function getGroups(): array
     {
@@ -138,7 +144,7 @@ abstract class AbstractCard
 
     public function getCost(): int
     {
-        return match (static::$rarity) {
+        return match ($this->getRarity()) {
             CardRarityEnum::COMMON => 1,
             CardRarityEnum::UNCOMMON => 2,
             CardRarityEnum::RARE => 3,

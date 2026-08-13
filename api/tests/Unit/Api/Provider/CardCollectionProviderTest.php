@@ -60,7 +60,10 @@ final class CardCollectionProviderTest extends TestCase
 
 final class AliasCardStub extends AbstractConsumableCard
 {
-    public static CardSetEnum $serie = CardSetEnum::ORIGINAL;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::ORIGINAL;
+    }
 
     public function getId(): string
     {

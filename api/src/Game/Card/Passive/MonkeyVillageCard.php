@@ -18,8 +18,15 @@ final class MonkeyVillageCard extends AbstractPassiveCard implements TurnAwareIn
 {
     use TurnAwareTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const ATTACK_BUFF = 2;
 

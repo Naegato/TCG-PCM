@@ -16,7 +16,10 @@ final class HackedZoneCard extends AbstractPassiveCard implements CardAwareInter
 {
     use CardAwareTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
 
     public function getId(): string
     {

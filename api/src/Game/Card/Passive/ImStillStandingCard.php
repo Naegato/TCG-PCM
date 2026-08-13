@@ -12,7 +12,10 @@ final class ImStillStandingCard extends AbstractPassiveCard implements DeathAwar
 {
     private const int REVIVE_HP_PERCENTAGE = 10;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
 
     use DeathAwareTrait;
 

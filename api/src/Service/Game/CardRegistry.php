@@ -57,11 +57,11 @@ class CardRegistry implements CardRegistryInterface
 
         $cards = [];
         foreach ($this->cards as $cardId => $cardClass) {
-            if ($rarity && $cardClass::$rarity !== $rarity) {
+            if ($rarity && $this->get($cardId)->getRarity() !== $rarity) {
                 continue;
             }
 
-            if ($serie && $cardClass::$serie !== $serie) {
+            if ($serie && $this->get($cardId)->getSerie() !== $serie) {
                 continue;
             }
 

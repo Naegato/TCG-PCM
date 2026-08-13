@@ -13,6 +13,7 @@ use App\Game\GameContext;
 use App\Service\Booster\BoosterGenerator;
 use App\Service\Booster\BoosterRegistry;
 use App\Tests\Resources\MockCardRegistry;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 final class BoosterGeneratorTest extends TestCase
@@ -84,9 +85,6 @@ class TestableBoosterGenerator extends BoosterGenerator
 
 class CommonCardStub extends AbstractCard
 {
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
-    public static CardRarityEnum $rarity = CardRarityEnum::COMMON;
-
     public function getId(): string
     {
         return '';
@@ -111,12 +109,20 @@ class CommonCardStub extends AbstractCard
     {
         // No-op for testing
     }
+
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::COMMON;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 }
 
 class LegendaryCardStub extends AbstractCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::LEGENDARY;
-
     public function getId(): string
     {
         return '';
@@ -140,5 +146,10 @@ class LegendaryCardStub extends AbstractCard
     public function play(GameContext $context): void
     {
         // No-op for testing
+    }
+
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::LEGENDARY;
     }
 }

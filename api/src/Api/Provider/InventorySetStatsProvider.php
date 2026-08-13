@@ -38,7 +38,7 @@ final class InventorySetStatsProvider implements ProviderInterface
                 continue;
             }
 
-            $setName = $template::$serie->name;
+            $setName = $template->getSerie()->name;
             $cardId = $inventoryCard->getCard();
             if (isset($seenCardsBySet[$setName][$cardId])) {
                 continue;

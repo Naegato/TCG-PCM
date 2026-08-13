@@ -8,8 +8,15 @@ use App\Game\GameContext;
 
 final class WololoCard extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::LEGENDARY;
-    public static CardSetEnum $serie = CardSetEnum::ORIGINAL;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::LEGENDARY;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::ORIGINAL;
+    }
 
     public function getId(): string
     {

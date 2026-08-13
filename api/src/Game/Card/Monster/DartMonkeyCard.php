@@ -8,7 +8,10 @@ use App\Enum\CardSetEnum;
 
 final class DartMonkeyCard extends AbstractMonsterCard
 {
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEALTH_POINTS = 5;
     private const ATTACK = 10;

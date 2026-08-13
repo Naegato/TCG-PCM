@@ -10,7 +10,10 @@ use App\Game\AbstractCard;
 
 abstract class AbstractCharacterCard extends AbstractCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
 
     public function getType(): CardTypeEnum
     {

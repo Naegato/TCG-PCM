@@ -15,8 +15,15 @@ final class HenryCard extends AbstractMonsterCard implements TurnAwareInterface
 {
     use TurnAwareTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::LEGENDARY;
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::LEGENDARY;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const HEALTH_POINTS = 500;
     private const ATTACK = 0;
