@@ -12,8 +12,15 @@ use App\Game\State\GameEvent;
 
 final class NecromancianCard extends AbstractCharacterCard implements TurnAwareInterface
 {
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
+
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
 
     use TurnAwareTrait;
 

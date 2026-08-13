@@ -12,7 +12,10 @@ use App\Game\GameUtils;
 
 final class FortniteCard extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
 
     private const VICTORY_ROYALE_HEALTH = 6;
     private const VICTORY_ROYALE_ATTACK = 7;

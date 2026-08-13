@@ -10,7 +10,10 @@ use Override;
 
 final class BombCard extends AbstractConsumableCard
 {
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const DAMAGE = 5;
 

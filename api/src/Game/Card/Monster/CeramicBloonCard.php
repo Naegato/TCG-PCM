@@ -9,8 +9,15 @@ use App\Enum\CardSetEnum;
 
 final class CeramicBloonCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEALTH_POINTS = 40;
     private const ATTACK = 8;

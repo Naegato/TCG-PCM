@@ -15,8 +15,15 @@ final class SirenCard extends AbstractMonsterCard implements TurnAwareInterface
 {
     use BaseOnTurnTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const HEALTH_POINTS = 33;
     private const ATTACK = 7;

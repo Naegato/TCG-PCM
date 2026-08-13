@@ -10,7 +10,10 @@ use App\Service\Game\Helper\HttpHelper;
 
 class GitmanCard extends AbstractConsumableCard implements ComputedCardInterface
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
 
     private const string GITHUB_API_URL = 'https://api.github.com/repos/Naegato/TCG-PCM/commits?per_page=1';
 

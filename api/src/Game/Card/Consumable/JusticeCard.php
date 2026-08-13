@@ -8,8 +8,15 @@ use App\Game\GameContext;
 
 final class JusticeCard extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     public function getId(): string
     {

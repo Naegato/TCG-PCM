@@ -18,7 +18,10 @@ final class PlacentaCard extends AbstractPassiveCard implements TurnAwareInterfa
 
     public const CardRarityEnum RARITY = CardRarityEnum::UNCOMMON;
 
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const HEALTH_GAIN = 5;
 

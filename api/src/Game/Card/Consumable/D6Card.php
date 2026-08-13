@@ -9,7 +9,10 @@ use App\Game\GameContext;
 
 final class D6Card extends AbstractConsumableCard
 {
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     public function getId(): string
     {

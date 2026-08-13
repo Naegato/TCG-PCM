@@ -9,7 +9,10 @@ use App\Game\GameContext;
 
 final class BombFestCard extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
 
     public function getId(): string
     {

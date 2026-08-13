@@ -17,7 +17,10 @@ final class RacismCard extends AbstractPassiveCard implements CardAwareInterface
 
     private const int BASE_ATTACK = 5;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
 
     public function getId(): string
     {
@@ -42,7 +45,7 @@ final class RacismCard extends AbstractPassiveCard implements CardAwareInterface
             return;
         }
 
-        if (CardSetEnum::ORIGINAL !== $card::$serie) {
+        if (CardSetEnum::ORIGINAL !== $card->getSerie()) {
             return;
         }
 

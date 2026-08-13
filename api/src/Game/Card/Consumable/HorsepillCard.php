@@ -11,8 +11,15 @@ use App\Game\GameContext;
 
 final class HorsepillCard extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
 
     private const SELF_DAMAGE = 50;
     private const SELF_HEAL = 50;

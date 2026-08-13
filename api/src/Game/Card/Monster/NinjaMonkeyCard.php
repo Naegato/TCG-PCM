@@ -13,8 +13,15 @@ use App\Game\GameContext;
 
 final class NinjaMonkeyCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::UNCOMMON;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::UNCOMMON;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEALTH_POINTS = 8;
     private const ATTACK = 15;

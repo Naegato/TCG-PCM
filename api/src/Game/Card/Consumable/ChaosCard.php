@@ -12,7 +12,10 @@ use App\Game\GameUtils;
 
 final class ChaosCard extends AbstractConsumableCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
 
     /**
      * @var string[]|null

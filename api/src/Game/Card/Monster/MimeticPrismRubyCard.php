@@ -11,7 +11,10 @@ use App\Service\Game\Helper\CardHelper;
 
 class MimeticPrismRubyCard extends AbstractMonsterCard
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
 
     protected const HEALTH_POINTS_MULTIPLIER = 0.5;
     protected const ATTACK_MULTIPLIER = 2;

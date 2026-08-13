@@ -12,7 +12,10 @@ final class StackyStackitoCard extends AbstractPassiveCard implements TurnAwareI
 {
     use BaseOnTurnTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::UNCOMMON;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::UNCOMMON;
+    }
 
     private const DELAY = 1;
 

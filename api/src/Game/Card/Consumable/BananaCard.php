@@ -10,7 +10,10 @@ use App\Game\GameUtils;
 
 final class BananaCard extends AbstractConsumableCard
 {
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEAL_AMOUNT = 10;
 

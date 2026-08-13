@@ -101,7 +101,7 @@ final class DeckValidator
                 ));
             }
 
-            $rarity = $template::$rarity->value;
+            $rarity = $template->getRarity()->value;
             $rarityCount[$rarity]++;
         }
 

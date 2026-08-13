@@ -9,7 +9,10 @@ use App\Service\Game\Helper\HttpHelper;
 
 final class Crypto4NoobCard extends AbstractMonsterCard implements ComputedCardInterface
 {
-    public static CardRarityEnum $rarity = CardRarityEnum::RARE;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::RARE;
+    }
 
     private const HEALTH_POINTS = 15;
     private const URL = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur';

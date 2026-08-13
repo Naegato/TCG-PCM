@@ -17,8 +17,15 @@ final class AlchemistMonkeyCard extends AbstractMonsterCard implements TurnAware
 {
     use TurnAwareTrait;
 
-    public static CardRarityEnum $rarity = CardRarityEnum::EPIC;
-    public static CardSetEnum $serie = CardSetEnum::BTD6;
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::EPIC;
+    }
+
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::BTD6;
+    }
 
     private const HEALTH_POINTS = 20;
     private const ATTACK = 6;

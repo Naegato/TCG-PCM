@@ -17,8 +17,15 @@ final class MechaPainterCard extends AbstractMonsterCard implements TurnAwareInt
 {
     use TurnAwareTrait;
 
-    public static CardSetEnum $serie = CardSetEnum::TBOI;
-    public static CardRarityEnum $rarity = CardRarityEnum::LEGENDARY;
+    public function getSerie(): CardSetEnum
+    {
+        return CardSetEnum::TBOI;
+    }
+
+    public function getRarity(): CardRarityEnum
+    {
+        return CardRarityEnum::LEGENDARY;
+    }
 
     private const HEALTH_POINTS = 39;
     private const ATTACK = 45;
