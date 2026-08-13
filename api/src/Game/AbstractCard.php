@@ -7,7 +7,6 @@ namespace App\Game;
 use App\Enum\CardEffectEnum;
 use App\Enum\CardRarityEnum;
 use App\Enum\CardSetEnum;
-use App\Enum\CardTargetTypeEnum;
 use App\Enum\CardTypeEnum;
 use App\Game\Card\CardState;
 use App\Game\Card\Effect\AbstractCardEffect;
@@ -69,16 +68,6 @@ abstract class AbstractCard
     public function getImage(): string
     {
         return \sprintf('%s.png', $this->getId());
-    }
-
-    public function requiresTarget(): bool
-    {
-        return false;
-    }
-
-    public function getTargetType(): ?CardTargetTypeEnum
-    {
-        return null;
     }
 
     /**

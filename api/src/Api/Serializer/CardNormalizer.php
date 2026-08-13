@@ -45,7 +45,7 @@ final class CardNormalizer implements NormalizerInterface
             'serielabel' => $serie,
             'image' => filter_var($path, FILTER_VALIDATE_URL) ? $path : self::CARD_IMAGE_BASE_URL.strtolower($path),
             'requiresTarget' => $card instanceof CardDTO ? $card->requiresTarget : null,
-            'targetType' => $targetType?->value,
+            'targetType' => $targetType,
             'cost' => $card->cost,
             'hp' => $card->hp,
             'attack' => $card->attack,

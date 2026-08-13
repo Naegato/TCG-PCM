@@ -3,7 +3,6 @@
 namespace App\Game\Card\Consumable;
 
 use App\Enum\CardEffectEnum;
-use App\Enum\CardTargetTypeEnum;
 use App\Game\GameContext;
 
 final class ViciousStingerCard extends AbstractConsumableCard
@@ -18,14 +17,9 @@ final class ViciousStingerCard extends AbstractConsumableCard
         return 'vicious_stinger.webp';
     }
 
-    public function requiresTarget(): bool
+    public function getTargetType(): int
     {
-        return true;
-    }
-
-    public function getTargetType(): ?CardTargetTypeEnum
-    {
-        return CardTargetTypeEnum::MONSTER;
+        return self::TARGET_TYPE_MONSTER | self::TARGET_SELF_CARDS;
     }
 
     public function play(GameContext $context, array $data = []): void

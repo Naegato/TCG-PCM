@@ -6,7 +6,6 @@ namespace App\Game\Card\Consumable;
 
 use App\Enum\CardEffectEnum;
 use App\Enum\CardSetEnum;
-use App\Enum\CardTargetTypeEnum;
 use App\Game\Card\Effect\HackedCardEffect;
 use App\Game\GameContext;
 use App\Game\GameUtils;
@@ -38,14 +37,9 @@ final class BenjaminCard extends AbstractConsumableCard
         ]);
     }
 
-    public function requiresTarget(): bool
+    public function getTargetType(): int
     {
-        return true;
-    }
-
-    public function getTargetType(): ?CardTargetTypeEnum
-    {
-        return CardTargetTypeEnum::MONSTER_AND_PASSIVE;
+        return self::TARGET_TYPE_CHARACTER | self::TARGET_TYPE_PASSIVE | self::TARGET_TYPE_MONSTER | self::TARGET_SELF_CARDS | self::TARGET_OPPONENT_CARDS;
     }
 
     public function play(GameContext $context, array $data = []): void

@@ -28,6 +28,7 @@ export type CardFrontProps = {
   cardRarity: CardRaririty;
   cardStats: { hp?: number; attack?: number; cost?: number };
   turnRemainingBeforeAction?: number | null;
+  requiresTarget?: boolean;
   onReadyStateChange?: (isReady: boolean) => void;
 };
 
@@ -43,6 +44,7 @@ const CardFront = ({
   cardRarity,
   cardStats,
   turnRemainingBeforeAction,
+  requiresTarget,
   onReadyStateChange,
 }: CardFrontProps) => {
   const [isTextReady, setIsTextReady] = useState(false);
@@ -182,6 +184,14 @@ const CardFront = ({
             {turnRemainingBeforeAction}
           </div>
         )}
+      {requiresTarget && (
+        <div
+          title="Cette carte nécessite une cible"
+          className="absolute top-[6%] left-[6%] z-20 flex items-center justify-center rounded-full border border-sky-300/80 bg-sky-100 w-5 h-5 text-[11px] leading-none text-sky-900 shadow-sm"
+        >
+          <span aria-hidden="true">🎯</span>
+        </div>
+      )}
       <CardGlare glare={glare} isHovering={isHovering} />
       <CardTextOverlay
         key={readinessKey}

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Debug\Card;
 
 use App\Debug\Card\TraceableConsumableCard;
-use App\Enum\CardTargetTypeEnum;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Consumable\BananaCard;
 use App\Game\Card\Consumable\DartCard;
 use PHPUnit\Framework\TestCase;
@@ -18,7 +18,7 @@ final class TraceableCardTraitTest extends TestCase
         $traceableCard = TraceableConsumableCard::create(new DartCard(), new Stopwatch());
 
         self::assertTrue($traceableCard->requiresTarget());
-        self::assertSame(CardTargetTypeEnum::MONSTER, $traceableCard->getTargetType());
+        self::assertSame(AbstractConsumableCard::TARGET_TYPE_MONSTER | AbstractConsumableCard::TARGET_OPPONENT_CARDS, $traceableCard->getTargetType());
     }
 
     public function testNonTargetingCardStillReportsNoTarget(): void
@@ -26,6 +26,6 @@ final class TraceableCardTraitTest extends TestCase
         $traceableCard = TraceableConsumableCard::create(new BananaCard(), new Stopwatch());
 
         self::assertFalse($traceableCard->requiresTarget());
-        self::assertNull($traceableCard->getTargetType());
+        self::assertSame(AbstractConsumableCard::TARGET_TYPE_NONE, $traceableCard->getTargetType());
     }
 }

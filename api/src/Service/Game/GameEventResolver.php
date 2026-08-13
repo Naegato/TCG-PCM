@@ -6,6 +6,7 @@ namespace App\Service\Game;
 
 use App\Enum\GameEventTypeEnum;
 use App\Game\AbstractCard;
+use App\Game\Card\Character\AbstractCharacterCard;
 use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\DeathAwareInterface;
@@ -14,7 +15,9 @@ use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\Card\MonsterCardState;
 use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Exception\CardCannotAttackExpcetion;
+use App\Game\Exception\InvalidTargetException;
 use App\Game\Exception\NotEnoughCoinsException;
+use App\Game\GameContext;
 use App\Game\State\GameEvent;
 use App\Game\State\GameState;
 use App\Service\Game\Factory\GameContextFactoryInterface;
@@ -196,12 +199,16 @@ class GameEventResolver
                 /** @var AbstractMonsterCard|AbstractPassiveCard|AbstractConsumableCard $card */
                 $card = $this->cardRuntimeMap->getByState($state->getCardState($cardId));
                 $ctx = $this->gameContextFactory->createGameContext($state, $playerId);
+                $playData = \is_array($event->data['data'] ?? null) ? $event->data['data'] : [];
+
+                if ($card instanceof AbstractConsumableCard) {
+                    $this->assertValidTarget($card, $playData, $ctx);
+                }
 
                 match (true) {
                     $card instanceof AbstractMonsterCard => $card->onMonsterPlayed($ctx),
                     $card instanceof AbstractPassiveCard => $card->onCardPlace($ctx),
-                    // @todo introduce target on card to guess data
-                    $card instanceof AbstractConsumableCard => $card->play($ctx, \is_array($event->data['data'] ?? null) ? $event->data['data'] : []),
+                    $card instanceof AbstractConsumableCard => $card->play($ctx, $playData),
                 };
 
                 $events = $ctx->flushEvents();
@@ -218,6 +225,44 @@ class GameEventResolver
         }
 
         return $events;
+    }
+
+    private function assertValidTarget(AbstractConsumableCard $card, array $data, GameContext $ctx): void
+    {
+        if (!$card->requiresTarget()) {
+            return;
+        }
+
+        $targetId = $data['target'] ?? null;
+
+        if (!\is_string($targetId)) {
+            throw new InvalidTargetException('A target is required to play this card.');
+        }
+
+        $targetCardState = $ctx->state->getCardState($targetId);
+
+        if (null === $targetCardState) {
+            throw new InvalidTargetException('Target card not found.');
+        }
+
+        $targetCard = $this->cardRuntimeMap->getByState($targetCardState);
+
+        $entityFlag = match (true) {
+            $targetCard instanceof AbstractMonsterCard => AbstractConsumableCard::TARGET_TYPE_MONSTER,
+            $targetCard instanceof AbstractPassiveCard => AbstractConsumableCard::TARGET_TYPE_PASSIVE,
+            $targetCard instanceof AbstractCharacterCard => AbstractConsumableCard::TARGET_TYPE_CHARACTER,
+            default => 0,
+        };
+
+        $ownershipFlag = $targetCardState->ownerId === $ctx->playerId
+            ? AbstractConsumableCard::TARGET_SELF_CARDS
+            : AbstractConsumableCard::TARGET_OPPONENT_CARDS;
+
+        $targetType = $card->getTargetType();
+
+        if (0 === ($targetType & $entityFlag) || 0 === ($targetType & $ownershipFlag)) {
+            throw new InvalidTargetException('This card cannot target the selected card.');
+        }
     }
 
     /**

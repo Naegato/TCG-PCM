@@ -1,7 +1,7 @@
 "use client";
 
 import { CSSProperties, memo, useContext } from "react";
-import { CardSize, CardTargetType, CardType } from "@/constants/card";
+import { CardSize, CardTargetFlag, CardType } from "@/constants/card";
 import type { BasicCard } from "@/lib/cards/types/card";
 import CardWithZoom from "@/components/organisms/card/CardWithZoom";
 import CardEffectBadges from "@/components/molecules/game/CardEffectBadges";
@@ -18,6 +18,12 @@ type GameCardProps = {
   isPlaying?: boolean;
   isOpponentSideForPlayAnimation?: boolean;
   rowCardCount?: number;
+};
+
+const CARD_TYPE_TARGET_FLAG: Partial<Record<CardType, number>> = {
+  [CardType.MONSTER]: CardTargetFlag.MONSTER,
+  [CardType.PASSIVE]: CardTargetFlag.PASSIVE,
+  [CardType.CHARACTER]: CardTargetFlag.CHARACTER,
 };
 
 function getAnimatedCardStyle(
@@ -97,15 +103,23 @@ function GameCard({
   const pendingCard = pendingPlayCardId
     ? getCardById(pendingPlayCardId)
     : undefined;
+  const pendingCardTargetType = pendingCard?.targetType ?? CardTargetFlag.NONE;
+  const cardEntityFlag = card.type ? (CARD_TYPE_TARGET_FLAG[card.type] ?? 0) : 0;
+  const cardOwnershipFlag = isOwnSide
+    ? CardTargetFlag.SELF_CARDS
+    : CardTargetFlag.OPPONENT_CARDS;
   const isValidCardTarget = !!(
     pendingCard &&
     targetId !== pendingPlayCardId &&
-    (pendingCard.targetType === CardTargetType.MONSTER_AND_PASSIVE
-      ? card.type === CardType.MONSTER || card.type === CardType.PASSIVE
-      : card.type === CardType.MONSTER)
+    (pendingCardTargetType & cardEntityFlag) !== 0 &&
+    (pendingCardTargetType & cardOwnershipFlag) !== 0
   );
 
   const isPulseTarget = isValidAttackTarget || isValidCardTarget;
+
+  const isBlockedSelfTarget = disableSelfTarget && selectedAttackerId === targetId;
+  const isNonClickableWhileTargeting =
+    isTargeting && !isSelectedSource && (isBlockedSelfTarget || !isPulseTarget);
 
   const animatedStyle = getAnimatedCardStyle(
     isPlaying,
@@ -142,7 +156,7 @@ function GameCard({
         }
       }}
       onMouseLeave={() => targetingActions.hoverTarget(null)}
-      className={`relative card-selected ${canSelectSource || isTargeting ? "cursor-pointer" : ""} ${isPulseTarget ? "target-pulse" : ""} ${className ?? ""}`}
+      className={`relative card-selected ${(canSelectSource || isTargeting) && !isNonClickableWhileTargeting ? "cursor-pointer" : ""} ${isPulseTarget ? "target-pulse" : ""} ${isNonClickableWhileTargeting ? "opacity-40 grayscale pointer-events-none" : ""} ${className ?? ""}`}
       style={{ ...(animatedStyle ?? {}), ...(style ?? {}) }}
     >
       {card.effects.length > 0 && (

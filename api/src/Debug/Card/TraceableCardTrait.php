@@ -6,9 +6,9 @@ namespace App\Debug\Card;
 
 use App\Enum\CardRarityEnum;
 use App\Enum\CardSetEnum;
-use App\Enum\CardTargetTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\CardState;
+use App\Game\Card\Consumable\AbstractConsumableCard;
 use App\Game\Card\EffectCollection;
 use App\Game\Card\Interface\CardAwareInterface;
 use App\Game\Card\Interface\ComputedCardInterface;
@@ -199,12 +199,12 @@ trait TraceableCardTrait
 
     public function requiresTarget(): bool
     {
-        return $this->card->requiresTarget();
+        return $this->card instanceof AbstractConsumableCard && $this->card->requiresTarget();
     }
 
-    public function getTargetType(): ?CardTargetTypeEnum
+    public function getTargetType(): int
     {
-        return $this->card->getTargetType();
+        return $this->card instanceof AbstractConsumableCard ? $this->card->getTargetType() : AbstractConsumableCard::TARGET_TYPE_NONE;
     }
 
     public function getSerie(): CardSetEnum
