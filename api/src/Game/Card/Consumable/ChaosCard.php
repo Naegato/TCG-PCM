@@ -7,6 +7,7 @@ namespace App\Game\Card\Consumable;
 use App\Enum\CardRarityEnum;
 use App\Game\Card\CardHelper;
 use App\Game\Card\Monster\AbstractMonsterCard;
+use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\GameContext;
 use App\Game\GameUtils;
 

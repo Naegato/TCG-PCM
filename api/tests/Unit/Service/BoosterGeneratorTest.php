@@ -13,7 +13,6 @@ use App\Game\GameContext;
 use App\Service\Booster\BoosterGenerator;
 use App\Service\Booster\BoosterRegistry;
 use App\Tests\Resources\MockCardRegistry;
-use Override;
 use PHPUnit\Framework\TestCase;
 
 final class BoosterGeneratorTest extends TestCase

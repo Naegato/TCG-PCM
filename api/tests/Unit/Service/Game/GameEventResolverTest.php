@@ -323,10 +323,120 @@ final class GameEventResolverTest extends TestCase
             'attackerId' => 'attacker',
         ]);
 
-        $ger->resolve($event, $gameState)->events;
+        $events = $ger->resolve($event, $gameState)->events;
 
         // add UPDATE_CARD_STATE
         self::assertCount(1, SpyAwareCard::$calls);
+
+        // Regression guard: PLAYER_DIED's own CARD_TRIGGERED_ACTION reactions used to still be
+        // queued when pendingDeath got cleared, so generateSystemsEvent() re-detected the same
+        // death and looped forever (OOM). Exactly one PLAYER_DIED should ever be emitted here.
+        self::assertCount(1, array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::PLAYER_DIED === $e->type));
+
+        self::assertSame('onPlayerDeath', SpyAwareCard::$receivedCalls[0]['method']);
+        self::assertSame('2', SpyAwareCard::$receivedCalls[0]['deadPlayerId']);
+    }
+
+    public function testTurnStartedTriggersCardTriggeredActionsWithScalarDataAndCorrectParent(): void
+    {
+        $ger = $this->getSut();
+        $gameState = new GameState(
+            new PlayerState(new Player('1', 'Player 1'), 10, 10, 'player1', [], [], 0, new PlayArea()),
+            new PlayerState(
+                new Player('2', 'Player 2'),
+                10,
+                10,
+                'player1',
+                [],
+                [
+                    'draw2' => DummyCard::class,
+                ],
+                0,
+                new PlayArea(['spy-aware'], []),
+            ),
+            0,
+            0,
+            null,
+            [
+                'spy-aware' => new CardState('spy-aware', SpyAwareCard::class, '2'),
+            ],
+        );
+
+        $event = new GameEvent(0, GameEventTypeEnum::TURN_ENDED, GameEvent::PLAYER_EVENT, ['playerId' => $gameState->player1->player->id]);
+
+        $events = $ger->resolve($event, $gameState)->events;
+
+        $turnStartedEvents = array_values(array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::TURN_STARTED === $e->type));
+        $cardDrawnEvents = array_values(array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::CARD_DRAWN === $e->type));
+
+        self::assertCount(1, $turnStartedEvents);
+        self::assertCount(1, $cardDrawnEvents);
+
+        // spy-aware is Turn+Card+DeathAware, so it reacts three times here: TURN_END (player1's
+        // turn ending), TURN_START (player2's turn starting) and CARD_DRAWN (player2 drawing) —
+        // each must get its own CARD_TRIGGERED_ACTION, carrying only plain/scalar data (it's
+        // published to the front as-is; an embedded GameEvent/AbstractCard object would break
+        // JSON serialization).
+        $triggeredActions = array_values(array_filter($events, static fn(GameEvent $e): bool => GameEventTypeEnum::CARD_TRIGGERED_ACTION === $e->type));
+        self::assertCount(3, $triggeredActions);
+
+        $turnStartAction = array_values(array_filter($triggeredActions, static fn(GameEvent $e): bool => 'TURN_START' === $e->data['trigger']))[0];
+        $cardDrawnAction = array_values(array_filter($triggeredActions, static fn(GameEvent $e): bool => 'CARD_DRAWN' === $e->data['trigger']))[0];
+
+        self::assertSame(['cardId' => 'spy-aware', 'trigger' => 'TURN_START'], $turnStartAction->data);
+        self::assertSame($turnStartedEvents[0]->localId, $turnStartAction->parentId);
+
+        self::assertSame(['cardId' => 'spy-aware', 'trigger' => 'CARD_DRAWN', 'drawnCardId' => 'draw2'], $cardDrawnAction->data);
+        self::assertSame($cardDrawnEvents[0]->localId, $cardDrawnAction->parentId);
+
+        $turnStartCall = array_values(array_filter(SpyAwareCard::$receivedCalls, static fn(array $c): bool => 'onTurnStart' === $c['method']))[0];
+        $cardDrawnCall = array_values(array_filter(SpyAwareCard::$receivedCalls, static fn(array $c): bool => 'onCardDrawn' === $c['method']))[0];
+
+        self::assertSame($gameState->player2->player->id, $turnStartCall['event']->data['playerId']);
+        self::assertSame('draw2', $cardDrawnCall['cardId']);
+    }
+
+    public function testMultipleTurnAwareCardsEachGetOwnCardTriggeredAction(): void
+    {
+        $ger = $this->getSut();
+        $gameState = new GameState(
+            new PlayerState(new Player('1', 'Player 1'), 10, 10, 'player1', [], [], 0, new PlayArea(['card1O'], [])),
+            new PlayerState(
+                new Player('2', 'Player 2'),
+                10,
+                10,
+                'player1',
+                [],
+                [
+                    'draw2' => DummyCard::class,
+                ],
+                0,
+                new PlayArea(['spy-aware'], []),
+            ),
+            0,
+            0,
+            null,
+            [
+                'card1O' => new CardState('card1O', SpyCard::class, '1', []),
+                'spy-aware' => new CardState('spy-aware', SpyAwareCard::class, '2'),
+            ],
+        );
+
+        $event = new GameEvent(0, GameEventTypeEnum::TURN_ENDED, GameEvent::PLAYER_EVENT, ['playerId' => $gameState->player1->player->id]);
+
+        $events = $ger->resolve($event, $gameState)->events;
+
+        $turnStartTriggers = array_values(array_filter(
+            $events,
+            static fn(GameEvent $e): bool => GameEventTypeEnum::CARD_TRIGGERED_ACTION === $e->type && 'TURN_START' === $e->data['trigger'],
+        ));
+
+        self::assertTrue(SpyCard::$turnStartCalled);
+        // spy-aware also reacts to TURN_END and CARD_DRAWN in this scenario (see the previous
+        // test) — 3 calls total, only 2 of which are the TURN_START fan-out this test cares about.
+        self::assertCount(3, SpyAwareCard::$calls);
+        self::assertCount(2, $turnStartTriggers);
+        self::assertEqualsCanonicalizing(['card1O', 'spy-aware'], array_map(static fn(GameEvent $e) => $e->data['cardId'], $turnStartTriggers));
     }
 
     public function testSimultaneousMonsterDeathsDoNotProduceDuplicateDeathEvents(): void
