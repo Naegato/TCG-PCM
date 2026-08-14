@@ -16,9 +16,9 @@ final class ReplayableGameContextFactory implements GameContextFactoryInterface
         private array $runtimesValues = [],
     ) {}
 
-    public function createGameContext(GameState $gameState, string $playerId): GameContext
+    public function createGameContext(GameState $gameState, string $playerId, ?int $parentEventId = null): GameContext
     {
-        $context = new ReplayableGameContext($gameState, $playerId);
+        $context = new ReplayableGameContext($gameState, $playerId, $parentEventId);
         $context->setRuntimeValueProvider($this->getNextRolls(...));
 
         return $context;

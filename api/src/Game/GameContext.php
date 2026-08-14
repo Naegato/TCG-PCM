@@ -21,6 +21,7 @@ class GameContext
     public function __construct(
         public readonly GameState $state,
         public readonly string $playerId,
+        public readonly ?int $parentEventId = null,
     ) {}
 
     public function drawCards(int $count, ?string $playerId = null): void
@@ -59,7 +60,7 @@ class GameContext
 
     public function pushGameEvent(GameEventTypeEnum $type, array $payload = []): void
     {
-        $this->events[] = GameEvent::game($type, $payload);
+        $this->events[] = GameEvent::game($type, $payload, $this->parentEventId);
     }
 
     public function getOpponent(): Player
@@ -76,7 +77,7 @@ class GameContext
     {
         $result = $this->state->randomizer->roll($faces);
 
-        $this->events[] = GameEvent::game(GameEventTypeEnum::DICE_ROLLED, [
+        $this->pushGameEvent(GameEventTypeEnum::DICE_ROLLED, [
             'faces' => $faces,
             'result' => $result,
         ]);
@@ -88,7 +89,7 @@ class GameContext
     {
         $result = $this->state->randomizer->randomBetweenFloat($min, $max);
 
-        $this->events[] = GameEvent::game(GameEventTypeEnum::DICE_ROLLED, [
+        $this->pushGameEvent(GameEventTypeEnum::DICE_ROLLED, [
             'min' => $min,
             'max' => $max,
             'result' => $result,
@@ -101,7 +102,7 @@ class GameContext
     {
         $result = $this->state->randomizer->randomBetweenInt($min, $max);
 
-        $this->events[] = GameEvent::game(GameEventTypeEnum::DICE_ROLLED, [
+        $this->pushGameEvent(GameEventTypeEnum::DICE_ROLLED, [
             'min' => $min,
             'max' => $max,
             'result' => $result,
@@ -123,11 +124,11 @@ class GameContext
 
     public function addEffect(CardEffectEnum $effect, string $cardId, ?array $effectValues = null): void
     {
-        $this->events[] = GameEvent::game(GameEventTypeEnum::EFFECT_ADDED, array_filter([
+        $this->pushGameEvent(GameEventTypeEnum::EFFECT_ADDED, [
             'effect' => $effect->value,
             'cardId' => $cardId,
             'effectValues' => $effectValues,
-        ]));
+        ]);
     }
 
     public function getCard(string $instanceId): CardState

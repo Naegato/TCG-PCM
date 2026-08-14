@@ -13,12 +13,14 @@ readonly class TraceableGameEvent extends GameEvent
         GameEventTypeEnum $type,
         string $eventOrigin,
         array $data,
+        ?int $parentId = null,
+        int $localId = 0,
     ) {
-        parent::__construct($id, $type, $eventOrigin, $data);
+        parent::__construct($id, $type, $eventOrigin, $data, $parentId, $localId);
     }
 
     public static function fromParent(parent $event, string $origin): self
     {
-        return new self($origin, $event->id, $event->type, $event->eventOrigin, $event->data);
+        return new self($origin, $event->id, $event->type, $event->eventOrigin, $event->data, $event->parentId, $event->localId);
     }
 }
