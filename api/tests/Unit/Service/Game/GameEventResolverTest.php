@@ -112,13 +112,20 @@ final class GameEventResolverTest extends TestCase
 
         $events = $gm->resolve($event, $gameState)->events;
         $expected = [
-            new GameEvent(0, GameEventTypeEnum::TURN_ENDED, GameEvent::PLAYER_EVENT, ['playerId' => $gameState->player1->player->id]),
-            new GameEvent(0, GameEventTypeEnum::TURN_STARTED, GameEvent::GAME_EVENT, ['playerId' => $gameState->player2->player->id]),
-            new GameEvent(0, GameEventTypeEnum::COINS_GAINED, GameEvent::GAME_EVENT, [
-                'playerId' => $gameState->player2->player->id,
-                'amount' => 3,
-            ]),
-            new GameEvent(0, GameEventTypeEnum::CARD_DRAWN, GameEvent::GAME_EVENT, ['playerId' => $gameState->player2->player->id]),
+            new GameEvent(0, GameEventTypeEnum::TURN_ENDED, GameEvent::PLAYER_EVENT, ['playerId' => $gameState->player1->player->id], localId: 1),
+            new GameEvent(0, GameEventTypeEnum::TURN_STARTED, GameEvent::GAME_EVENT, ['playerId' => $gameState->player2->player->id], parentId: 1, localId: 2),
+            new GameEvent(
+                0,
+                GameEventTypeEnum::COINS_GAINED,
+                GameEvent::GAME_EVENT,
+                [
+                    'playerId' => $gameState->player2->player->id,
+                    'amount' => 3,
+                ],
+                parentId: 2,
+                localId: 3,
+            ),
+            new GameEvent(0, GameEventTypeEnum::CARD_DRAWN, GameEvent::GAME_EVENT, ['playerId' => $gameState->player2->player->id], parentId: 2, localId: 4),
         ];
 
         self::assertEquals($expected, $events);
@@ -134,13 +141,20 @@ final class GameEventResolverTest extends TestCase
 
         $events = $gm->resolve($event, $gameState)->events;
         $expected = [
-            new GameEvent(0, GameEventTypeEnum::TURN_ENDED, GameEvent::PLAYER_EVENT, ['playerId' => $gameState->player2->player->id]),
-            new GameEvent(0, GameEventTypeEnum::TURN_STARTED, GameEvent::GAME_EVENT, ['playerId' => $gameState->player1->player->id]),
-            new GameEvent(0, GameEventTypeEnum::COINS_GAINED, GameEvent::GAME_EVENT, [
-                'playerId' => $gameState->player1->player->id,
-                'amount' => 3,
-            ]),
-            new GameEvent(0, GameEventTypeEnum::CARD_DRAWN, GameEvent::GAME_EVENT, ['playerId' => $gameState->player1->player->id]),
+            new GameEvent(0, GameEventTypeEnum::TURN_ENDED, GameEvent::PLAYER_EVENT, ['playerId' => $gameState->player2->player->id], localId: 1),
+            new GameEvent(0, GameEventTypeEnum::TURN_STARTED, GameEvent::GAME_EVENT, ['playerId' => $gameState->player1->player->id], parentId: 1, localId: 2),
+            new GameEvent(
+                0,
+                GameEventTypeEnum::COINS_GAINED,
+                GameEvent::GAME_EVENT,
+                [
+                    'playerId' => $gameState->player1->player->id,
+                    'amount' => 3,
+                ],
+                parentId: 2,
+                localId: 3,
+            ),
+            new GameEvent(0, GameEventTypeEnum::CARD_DRAWN, GameEvent::GAME_EVENT, ['playerId' => $gameState->player1->player->id], parentId: 2, localId: 4),
         ];
 
         self::assertEquals($expected, $events);

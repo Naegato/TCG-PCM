@@ -36,10 +36,44 @@ final class GameDataCollector extends DataCollector
             return;
         }
 
-        $events = array_map(DebugGameEvent::fromTraceableGameEvent(...), $this->gameEventApplier->getEvents());
+        $events = [];
+        $batch = 0;
+        $isReplayBatch = false;
 
-        $subEvents = array_filter($events, static fn($event) => !$event->isReplayEvent);
-        $this->data['mainEvent'] = array_shift($subEvents);
+        foreach ($this->gameEventApplier->getEvents() as $traceableEvent) {
+            // localId is only unique within a single GameEventResolver::resolve() call — a replay
+            // catch-up (GameStateRebuilder) calls resolve() once per historical event on the same
+            // resolver instance, so localId restarts at 1 for each one. Detecting that restart lets
+            // us group events by the resolve() call they actually belong to for display purposes.
+            // Whether a batch is a replay is decided by its root (localId === 1): it carries a real
+            // persisted id when it comes from GameStateRebuilder, unlike a fresh live action. Every
+            // event in that batch — reactions included — inherits the same flag, since only the root
+            // of a live action ever has id === 0.
+            if (1 === $traceableEvent->localId) {
+                ++$batch;
+                $isReplayBatch = 0 !== $traceableEvent->id;
+            }
+
+            $events[] = DebugGameEvent::fromTraceableGameEvent($traceableEvent, $batch, $isReplayBatch);
+        }
+
+        $mainEvent = null;
+        $subEvents = [];
+
+        foreach ($events as $event) {
+            if ($event->isReplayEvent) {
+                continue;
+            }
+
+            if (1 === $event->localId) {
+                $mainEvent = $event;
+                continue;
+            }
+
+            $subEvents[] = $event;
+        }
+
+        $this->data['mainEvent'] = $mainEvent;
         $this->data['subEvents'] = $subEvents;
 
         $this->data['stats'] = [
@@ -138,11 +172,32 @@ final class GameDataCollector extends DataCollector
     {
         return array_filter($this->data['events'], static fn(DebugGameEvent $e) => !$e->isReplayEvent);
     }
+
+    /**
+     * Groups events by the resolve() call (batch) they belong to, preserving order — one entry
+     * per batch, each holding its root (localId === 1) and every event it caused.
+     *
+     * @return array<int, DebugGameEvent[]>
+     */
+    public function getEventsGroupedByBatch(): array
+    {
+        $grouped = [];
+
+        foreach ($this->getEvents() as $event) {
+            $grouped[$event->batch][] = $event;
+        }
+
+        return $grouped;
+    }
 }
 
 readonly class DebugGameEvent
 {
     public function __construct(
+        public int $id,
+        public int $localId,
+        public int $batch,
+        public ?int $parentId,
         public string $origin,
         public GameEventTypeEnum $type,
         public string $eventOrigin,
@@ -151,8 +206,19 @@ readonly class DebugGameEvent
         public bool $isReplayEvent,
     ) {}
 
-    public static function fromTraceableGameEvent(TraceableGameEvent $event): self
+    public static function fromTraceableGameEvent(TraceableGameEvent $event, int $batch, bool $isReplayEvent): self
     {
-        return new self($event->origin, $event->type, $event->eventOrigin, $event->data, $event->shouldBePersisted(), 0 !== $event->id);
+        return new self(
+            $event->id,
+            $event->localId,
+            $batch,
+            $event->parentId,
+            $event->origin,
+            $event->type,
+            $event->eventOrigin,
+            $event->data,
+            $event->shouldBePersisted(),
+            $isReplayEvent,
+        );
     }
 }

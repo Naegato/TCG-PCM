@@ -9,5 +9,5 @@ use App\Game\State\GameState;
 
 interface GameContextFactoryInterface
 {
-    public function createGameContext(GameState $gameState, string $playerId): GameContext;
+    public function createGameContext(GameState $gameState, string $playerId, ?int $parentEventId = null): GameContext;
 }

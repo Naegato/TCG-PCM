@@ -15,9 +15,9 @@ final class TraceableGameContextFactory implements GameContextFactoryInterface
      */
     private array $gameContexts = [];
 
-    public function createGameContext(GameState $gameState, string $playerId): GameContext
+    public function createGameContext(GameState $gameState, string $playerId, ?int $parentEventId = null): GameContext
     {
-        $gameContext = new DebugGameContext($gameState, $playerId);
+        $gameContext = new DebugGameContext($gameState, $playerId, $parentEventId);
         $this->gameContexts[] = $gameContext;
 
         return $gameContext;

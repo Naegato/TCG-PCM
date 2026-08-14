@@ -36,6 +36,8 @@ class GameEventResolver
 
     private array $pendingDeath = [];
 
+    private int $nextLocalId = 1;
+
     public function __construct(
         private CardRuntimeMap $cardRuntimeMap,
         private GameContextFactoryInterface $gameContextFactory,
@@ -64,6 +66,7 @@ class GameEventResolver
         } finally {
             $this->eventQueue = [];
             $this->resolvedEvents = [];
+            $this->nextLocalId = 1;
         }
     }
 
@@ -121,10 +124,14 @@ class GameEventResolver
                 continue;
             }
 
-            $events[] = GameEvent::game(GameEventTypeEnum::PLAYER_DIED, [
-                'playerId' => $playerState->player->id,
-                'characterCardId' => $playerState->characterCardId,
-            ]);
+            $events[] = GameEvent::game(
+                GameEventTypeEnum::PLAYER_DIED,
+                [
+                    'playerId' => $playerState->player->id,
+                    'characterCardId' => $playerState->characterCardId,
+                ],
+                $currentEvent?->localId,
+            );
 
             $this->pendingDeath[] = $playerState->characterCardId;
         }
@@ -146,10 +153,14 @@ class GameEventResolver
             }
 
             if ($card->getCurrentHealthPoints() <= 0) {
-                $events[] = GameEvent::game(GameEventTypeEnum::MONSTER_DIED, [
-                    'playerId' => $cardState->ownerId,
-                    'cardId' => $monsterCardId,
-                ]);
+                $events[] = GameEvent::game(
+                    GameEventTypeEnum::MONSTER_DIED,
+                    [
+                        'playerId' => $cardState->ownerId,
+                        'cardId' => $monsterCardId,
+                    ],
+                    $currentEvent?->localId,
+                );
 
                 $this->pendingDeath[] = $monsterCardId;
             }
@@ -168,18 +179,30 @@ class GameEventResolver
 
         switch ($event->type) {
             case GameEventTypeEnum::TURN_ENDED:
-                $events[] = GameEvent::game(GameEventTypeEnum::TURN_STARTED, [
-                    'playerId' => $playerId,
-                ]);
+                $events[] = GameEvent::game(
+                    GameEventTypeEnum::TURN_STARTED,
+                    [
+                        'playerId' => $playerId,
+                    ],
+                    $event->localId,
+                );
                 break;
             case GameEventTypeEnum::TURN_STARTED:
-                $events[] = GameEvent::game(GameEventTypeEnum::COINS_GAINED, [
-                    'playerId' => $playerId,
-                    'amount' => $this->calculateCoinsGain($state),
-                ]);
-                $events[] = GameEvent::game(GameEventTypeEnum::CARD_DRAWN, [
-                    'playerId' => $playerId,
-                ]);
+                $events[] = GameEvent::game(
+                    GameEventTypeEnum::COINS_GAINED,
+                    [
+                        'playerId' => $playerId,
+                        'amount' => $this->calculateCoinsGain($state),
+                    ],
+                    $event->localId,
+                );
+                $events[] = GameEvent::game(
+                    GameEventTypeEnum::CARD_DRAWN,
+                    [
+                        'playerId' => $playerId,
+                    ],
+                    $event->localId,
+                );
                 $events = array_merge($events, $this->restoreMonstersAttack($state, $playerId));
                 break;
             case GameEventTypeEnum::CARD_PLAYED:
@@ -198,7 +221,7 @@ class GameEventResolver
                 $cardId = $event->data['cardId'];
                 /** @var AbstractMonsterCard|AbstractPassiveCard|AbstractConsumableCard $card */
                 $card = $this->cardRuntimeMap->getByState($state->getCardState($cardId));
-                $ctx = $this->gameContextFactory->createGameContext($state, $playerId);
+                $ctx = $this->gameContextFactory->createGameContext($state, $playerId, $event->localId);
                 $playData = \is_array($event->data['data'] ?? null) ? $event->data['data'] : [];
 
                 if ($card instanceof AbstractConsumableCard) {
@@ -214,10 +237,14 @@ class GameEventResolver
                 $events = $ctx->flushEvents();
 
                 if ($card instanceof AbstractConsumableCard) {
-                    $events[] = GameEvent::game(GameEventTypeEnum::CARD_DISCARDED, [
-                        'cardId' => $cardId,
-                        'playerId' => $playerId,
-                    ]);
+                    $events[] = GameEvent::game(
+                        GameEventTypeEnum::CARD_DISCARDED,
+                        [
+                            'cardId' => $cardId,
+                            'playerId' => $playerId,
+                        ],
+                        $event->localId,
+                    );
                 }
                 break;
             default:
@@ -279,10 +306,14 @@ class GameEventResolver
                 continue;
             }
 
-            $events[] = GameEvent::game(GameEventTypeEnum::CARD_STATE_UPDATED, [
-                'cardId' => $cardId,
-                'canAttack' => true,
-            ]);
+            $events[] = GameEvent::game(
+                GameEventTypeEnum::CARD_STATE_UPDATED,
+                [
+                    'cardId' => $cardId,
+                    'canAttack' => true,
+                ],
+                null,
+            );
         }
 
         return $events;
@@ -314,28 +345,44 @@ class GameEventResolver
             throw new NotEnoughCoinsException($cardCost, $state->getCurrentPlayerState()->coins);
         }
 
-        $events[] = GameEvent::game(GameEventTypeEnum::COINS_LOST, [
-            'playerId' => $event->data['playerId'],
-            'amount' => $cardCost,
-        ]);
+        $events[] = GameEvent::game(
+            GameEventTypeEnum::COINS_LOST,
+            [
+                'playerId' => $event->data['playerId'],
+                'amount' => $cardCost,
+            ],
+            $event->localId,
+        );
 
         if ($card instanceof AbstractConsumableCard) {
-            $events[] = GameEvent::game(GameEventTypeEnum::CARD_CONSUMED, [
-                'playerId' => $event->data['playerId'],
-                'cardId' => $event->data['cardId'],
-                'data' => $event->data['data'] ?? [],
-            ]);
+            $events[] = GameEvent::game(
+                GameEventTypeEnum::CARD_CONSUMED,
+                [
+                    'playerId' => $event->data['playerId'],
+                    'cardId' => $event->data['cardId'],
+                    'data' => $event->data['data'] ?? [],
+                ],
+                $event->localId,
+            );
         } elseif ($card instanceof AbstractPassiveCard) {
-            $events[] = GameEvent::game(GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA, [
-                'playerId' => $event->data['playerId'],
-                'cardId' => $event->data['cardId'],
-            ]);
+            $events[] = GameEvent::game(
+                GameEventTypeEnum::CARD_PLACED_IN_PLAY_AREA,
+                [
+                    'playerId' => $event->data['playerId'],
+                    'cardId' => $event->data['cardId'],
+                ],
+                $event->localId,
+            );
         } elseif ($card instanceof AbstractMonsterCard) {
-            $events[] = GameEvent::game(GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA, [
-                'playerId' => $event->data['playerId'],
-                'cardId' => $event->data['cardId'],
-                'cardHealthPoints' => $card->getHealPoints(),
-            ]);
+            $events[] = GameEvent::game(
+                GameEventTypeEnum::CARD_PLACED_IN_MONSTER_AREA,
+                [
+                    'playerId' => $event->data['playerId'],
+                    'cardId' => $event->data['cardId'],
+                    'cardHealthPoints' => $card->getHealPoints(),
+                ],
+                $event->localId,
+            );
         } else {
             throw new \LogicException('Card must be either a playable or passive card');
         }
@@ -376,11 +423,15 @@ class GameEventResolver
         $targetId = $event->data['targetId'];
         // if player
         if (\in_array($targetId, [$state->getOtherPlayerState()->characterCardId, $state->getOtherPlayerState()->player->id], true)) {
-            $events[] = GameEvent::game(GameEventTypeEnum::DAMAGE_DEALT, [
-                'targetId' => $targetId,
-                'damage' => $card->getAttack(),
-                'sourceId' => $attackerId,
-            ]);
+            $events[] = GameEvent::game(
+                GameEventTypeEnum::DAMAGE_DEALT,
+                [
+                    'targetId' => $targetId,
+                    'damage' => $card->getAttack(),
+                    'sourceId' => $attackerId,
+                ],
+                $event->localId,
+            );
         } elseif (\in_array($targetId, $state->getOtherPlayerState()->playArea->monsterCards, true)) {
             $target = $this->cardRuntimeMap->getByState($state->getCardState($event->data['targetId']));
 
@@ -389,29 +440,37 @@ class GameEventResolver
             }
 
             $baseDamage = $card->getAttack();
-            $ctx = $this->gameContextFactory->createGameContext($state, $attackerCardState->ownerId);
+            $ctx = $this->gameContextFactory->createGameContext($state, $attackerCardState->ownerId, $event->localId);
             $reducedDamage = $target->reduceDamage($ctx, $baseDamage);
 
-            $events[] = GameEvent::game(GameEventTypeEnum::DAMAGE_DEALT, [
-                'targetId' => $targetId,
-                'damage' => $reducedDamage,
-                'sourceId' => $attackerId,
-            ]);
+            $events[] = GameEvent::game(
+                GameEventTypeEnum::DAMAGE_DEALT,
+                [
+                    'targetId' => $targetId,
+                    'damage' => $reducedDamage,
+                    'sourceId' => $attackerId,
+                ],
+                $event->localId,
+            );
 
             $events = array_merge($events, $ctx->flushEvents());
         } else {
             throw new \LogicException('Invalid targetId '.$event->data['targetId']);
         }
 
-        $ctx = $this->gameContextFactory->createGameContext($state, $attackerCardState->ownerId);
+        $ctx = $this->gameContextFactory->createGameContext($state, $attackerCardState->ownerId, $event->localId);
         $card->onAttack($ctx);
 
         return array_merge(
             [
-                GameEvent::game(GameEventTypeEnum::CARD_STATE_UPDATED, [
-                    'cardId' => $attackerId,
-                    'canAttack' => false,
-                ]),
+                GameEvent::game(
+                    GameEventTypeEnum::CARD_STATE_UPDATED,
+                    [
+                        'cardId' => $attackerId,
+                        'canAttack' => false,
+                    ],
+                    $event->localId,
+                ),
             ],
             $events,
             $ctx->flushEvents(),
@@ -450,7 +509,7 @@ class GameEventResolver
                 throw new \LogicException('No playerId found');
             }
 
-            $ctx = $this->gameContextFactory->createGameContext($state, $playerId);
+            $ctx = $this->gameContextFactory->createGameContext($state, $playerId, $event->localId);
             $card->onMonsterDeath($ctx);
 
             $events = $ctx->flushEvents();
@@ -465,7 +524,7 @@ class GameEventResolver
     private function collectEventsFromAwareCards(GameEvent $event, GameState $state): array
     {
         $events = [];
-        $ctx = $this->gameContextFactory->createGameContext($state, $state->currentPlayer);
+        $ctx = $this->gameContextFactory->createGameContext($state, $state->currentPlayer, $event->localId);
 
         switch ($event->type) {
             case GameEventTypeEnum::TURN_ENDED:
@@ -633,6 +692,8 @@ class GameEventResolver
      */
     private function pushEventsToQueue(array $events): void
     {
-        $this->eventQueue = array_merge($this->eventQueue, $events);
+        foreach ($events as $event) {
+            $this->eventQueue[] = $event->withLocalId($this->nextLocalId++);
+        }
     }
 }

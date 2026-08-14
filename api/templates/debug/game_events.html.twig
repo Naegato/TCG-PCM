@@ -4,16 +4,19 @@
     <table>
         <thead>
             <tr>
+                <th>Id</th>
                 <th class="text-right">Type</th>
                 <th>Origin</th>
                 <th>Line</th>
                 <th>Data</th>
+                <th>Parent ID</th>
             </tr>
         </thead>
 
         <tbody>
             {% for event in events %}
                 <tr>
+                    <td class="text-right nowrap">{{ event.batch }}.{{ event.localId }}</td>
                     <td class="text-right nowrap">{{ event.type.value }}</td>
                     <td class="font-normal">{{ event.eventOrigin }}</td>
                     <td class="font-normal">{{ event.origin ?? 'unknown' }}</td>
@@ -24,10 +27,61 @@
                             {% endif %}
                         {% endfor %}
                     </td>
+                    <td class="text-right nowrap">{{ event.parentId ? event.batch ~ '.' ~ event.parentId : '' }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+{% endmacro %}
+
+{% macro render_event_node(event, batchEvents) %}
+    <li class="event-node">
+        <div class="event-node-label{{ event.parentId is null ? ' event-node-root' : '' }}">
+            <strong>{{ event.localId }}</strong>
+            <span class="font-normal">{{ event.type.value }}</span>
+            {% if event.origin %}<span class="event-node-origin">{{ event.origin }}</span>{% endif %}
+        </div>
+        {% set children = batchEvents|filter(e => e.parentId == event.localId and e.localId != event.localId) %}
+        {% if children|length > 0 %}
+            <ul>
+                {% for child in children %}
+                    {{ _self.render_event_node(child, batchEvents) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro render_events_graph(groupedEvents) %}
+    <style>
+        .event-graph-batch { margin-bottom: 24px; }
+        .event-graph-batch h4 { display: flex; align-items: center; gap: 8px; }
+        ul.event-graph, ul.event-graph ul { list-style: none; margin: 0; padding-left: 24px; }
+        ul.event-graph { padding-left: 0; }
+        .event-node { position: relative; padding: 4px 0 4px 16px; border-left: 1px solid var(--border-color, #ccc); }
+        .event-node:last-child { border-left-color: transparent; }
+        .event-node::before { content: ""; position: absolute; left: 0; top: 16px; width: 12px; border-top: 1px solid var(--border-color, #ccc); }
+        .event-node-label { display: inline-flex; align-items: center; gap: 6px; }
+        .event-node-root { font-weight: bold; }
+        .event-node-origin { color: var(--color-muted, #999); font-size: 0.85em; }
+    </style>
+    {% for batch, batchEvents in groupedEvents %}
+        {% set root = batchEvents|filter(e => e.localId == 1)|first %}
+        <div class="event-graph-batch">
+            <h4>
+                Batch #{{ batch }}
+                {% if root %}<span class="font-normal">{{ root.type.value }}</span>{% endif %}
+                {% if root and root.isReplayEvent %}<span class="badge status-warning">replayed</span>{% endif %}
+            </h4>
+            {% if root %}
+                <ul class="event-graph">
+                    {{ _self.render_event_node(root, batchEvents) }}
+                </ul>
+            {% else %}
+                <p class="font-normal">No root event found for this batch.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
 {% endmacro %}
 
 {% macro render_cards_table(cards) %}
@@ -141,6 +195,13 @@
                 <h3 class="tab-title">Events <span class="badge">{{ collector.realEvents|length }}</span></h3>
                 <div class="tab-content">
                     {{ _self.render_events_table(collector.realEvents) }}
+                </div>
+            </div>
+
+            <div class="tab">
+                <h3 class="tab-title">Event graph <span class="badge">{{ collector.eventsGroupedByBatch|length }}</span></h3>
+                <div class="tab-content">
+                    {{ _self.render_events_graph(collector.eventsGroupedByBatch) }}
                 </div>
             </div>
 
