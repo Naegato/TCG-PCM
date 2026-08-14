@@ -9,6 +9,10 @@ export type AnnouncementPayload = {
   text: string;
   tone: AnnouncementTone;
   presentation?: "normal" | "giant";
+  // Set for a played consumable's giant reveal — lets GameAnnouncements show the card's own art
+  // instead of the dice visuals a plain giant announcement gets by default.
+  cardImage?: string;
+  cardName?: string;
 };
 
 export type CardMarkerPayload = {
@@ -163,9 +167,11 @@ export function animateGameEvent(
       const player = getPlayer(state, view.playerId);
       if (card && player) {
         return {
-          text: `✨ ${player.player.name} joue ${card.name} !`,
+          text: `${player.player.name} joue ${card.name} !`,
           tone: "neutral",
           presentation: "giant",
+          cardImage: card.image,
+          cardName: card.name,
         };
       }
       return null;

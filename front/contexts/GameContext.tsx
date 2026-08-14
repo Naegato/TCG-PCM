@@ -32,6 +32,7 @@ import { GameEventType } from "@/lib/game/type/eventType";
 import {
   CARD_TRIGGERED_SHAKE_DURATION,
   CARD_MARKER_DURATION,
+  CONSUMABLE_REVEAL_DURATION_MS,
 } from "@/lib/game/animationTimings";
 
 export type { AnnouncementTone };
@@ -231,6 +232,13 @@ export const GameProvider = ({
       { id, ...announcement },
     ]);
 
+    // Consumable reveals run their own countdown before the card even appears, so they need to
+    // stay mounted (not `leaving`) at least that long — otherwise the reveal wrapper renders
+    // with opacity-0 the moment the countdown ends, and the card is never actually seen.
+    const lifetime = announcement.cardImage
+      ? CONSUMABLE_REVEAL_DURATION_MS
+      : ANNOUNCEMENT_LIFETIME_MS;
+
     const fadeTimeoutId = window.setTimeout(() => {
       setAnnouncements((current: GameAnnouncement[]) =>
         current.map((announcement: GameAnnouncement) =>
@@ -256,7 +264,7 @@ export const GameProvider = ({
       timeoutRefs.current = timeoutRefs.current.filter(
         (currentTimeoutId: number) => currentTimeoutId !== fadeTimeoutId,
       );
-    }, ANNOUNCEMENT_LIFETIME_MS);
+    }, lifetime);
 
     timeoutRefs.current.push(fadeTimeoutId);
   }, []);
@@ -404,7 +412,9 @@ export const GameProvider = ({
 
               if (announcement) {
                 pushAnnouncement(announcement);
-                stepDelay = ANNOUNCEMENT_STEP_MS;
+                stepDelay = announcement.cardImage
+                  ? CONSUMABLE_REVEAL_DURATION_MS
+                  : ANNOUNCEMENT_STEP_MS;
               }
             }
           }

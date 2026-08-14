@@ -314,6 +314,166 @@
     }
   }
 
+  @keyframes cardRevealWarningFlash {
+    0% {
+      opacity: 0;
+    }
+    30% {
+      opacity: 0.85;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* A brief full-screen flash right before the giant consumable reveal — a fraction-of-a-second
+   * heads-up that something big is about to happen, rather than the card just slamming in
+   * unannounced. Pairs with .card-reveal-impact-shake below, which starts once this ends. */
+  .card-reveal-warning-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+    background: white;
+    animation: cardRevealWarningFlash 0.25s ease-out forwards;
+  }
+
+  @keyframes cardRevealImpactShake {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    20% {
+      transform: translate(-1.5vw, 1vh);
+    }
+    40% {
+      transform: translate(1.5vw, -1vh);
+    }
+    60% {
+      transform: translate(-1vw, -0.5vh);
+    }
+    80% {
+      transform: translate(1vw, 0.5vh);
+    }
+  }
+
+  .card-reveal-impact-shake {
+    animation: cardRevealImpactShake 0.35s ease-out 0.25s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-reveal-warning-flash,
+    .card-reveal-impact-shake {
+      animation: none;
+    }
+  }
+
+  @keyframes attackFlashBurst {
+    0% {
+      opacity: 0;
+      transform: scale(1);
+    }
+    20% {
+      opacity: 0.75;
+      transform: scale(1.01);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.03);
+    }
+  }
+
+  .attack-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 95;
+    pointer-events: none;
+    border-radius: 1.5rem;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(255, 255, 255, 0.6) 28%,
+        rgba(255, 255, 255, 0.14) 58%,
+        transparent 76%
+      ),
+      rgba(255, 255, 255, 0.12);
+    mix-blend-mode: screen;
+    animation: attackFlashBurst 0.18s ease-out forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .attack-flash {
+      animation: none;
+      opacity: 0;
+    }
+  }
+
+  @keyframes cardRevealCountdownPop {
+    0% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+    30% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    80% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.85);
+      opacity: 0;
+    }
+  }
+
+  /* One beat of the 3-2-1 countdown before a consumable's giant reveal — each digit is its own
+   * mount (keyed by the digit in GameAnnouncements.tsx) so this restarts every time. */
+  .card-reveal-countdown-number {
+    font-family: var(--font-display);
+    font-size: min(40vw, 20rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-cherry);
+    text-shadow:
+      -4px -4px 0 var(--color-ink-outline),
+      4px -4px 0 var(--color-ink-outline),
+      -4px 4px 0 var(--color-ink-outline),
+      4px 4px 0 var(--color-ink-outline);
+    animation: cardRevealCountdownPop 0.6s ease-out;
+  }
+
+  @keyframes cardRevealCountdownFlash {
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* A soft flash alongside each countdown digit — capped at one per beat (max ~2 per second)
+   * so it stays well clear of the rapid-strobe range that's a real photosensitivity risk,
+   * while still building up to the reveal instead of a single unannounced flash. */
+  .card-reveal-countdown-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    pointer-events: none;
+    background: white;
+    animation: cardRevealCountdownFlash 0.6s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-reveal-countdown-number,
+    .card-reveal-countdown-flash {
+      animation: none;
+    }
+  }
+
   @keyframes ringPulse {
     0%,
     100% {
