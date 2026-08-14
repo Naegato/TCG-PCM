@@ -18,7 +18,10 @@ final class TraceableCardTraitTest extends TestCase
         $traceableCard = TraceableConsumableCard::create(new DartCard(), new Stopwatch());
 
         self::assertTrue($traceableCard->requiresTarget());
-        self::assertSame(AbstractConsumableCard::TARGET_TYPE_MONSTER | AbstractConsumableCard::TARGET_OPPONENT_CARDS, $traceableCard->getTargetType());
+        self::assertSame(
+            AbstractConsumableCard::TARGET_TYPE_MONSTER | AbstractConsumableCard::TARGET_OPPONENT_CARDS | AbstractConsumableCard::TARGET_TYPE_CHARACTER,
+            $traceableCard->getTargetType(),
+        );
     }
 
     public function testNonTargetingCardStillReportsNoTarget(): void
