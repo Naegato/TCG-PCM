@@ -90,6 +90,18 @@ abstract class AbstractCard
         }
     }
 
+    // @note If *someday* effects have
+    // critical interactions on gamestate
+    // we should change this X_X
+    protected function guardedAction(GameContext $gameContext, callable $action): void
+    {
+        $this->beforeAction($gameContext);
+
+        if (!$gameContext->lastActionHasBeenPrevented()) {
+            $action();
+        }
+    }
+
     public function addEffect(AbstractCardEffect $effect): void
     {
         if (!$this->effects->has($effect)) {
