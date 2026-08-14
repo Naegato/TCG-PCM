@@ -45,6 +45,11 @@ trait TraceableCardTrait
         return $this->card->getInstanceId();
     }
 
+    public function getOwnerId(): ?string
+    {
+        return $this->card->getOwnerId();
+    }
+
     public function getName(): string
     {
         return $this->card->getName();

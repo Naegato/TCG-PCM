@@ -11,6 +11,96 @@ export type AnnouncementPayload = {
   presentation?: "normal" | "giant";
 };
 
+export type CardMarkerPayload = {
+  text: string;
+  tone: "positive" | "negative";
+};
+
+/**
+ * Short "+1"/"-2 PV"-style marker for an event caused by a specific card's CARD_TRIGGERED_ACTION
+ * (see processEvents in GameContext.tsx, which resolves which card via event.parentId) — shown
+ * floating on that card instead of the generic toast, since the card itself is who acted.
+ */
+export function getCardMarker(event: GameEvent): CardMarkerPayload | null {
+  switch (event.type) {
+    case GameEventType.COINS_GAINED:
+      return typeof event.data?.amount === "number"
+        ? { text: `+${event.data.amount}`, tone: "positive" }
+        : null;
+    case GameEventType.COINS_LOST:
+      return typeof event.data?.amount === "number"
+        ? { text: `-${event.data.amount}`, tone: "negative" }
+        : null;
+    case GameEventType.HEAL_APPLIED:
+      return typeof event.data?.amount === "number"
+        ? { text: `+${event.data.amount} PV`, tone: "positive" }
+        : null;
+    case GameEventType.DAMAGE_DEALT:
+      return typeof event.data?.damage === "number"
+        ? { text: `-${event.data.damage} PV`, tone: "negative" }
+        : null;
+    default:
+      return null;
+  }
+}
+
+/**
+ * The backend resolves breadth-first: every card's CARD_TRIGGERED_ACTION for a given trigger is
+ * generated before any of their own effects (e.g. two cards reacting to TURN_STARTED both get
+ * triggered, *then* both of their COINS_GAINED reactions follow) — correct for game logic, but
+ * played back literally it reads as "every card shakes, then every effect fires" instead of one
+ * card finishing before the next starts.
+ *
+ * Regroups the batch so each CARD_TRIGGERED_ACTION is immediately followed by everything caused
+ * by it (found by walking event.parentId), while preserving the original relative order both
+ * across groups and within them — a stable bucket sort, not a resort. Events with no
+ * CARD_TRIGGERED_ACTION anywhere in their ancestry (e.g. TURN_STARTED itself, or a direct
+ * attack's DAMAGE_DEALT) are left exactly where they were, each standing alone.
+ */
+export function reorderEventsForPlayback(events: GameEvent[]): GameEvent[] {
+  const eventById = new Map(events.map((e) => [e.id, e]));
+  const cardTriggerAncestorCache = new Map<number, number | null>();
+
+  const findCardTriggerAncestor = (event: GameEvent): number | null => {
+    if (cardTriggerAncestorCache.has(event.id)) {
+      return cardTriggerAncestorCache.get(event.id) ?? null;
+    }
+
+    // Set before recursing so a cycle (shouldn't happen, but the data comes over the wire)
+    // resolves to "no ancestor" instead of looping forever.
+    cardTriggerAncestorCache.set(event.id, null);
+
+    let result: number | null = null;
+    if (event.type === GameEventType.CARD_TRIGGERED_ACTION) {
+      result = event.id;
+    } else if (event.parentId != null) {
+      const parent = eventById.get(event.parentId);
+      result = parent ? findCardTriggerAncestor(parent) : null;
+    }
+
+    cardTriggerAncestorCache.set(event.id, result);
+    return result;
+  };
+
+  const buckets = new Map<number, GameEvent[]>();
+  const orderedKeys: number[] = [];
+
+  for (const event of events) {
+    const key = findCardTriggerAncestor(event) ?? event.id;
+    let bucket = buckets.get(key);
+
+    if (!bucket) {
+      bucket = [];
+      buckets.set(key, bucket);
+      orderedKeys.push(key);
+    }
+
+    bucket.push(event);
+  }
+
+  return orderedKeys.flatMap((key) => buckets.get(key)!);
+}
+
 export function getPlayerKey(
   state: GameState,
   playerId: string,

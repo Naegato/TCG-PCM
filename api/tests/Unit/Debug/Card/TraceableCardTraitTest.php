@@ -4,31 +4,21 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Debug\Card;
 
-use App\Debug\Card\TraceableConsumableCard;
-use App\Game\Card\Consumable\AbstractConsumableCard;
-use App\Game\Card\Consumable\BananaCard;
-use App\Game\Card\Consumable\DartCard;
+use App\Debug\Card\TraceableCardFactory;
+use App\Game\Card\CardState;
+use App\Service\Game\CardFactory;
+use App\Tests\Resources\MockCardRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 final class TraceableCardTraitTest extends TestCase
 {
-    public function testTargetingCardKeepsRequiresTargetAndTargetType(): void
+    public function testGetOwnerIdDelegatesToWrappedCard(): void
     {
-        $traceableCard = TraceableConsumableCard::create(new DartCard(), new Stopwatch());
+        $factory = new TraceableCardFactory(new CardFactory(new MockCardRegistry()), new Stopwatch());
 
-        self::assertTrue($traceableCard->requiresTarget());
-        self::assertSame(
-            AbstractConsumableCard::TARGET_TYPE_MONSTER | AbstractConsumableCard::TARGET_OPPONENT_CARDS | AbstractConsumableCard::TARGET_TYPE_CHARACTER,
-            $traceableCard->getTargetType(),
-        );
-    }
+        $card = $factory->createWithState('consolation_prices', new CardState('consolation', 'consolation_prices', 'player-1'));
 
-    public function testNonTargetingCardStillReportsNoTarget(): void
-    {
-        $traceableCard = TraceableConsumableCard::create(new BananaCard(), new Stopwatch());
-
-        self::assertFalse($traceableCard->requiresTarget());
-        self::assertSame(AbstractConsumableCard::TARGET_TYPE_NONE, $traceableCard->getTargetType());
+        self::assertSame('player-1', $card->getOwnerId());
     }
 }

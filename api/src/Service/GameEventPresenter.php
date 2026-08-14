@@ -34,6 +34,11 @@ final class GameEventPresenter
     public function present(GameEvent $event, GameState $state, bool $isPrivate, ?string $viewerId = null): array
     {
         return [
+            // localId/parentId, not the persisted id — the latter stays 0 for almost every event
+            // (see GameEventResolver) and is meaningless to the front. These let the front group
+            // an event with whichever CARD_TRIGGERED_ACTION caused it.
+            'id' => $event->localId,
+            'parentId' => $event->parentId,
             'type' => $event->type->value,
             'data' => $event->data,
             'view' => array_merge(

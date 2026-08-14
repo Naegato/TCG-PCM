@@ -21,6 +21,7 @@ export const GameEventType = {
   CARD_STOLEN: "CARD_STOLEN",
   CARD_REDRAWN: "CARD_REDRAWN",
   CURRENT_PLAYER_SET: "CURRENT_PLAYER_SET",
+  CARD_TRIGGERED_ACTION: "CARD_TRIGGERED_ACTION",
 } as const;
 
 export type GameEventTypeEnum =

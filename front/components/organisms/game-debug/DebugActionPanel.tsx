@@ -227,7 +227,7 @@ function RemoveCardForm({
               <select className={selectClassName} value={cardId} onChange={(e) => setCardId(e.target.value)}>
                 {cardIds.map((id) => (
                   <option key={id} value={id}>
-                    {getCardById(id)?.name ?? id}
+                    {id}
                   </option>
                 ))}
               </select>
