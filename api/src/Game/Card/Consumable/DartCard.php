@@ -37,7 +37,7 @@ final class DartCard extends AbstractConsumableCard
 
     public function getTargetType(): int
     {
-        return self::TARGET_TYPE_MONSTER | self::TARGET_OPPONENT_CARDS;
+        return self::TARGET_TYPE_MONSTER | self::TARGET_OPPONENT_CARDS | self::TARGET_TYPE_CHARACTER;
     }
 
     public function play(GameContext $context, array $data = []): void
