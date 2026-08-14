@@ -60,14 +60,8 @@ final class HackedZoneCard extends AbstractPassiveCard implements CardAwareInter
 
     public function onCardDrawn(string $cardId, GameContext $gameContext): void
     {
-        $this->beforeAction($gameContext);
-
-        if ($gameContext->lastActionHasBeenPrevented()) {
-            return;
-        }
-
-        $gameContext->addEffect(CardEffectEnum::HACKED, $cardId, [
+        $this->guardedAction($gameContext, static fn() => $gameContext->addEffect(CardEffectEnum::HACKED, $cardId, [
             'value' => $gameContext->randomIntBetween(HackedCardEffect::MIN_MODIFIER, HackedCardEffect::MAX_MODIFIER),
-        ]);
+        ]));
     }
 }

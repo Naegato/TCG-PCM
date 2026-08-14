@@ -157,6 +157,19 @@ export function animateGameEvent(
       }
     }
 
+    case GameEventType.CARD_ACTION_PREVENTED: {
+      const card = getCard(state, event.data.cardId);
+
+      if (card) {
+        return {
+          text: `${card.name} : action empêchée (${event.data.reason})`,
+          tone: "negative",
+        };
+      }
+
+      return null;
+    }
+
     default:
       return null;
   }

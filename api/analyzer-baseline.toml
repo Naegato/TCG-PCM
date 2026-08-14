@@ -321,7 +321,7 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Trait/BaseOnTurnTrait.php"
 code = "non-existent-method"
-message = 'Method `beforeaction` does not exist on type `App\Game\Card\Trait\BaseOnTurnTrait`.'
+message = 'Method `guardedaction` does not exist on type `App\Game\Card\Trait\BaseOnTurnTrait`.'
 count = 1
 
 [[issues]]
