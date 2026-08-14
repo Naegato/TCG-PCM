@@ -156,6 +156,20 @@ export function animateGameEvent(
       }
       return null;
     }
+    case GameEventType.CARD_CONSUMED: {
+      // A consumable never stays on the board — this is the only moment its identity is ever
+      // shown to the opponent, so give it a proper reveal rather than the usual small toast.
+      const card = event.view.card || getCard(state, view.cardId);
+      const player = getPlayer(state, view.playerId);
+      if (card && player) {
+        return {
+          text: `✨ ${player.player.name} joue ${card.name} !`,
+          tone: "neutral",
+          presentation: "giant",
+        };
+      }
+      return null;
+    }
     case GameEventType.CARD_REDRAWN: {
       const card = getCard(state, view.cardId);
       const player = getPlayer(state, view.playerId);
@@ -479,6 +493,34 @@ export function applyGameView(
                 ? [...player.playArea.monsterCards, cardId]
                 : player.playArea.monsterCards,
           },
+        },
+        cards: {
+          ...state.cards,
+          ...(view.card ? { [cardId]: view.card } : {}),
+        },
+      };
+    }
+
+    case GameEventType.CARD_CONSUMED: {
+      // A consumable is used and discarded in the same breath — it never sits in a play area,
+      // so unlike CARD_PLACED_IN_*, there's nothing to add there. Still leaves hand and reveals
+      // the card into state.cards, so the CARD_DISCARDED that immediately follows already knows
+      // it (and, for the opponent, this is the only place its identity is ever learned at all).
+      const cardId = view.cardId;
+      const card = view.card || state.cards[cardId];
+
+      const playerKey = getPlayerKey(state, view.playerId);
+      const player = state[playerKey];
+
+      if (card) {
+        emitter.emit("card:played", { card, playerId: view.playerId });
+      }
+
+      return {
+        ...state,
+        [playerKey]: {
+          ...player,
+          hand: player.hand.filter((id) => id !== cardId),
         },
         cards: {
           ...state.cards,

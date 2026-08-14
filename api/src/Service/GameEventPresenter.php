@@ -69,6 +69,11 @@ final class GameEventPresenter
                     ? null
                     : $this->normalizeCardDTO($this->gameStateConverter->createCardDTO($state->cards[$event->data['cardId']])),
             ],
+            // Public (not in GameEventPublisher::PRIVATE_EVENTS) — a consumable is only ever
+            // hidden while it sits in hand; once played it must be revealed to everyone, same as
+            // a monster/passive going onto the board. Without this, an opponent's consumable use
+            // resolves straight to CARD_DISCARDED with no identifying data ever sent to them.
+            GameEventTypeEnum::CARD_CONSUMED => $this->cardStateView($event, $state),
             GameEventTypeEnum::COINS_GAINED, GameEventTypeEnum::COINS_LOST => [
                 'total' => $state->getPlayer($player)->coins,
             ],
