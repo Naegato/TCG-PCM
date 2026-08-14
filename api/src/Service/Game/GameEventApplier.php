@@ -41,6 +41,7 @@ class GameEventApplier implements GameEventApplierInterface
             GameEventTypeEnum::DICE_ROLLED,
             GameEventTypeEnum::CARD_ACTION_PREVENTED,
             GameEventTypeEnum::TURN_STARTED,
+            GameEventTypeEnum::CARD_TRIGGERED_ACTION,
                 => $this->noOp($event, $gameState),
         };
 

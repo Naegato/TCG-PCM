@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Game;
 
+use App\Enum\CardTriggerEnum;
 use App\Enum\GameEventTypeEnum;
 use App\Game\AbstractCard;
 use App\Game\Card\Character\AbstractCharacterCard;
@@ -30,10 +31,15 @@ class GameEventResolver
     private array $eventQueue = [];
 
     /**
-     * @var GameEvent[]
+     * @var array<int, GameEvent>
      */
     private array $resolvedEvents = [];
 
+    // Tracks characters/monsters already reported dead for the current resolve() call, to avoid
+    // re-emitting PLAYER_DIED/MONSTER_DIED on every subsequent event while health stays at 0. Only
+    // cleared once resolve() finishes (see finally block below) — clearing it as soon as the death
+    // event itself resolves used to re-open the window while its own CARD_TRIGGERED_ACTION reactions
+    // were still being drained, causing generateSystemsEvent() to redetect the same death and loop.
     private array $pendingDeath = [];
 
     private int $nextLocalId = 1;
@@ -62,11 +68,12 @@ class GameEventResolver
                 $state = $this->doResolveEvent($event, $state);
             }
 
-            return new ResolutionResult($this->resolvedEvents, $state);
+            return new ResolutionResult(array_values($this->resolvedEvents), $state);
         } finally {
             $this->eventQueue = [];
             $this->resolvedEvents = [];
             $this->nextLocalId = 1;
+            $this->pendingDeath = [];
         }
     }
 
@@ -87,21 +94,7 @@ class GameEventResolver
         $events = $this->generateSystemsEvent($state, $event);
         $this->pushEventsToQueue($events);
 
-        $this->resolvedEvents[] = $event;
-
-        // clean pendingDeath
-        if (\in_array(
-            $event->type,
-            [
-                GameEventTypeEnum::MONSTER_DIED,
-                GameEventTypeEnum::PLAYER_DIED,
-            ],
-            true,
-        )) {
-            $idToRemove = GameEventTypeEnum::MONSTER_DIED === $event->type ? $event->data['cardId'] : $event->data['characterCardId'];
-
-            $this->pendingDeath = array_filter($this->pendingDeath, static fn($a) => $idToRemove !== $a);
-        }
+        $this->resolvedEvents[$event->localId] = $event;
 
         return $state;
     }
@@ -246,6 +239,9 @@ class GameEventResolver
                         $event->localId,
                     );
                 }
+                break;
+            case GameEventTypeEnum::CARD_TRIGGERED_ACTION:
+                $events = $this->doHandleCardTriggeredAction($event, $state);
                 break;
             default:
                 break;
@@ -521,28 +517,116 @@ class GameEventResolver
     /**
      * @return GameEvent[]
      */
+    private function doHandleCardTriggeredAction(GameEvent $event, GameState $state): array
+    {
+        $cardId = $event->data['cardId'] ?? null;
+        $trigger = $event->data['trigger'] ?? null;
+
+        if (!\is_string($cardId) || !\is_string($trigger)) {
+            throw new \LogicException('Invalid CARD_TRIGGERED_ACTION event data');
+        }
+
+        $card = $this->findCard($state, $cardId);
+        $ctx = $this->gameContextFactory->createGameContext($state, $state->currentPlayer, $event->localId);
+        $triggerType = CardTriggerEnum::from($trigger);
+
+        match (true) {
+            CardTriggerEnum::TURN_START === $triggerType && $card instanceof TurnAwareInterface => $card->onTurnStart(
+                $this->findResolvedEventByLocalId($event->parentId),
+                $ctx,
+            ),
+            CardTriggerEnum::TURN_END === $triggerType && $card instanceof TurnAwareInterface => $card->onTurnEnd(
+                $this->findResolvedEventByLocalId($event->parentId),
+                $ctx,
+            ),
+            CardTriggerEnum::CARD_DRAWN === $triggerType && $card instanceof CardAwareInterface => $card->onCardDrawn(
+                $this->requireStringData($event, 'drawnCardId'),
+                $ctx,
+            ),
+            CardTriggerEnum::CARD_PLAYED === $triggerType && $card instanceof CardAwareInterface => $card->onCardPlayed(
+                $this->findCard($state, $this->requireStringData($event, 'sourceCardId')),
+                $ctx,
+            ),
+            CardTriggerEnum::CARD_DEATH === $triggerType && $card instanceof DeathAwareInterface => $card->onCardDeath(
+                $this->findCard($state, $this->requireStringData($event, 'sourceCardId')),
+                $ctx,
+            ),
+            CardTriggerEnum::PLAYER_DEATH === $triggerType && $card instanceof DeathAwareInterface => $card->onPlayerDeath($ctx, $this->requireStringData(
+                $event,
+                'deadPlayerId',
+            )),
+            default => null,
+        };
+
+        return $ctx->flushEvents();
+    }
+
+    private function findCard(GameState $state, string $cardId): AbstractCard
+    {
+        $cardState = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
+
+        return $this->cardRuntimeMap->getByState($cardState);
+    }
+
+    private function requireStringData(GameEvent $event, string $key): string
+    {
+        $value = $event->data[$key] ?? null;
+
+        if (!\is_string($value)) {
+            throw new \LogicException(\sprintf('%s is required for %s event', $key, $event->type->value));
+        }
+
+        return $value;
+    }
+
+    /**
+     * CARD_TRIGGERED_ACTION carries only its parent's localId, not a copy of the parent event
+     * itself — GameEvent::$data must stay plain/serializable (it's published to the front as-is).
+     * The parent is guaranteed to already be resolved by the time this runs: BFS resolves an event
+     * fully — including pushing everything it caused, like this one — before dequeuing that event's
+     * own children.
+     */
+    private function findResolvedEventByLocalId(?int $localId): GameEvent
+    {
+        if (null === $localId) {
+            throw new \LogicException('No resolved event found for localId null');
+        }
+
+        return $this->resolvedEvents[$localId] ?? throw new \LogicException('No resolved event found for localId '.$localId);
+    }
+
+    /**
+     * @return GameEvent[]
+     */
     private function collectEventsFromAwareCards(GameEvent $event, GameState $state): array
     {
         $events = [];
-        $ctx = $this->gameContextFactory->createGameContext($state, $state->currentPlayer, $event->localId);
 
         switch ($event->type) {
             case GameEventTypeEnum::TURN_ENDED:
                 $cards = $this->getTurnAwareCards($state);
 
-                foreach ($cards as $card) {
-                    $card->onTurnEnd($event, $ctx);
-                    $events = array_merge($events, $ctx->flushEvents());
-                }
+                $events = array_map(static fn($card) => GameEvent::game(
+                    GameEventTypeEnum::CARD_TRIGGERED_ACTION,
+                    [
+                        'cardId' => $card->getInstanceId(),
+                        'trigger' => CardTriggerEnum::TURN_END->value,
+                    ],
+                    $event->localId,
+                ), $cards);
 
                 break;
             case GameEventTypeEnum::TURN_STARTED:
                 $cards = $this->getTurnAwareCards($state);
 
-                foreach ($cards as $card) {
-                    $card->onTurnStart($event, $ctx);
-                    $events = array_merge($events, $ctx->flushEvents());
-                }
+                $events = array_map(static fn($card) => GameEvent::game(
+                    GameEventTypeEnum::CARD_TRIGGERED_ACTION,
+                    [
+                        'cardId' => $card->getInstanceId(),
+                        'trigger' => CardTriggerEnum::TURN_START->value,
+                    ],
+                    $event->localId,
+                ), $cards);
 
                 break;
             case GameEventTypeEnum::CARD_DRAWN:
@@ -558,10 +642,15 @@ class GameEventResolver
                     throw new \LogicException('No card drawn for CARD_DRAWN event');
                 }
 
-                foreach ($cards as $card) {
-                    $card->onCardDrawn($cardId, $ctx);
-                    $events = array_merge($events, $ctx->flushEvents());
-                }
+                $events = array_map(static fn($card) => GameEvent::game(
+                    GameEventTypeEnum::CARD_TRIGGERED_ACTION,
+                    [
+                        'cardId' => $card->getInstanceId(),
+                        'trigger' => CardTriggerEnum::CARD_DRAWN->value,
+                        'drawnCardId' => $cardId,
+                    ],
+                    $event->localId,
+                ), $cards);
 
                 break;
             case GameEventTypeEnum::CARD_PLAYED:
@@ -570,13 +659,17 @@ class GameEventResolver
                 if (!\is_string($cardId)) {
                     throw new \LogicException('cardId is required for CARD_DRAWN event');
                 }
-                $cardState = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
-                $playedCard = $this->cardRuntimeMap->getByState($cardState);
 
-                foreach ($cards as $card) {
-                    $card->onCardPlayed($playedCard, $ctx);
-                    $events = array_merge($events, $ctx->flushEvents());
-                }
+                $events = array_map(static fn($card) => GameEvent::game(
+                    GameEventTypeEnum::CARD_TRIGGERED_ACTION,
+                    [
+                        'cardId' => $card->getInstanceId(),
+                        'trigger' => CardTriggerEnum::CARD_PLAYED->value,
+                        'sourceCardId' => $cardId,
+                    ],
+                    $event->localId,
+                ), $cards);
+
                 break;
             case GameEventTypeEnum::MONSTER_DIED:
                 $cards = $this->getDeathAwareCards($state);
@@ -584,13 +677,17 @@ class GameEventResolver
                 if (!\is_string($cardId)) {
                     throw new \LogicException('cardId is required for CARD_DRAWN event');
                 }
-                $cardState = $state->getCardState($cardId) ?? throw new \LogicException('Card state not found for cardId '.$cardId);
-                $playedCard = $this->cardRuntimeMap->getByState($cardState);
 
-                foreach ($cards as $card) {
-                    $card->onCardDeath($playedCard, $ctx);
-                    $events = array_merge($events, $ctx->flushEvents());
-                }
+                $events = array_map(static fn($card) => GameEvent::game(
+                    GameEventTypeEnum::CARD_TRIGGERED_ACTION,
+                    [
+                        'cardId' => $card->getInstanceId(),
+                        'trigger' => CardTriggerEnum::CARD_DEATH->value,
+                        'sourceCardId' => $cardId,
+                    ],
+                    $event->localId,
+                ), $cards);
+
                 break;
             case GameEventTypeEnum::PLAYER_DIED:
                 $cards = $this->getDeathAwareCards($state);
@@ -598,10 +695,17 @@ class GameEventResolver
                 if (!\is_string($playerId)) {
                     throw new \LogicException('cardId is required for PLAYER_DIED event');
                 }
-                foreach ($cards as $card) {
-                    $card->onPlayerDeath($ctx, $playerId);
-                    $events = array_merge($events, $ctx->flushEvents());
-                }
+
+                $events = array_map(static fn($card) => GameEvent::game(
+                    GameEventTypeEnum::CARD_TRIGGERED_ACTION,
+                    [
+                        'cardId' => $card->getInstanceId(),
+                        'trigger' => CardTriggerEnum::PLAYER_DEATH->value,
+                        'deadPlayerId' => $playerId,
+                    ],
+                    $event->localId,
+                ), $cards);
+
                 break;
             default:
 
