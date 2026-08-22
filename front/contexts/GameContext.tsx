@@ -47,8 +47,8 @@ const ANNOUNCEMENT_FADE_MS = 450;
 
 // Pacing for one-by-one event playback in processEvents — how long to hold on each event
 // before starting the next, based on what (if anything) it shows the player.
-const SILENT_EVENT_STEP_MS = 150;
-const ANNOUNCEMENT_STEP_MS = 850;
+const SILENT_EVENT_STEP_MS = 0;
+const ANNOUNCEMENT_STEP_MS = 250;
 
 type ActionObject = {
   playCard: (cardId: string, data?: Record<string, unknown>) => void;
@@ -232,9 +232,7 @@ export const GameProvider = ({
       { id, ...announcement },
     ]);
 
-    // Consumable reveals run their own countdown before the card even appears, so they need to
-    // stay mounted (not `leaving`) at least that long — otherwise the reveal wrapper renders
-    // with opacity-0 the moment the countdown ends, and the card is never actually seen.
+    // Consumable reveals need to stay mounted long enough for the card to display and fade out.
     const lifetime = announcement.cardImage
       ? CONSUMABLE_REVEAL_DURATION_MS
       : ANNOUNCEMENT_LIFETIME_MS;
@@ -414,7 +412,9 @@ export const GameProvider = ({
                 pushAnnouncement(announcement);
                 stepDelay = announcement.cardImage
                   ? CONSUMABLE_REVEAL_DURATION_MS
-                  : ANNOUNCEMENT_STEP_MS;
+                  : event.type === GameEventType.TURN_STARTED
+                    ? 0
+                    : ANNOUNCEMENT_STEP_MS;
               }
             }
           }

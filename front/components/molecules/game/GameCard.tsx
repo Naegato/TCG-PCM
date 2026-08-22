@@ -46,7 +46,7 @@ function getAnimatedCardStyle(
       zIndex: 50,
       boxShadow:
         "0 50px 40px rgba(0, 0, 0, 0.5), 0 10px 20px rgba(0, 0, 0, 0.3)",
-      transition: "transform 300ms ease-in",
+      transition: "transform 500ms ease-in",
     };
   }
 
@@ -78,13 +78,9 @@ function GameCard({
 }: GameCardProps) {
   const { targeting, targetingActions, game, currentUsername, getCardById } =
     useContext(GameContext);
-  const { isTargeting, hoveredTargetId, selectedAttackerId, pendingPlayCardId } =
-    targeting;
+  const { isTargeting, selectedAttackerId, pendingPlayCardId } = targeting;
 
   const isSelectedSource = selectedAttackerId === card.instanceId;
-  const isHovered =
-    hoveredTargetId === targetId && isTargeting && !isSelectedSource;
-
   const [isTriggered, setIsTriggered] = useState(false);
   const triggeredTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

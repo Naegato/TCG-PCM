@@ -102,7 +102,15 @@ export function reorderEventsForPlayback(events: GameEvent[]): GameEvent[] {
     bucket.push(event);
   }
 
-  return orderedKeys.flatMap((key) => buckets.get(key)!);
+  const orderedEvents = orderedKeys.flatMap((key) => buckets.get(key)!);
+  const drawEvents = orderedEvents.filter(
+    (event) => event.type === GameEventType.CARD_DRAWN,
+  );
+  const otherEvents = orderedEvents.filter(
+    (event) => event.type !== GameEventType.CARD_DRAWN,
+  );
+
+  return [...drawEvents, ...otherEvents];
 }
 
 export function getPlayerKey(
@@ -219,7 +227,7 @@ export function animateGameEvent(
         const damageDealt = event.data.damage;
 
         if (attackerCard && targetName && damageDealt > 0) {
-          let text = `${attackerCard.name} attaque ${targetName} pour ${damageDealt} dégâts.`;
+          const text = `${attackerCard.name} attaque ${targetName} pour ${damageDealt} dégâts.`;
           return { text, tone: "neutral" };
         }
       }

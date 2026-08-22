@@ -1,142 +1,28 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { GameContext } from "@/contexts/GameContext";
 import type { GameAnnouncement } from "@/contexts/GameContext";
 import { getImage } from "@/lib/api/api";
-import {
-  COUNTDOWN_AFTER_DIGIT_COUNT,
-  COUNTDOWN_BEAT_MS,
-  COUNTDOWN_CARD_SETTLE_MS,
-  COUNTDOWN_DIGIT_COUNT,
-} from "@/lib/game/animationTimings";
 
 type GameAnnouncementsProps = {
   regularAnnouncements: GameAnnouncement[];
   giantAnnouncement: GameAnnouncement | null;
 };
 
-// Flanking symbols slapped onto each countdown number, just for the gag — [prefix, suffix].
-const COUNTDOWN_AFFIXES: [string, string][] = [
-  ["#", "!"],
-  ["x", ""],
-  ["", "%"],
-  ["★", "★"],
-  ["", "..."],
-  ["+", "!"],
-  ["", ""],
-];
-
-// Not an actual countdown — a burst of random numbers flashes by, just for the gag.
-const getRandomCountdownDigits = (count: number) =>
-  Array.from({ length: count }, () => {
-    const [prefix, suffix] =
-      COUNTDOWN_AFFIXES[Math.floor(Math.random() * COUNTDOWN_AFFIXES.length)];
-    const number = Math.floor(Math.random() * 90) + 10;
-    return `${prefix}${number}${suffix}`;
-  });
-
-// before: burst of random numbers, then the card slams in. after: a second, smaller burst
-// flashes over the now-revealed card, just to keep the gag going. done: numbers gone, card sits.
-type RevealPhase = "before" | "card" | "after" | "done";
-
 function ConsumableCardReveal({
   announcement,
 }: {
   announcement: GameAnnouncement;
 }) {
-  // The parent keys this whole component by announcement.id (see GameAnnouncements below), so
-  // a new consumable reveal always remounts it fresh — phase/digitIndex naturally start back at
-  // their defaults, no need to reset them here. Digits are re-rolled on every mount too, via the
-  // useState initializers, so each reveal gets a fresh set of random numbers.
-  const [beforeDigits] = useState(() =>
-    getRandomCountdownDigits(COUNTDOWN_DIGIT_COUNT),
-  );
-  const [afterDigits] = useState(() =>
-    getRandomCountdownDigits(COUNTDOWN_AFTER_DIGIT_COUNT),
-  );
-  const [phase, setPhase] = useState<RevealPhase>("before");
-  const [digitIndex, setDigitIndex] = useState(0);
-
-  useEffect(() => {
-    const timeouts: number[] = [];
-    const beforeDuration = beforeDigits.length * COUNTDOWN_BEAT_MS;
-    const afterStart = beforeDuration + COUNTDOWN_CARD_SETTLE_MS;
-    const afterDuration = afterDigits.length * COUNTDOWN_BEAT_MS;
-
-    beforeDigits.slice(1).forEach((_, i) => {
-      timeouts.push(
-        window.setTimeout(
-          () => setDigitIndex(i + 1),
-          (i + 1) * COUNTDOWN_BEAT_MS,
-        ),
-      );
-    });
-
-    timeouts.push(
-      window.setTimeout(() => {
-        setPhase("card");
-      }, beforeDuration),
-    );
-
-    timeouts.push(
-      window.setTimeout(() => {
-        setPhase("after");
-        setDigitIndex(0);
-      }, afterStart),
-    );
-
-    afterDigits.slice(1).forEach((_, i) => {
-      timeouts.push(
-        window.setTimeout(
-          () => setDigitIndex(i + 1),
-          afterStart + (i + 1) * COUNTDOWN_BEAT_MS,
-        ),
-      );
-    });
-
-    timeouts.push(
-      window.setTimeout(() => {
-        setPhase("done");
-      }, afterStart + afterDuration),
-    );
-
-    return () => timeouts.forEach((timeoutId) => window.clearTimeout(timeoutId));
-  }, [beforeDigits, afterDigits]);
-
-  if (phase === "before") {
-    const digit = beforeDigits[digitIndex];
-    return (
-      <>
-        <div key={`flash-${digit}`} className="card-reveal-countdown-flash" />
-        <div className="pointer-events-none fixed inset-0 z-30 flex items-center justify-center">
-          <div key={digit} className="card-reveal-countdown-number">
-            {digit}
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  const afterDigit = phase === "after" ? afterDigits[digitIndex] : undefined;
-
   return (
     <>
-      {phase === "card" && !announcement.leaving && (
-        <div className="card-reveal-warning-flash" />
-      )}
       <div
-        className={`pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 px-6 transition-opacity duration-[450ms] ease-out ${
+        className={`pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 px-6 transition-opacity duration-150 ease-out ${
           announcement.leaving ? "opacity-0" : "opacity-100"
         }`}
       >
-        <div
-          className={
-            phase === "card" && !announcement.leaving
-              ? "card-reveal-impact-shake"
-              : undefined
-          }
-        >
+        <div>
           <div className="animate-card-reveal-in">
             <img
               src={getImage(announcement.cardImage!)}
@@ -149,19 +35,6 @@ function ConsumableCardReveal({
           </div>
         </div>
       </div>
-      {afterDigit && (
-        <>
-          <div
-            key={`after-flash-${afterDigit}`}
-            className="card-reveal-countdown-flash"
-          />
-          <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center">
-            <div key={afterDigit} className="card-reveal-countdown-number">
-              {afterDigit}
-            </div>
-          </div>
-        </>
-      )}
     </>
   );
 }
@@ -199,9 +72,7 @@ export default function GameAnnouncements({
 
       {giantAnnouncement &&
         (giantAnnouncement.cardImage ? (
-          // Keyed by announcement id so two consumables played back-to-back each get a fresh
-          // mount — otherwise React would patch the existing nodes instead of remounting them,
-          // and the countdown wouldn't restart.
+          // Keyed by announcement id so consecutive consumables get independent reveals.
           <ConsumableCardReveal
             key={giantAnnouncement.id}
             announcement={giantAnnouncement}
