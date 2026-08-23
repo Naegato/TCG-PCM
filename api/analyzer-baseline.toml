@@ -289,6 +289,24 @@ message = 'Parameter #1 of `App\Game\Card\Monster\SirenCard::onturnaction()` is 
 count = 1
 
 [[issues]]
+file = "src/Game/Card/Passive/DeadCatCard.php"
+code = "mixed-property-type-coercion"
+message = "A value with a less specific type `nonnull` is being assigned to property `$$counter` (int)."
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Passive/DeadCatCard.php"
+code = "possibly-null-argument"
+message = 'Argument #1 of method `App\Game\GameContext::discardcard` is possibly `null`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
+file = "src/Game/Card/Passive/DeadCatCard.php"
+code = "possibly-null-argument"
+message = 'Argument #1 of method `App\Game\GameContext::getplayerstatebyid` is possibly `null`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
 file = "src/Game/Card/Passive/ImStillStandingCard.php"
 code = "possibly-null-argument"
 message = 'Argument #1 of method `App\Game\GameContext::discardcard` is possibly `null`, but parameter type `string` does not accept it.'
@@ -321,13 +339,13 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Trait/BaseOnTurnTrait.php"
 code = "non-existent-method"
-message = 'Method `guardedaction` does not exist on type `App\Game\Card\Trait\BaseOnTurnTrait`.'
+message = 'Method `getinstanceid` does not exist on type `App\Game\Card\Trait\BaseOnTurnTrait`.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Trait/BaseOnTurnTrait.php"
 code = "non-existent-method"
-message = 'Method `getinstanceid` does not exist on type `App\Game\Card\Trait\BaseOnTurnTrait`.'
+message = 'Method `guardedaction` does not exist on type `App\Game\Card\Trait\BaseOnTurnTrait`.'
 count = 1
 
 [[issues]]

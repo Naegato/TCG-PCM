@@ -65,6 +65,7 @@ return [
 	'BananaFarm' => Card\Passive\BananaFarmCard::class,
 	'BloodSucker' => Card\Passive\BloodSuckerCard::class,
 	'consolation_prices' => Card\Passive\ConsolationPricesCard::class,
+	'DeadCat' => Card\Passive\DeadCatCard::class,
 	'HackedZone' => Card\Passive\HackedZoneCard::class,
 	'ImStillStanding' => Card\Passive\ImStillStandingCard::class,
 	'MonkeyVillage' => Card\Passive\MonkeyVillageCard::class,

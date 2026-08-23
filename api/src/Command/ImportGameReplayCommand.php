@@ -63,6 +63,7 @@ final class ImportGameReplayCommand
         }
 
         $output->writeln(sprintf('<info>File "%s" imported successfully.</info>', $filePath));
+        $output->writeln($id);
 
         return 0;
     }

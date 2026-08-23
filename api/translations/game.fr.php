@@ -286,6 +286,10 @@ return [
             'name' => 'Festival de Bombes',
             'description' => 'Pose toutes les bombes sur le terrain, vous gagnez {{value}} dégâts pour chaque bombe posée.',
         ],
+        'DeadCat' => [
+            'name' => 'Chat mort',
+            'description' => 'Quand le joueur meurt, il revient à la vie avec {{value}} PV. Peut être utilisé {{value2}} fois avant d\'être défaussé.',
+        ],
     ],
     // Effects
     'effects' => [
