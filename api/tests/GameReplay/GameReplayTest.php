@@ -61,6 +61,11 @@ final class GameReplayTest extends KernelTestCase
             'replay3' => ['replay3'],
             'replay4' => ['replay4'],
             'replay5' => ['replay5'],
+            'replay6' => ['replay6'],
+            'replay7' => ['replay7'],
+            'replay8' => ['replay8'],
+            'replay9' => ['replay9'],
+            'replay10' => ['replay10'],
         ];
     }
 
