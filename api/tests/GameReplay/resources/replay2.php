@@ -117,7 +117,7 @@ return
             ],
             'lastEventId' => [
                 null,
-                31 => 221,
+                31 => 258,
             ],
             'seed' => [
                 762201701,
@@ -384,8 +384,8 @@ return
                 15 => [],
                 18 => [],
                 46 => [
-                    '88fd869f-ccda-4772-a165-cf37419d4b55' => 'PierreSaidNoMonsterZone',
                     '12e05ab9-6353-4340-a545-0eb421d9c2a8' => 'Redbloons',
+                    '88fd869f-ccda-4772-a165-cf37419d4b55' => 'PierreSaidNoMonsterZone',
                 ],
                 48 => [
                     'a1bcbc4d-497a-49d0-9581-e59e376c872b' => 'D6',
@@ -417,16 +417,16 @@ return
         ],
         'App\\Game\\State\\GameEvent' => [
             'id' => [
-                21 => 213,
-                214,
-                215,
-                216,
-                217,
-                218,
-                219,
-                220,
-                221,
-                222,
+                21 => 250,
+                251,
+                252,
+                253,
+                254,
+                255,
+                256,
+                257,
+                258,
+                259,
             ],
             'type' => [
                 21 => \App\Enum\GameEventTypeEnum::CARD_PLAYED,
@@ -489,6 +489,30 @@ return
                 [
                     'value' => '63a221c9-3b3a-4702-8d37-072730bb06d1',
                 ],
+            ],
+            'parentId' => [
+                21 => null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ],
+            'localId' => [
+                21 => 0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
             ],
         ],
         'App\\Game\\Card\\Effect\\EffectState' => [

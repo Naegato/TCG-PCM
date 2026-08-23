@@ -1,11 +1,6 @@
 WITH_DOCKER?=1
 COMPOSE=$(shell which docker) compose
 
-STACK_NAME=tcg
-INFISICAL_DOMAIN=https://infisical-esgi.wiatr.fr
-INFISICAL_PROJECT_ID=659c8dc2-1cee-414f-8fd7-70b1ab9b537c
-INFISICAL_ENV=production
-
 ifndef env
 env=dev
 endif
@@ -18,6 +13,9 @@ endif
 
 CONSOLE=$(PHP) php bin/console --env=$(env)
 COVERAGE_DIR=var/phpunit
+
+TEST_REPLAY_FOLDER = api/tests/GameReplay/resources
+TEST_REPLAY_FOLDER_REL = $(TEST_REPLAY_FOLDER:api/%=%)
 
 # ===== Dev =====
 
@@ -125,3 +123,17 @@ symfony-lint:
 
 stan:
 	$(PHP) vendor/bin/mago analyze
+
+regenerate-tests-replay:
+	@for file in $(TEST_REPLAY_FOLDER)/*.php; do \
+		name=$$(basename "$$file" .php); \
+		echo "Regenerating $$name..."; \
+		id=$$( ( $(CONSOLE) app:import:game-replay $(TEST_REPLAY_FOLDER_REL)/$$name.php ) | tail -n1 | tr -d '\r' ); \
+		output=$$( ( $(CONSOLE) app:export:game-replay $$id --test ) 2>&1 ); \
+		if [ $$? -ne 0 ]; then \
+			reason=$$(echo "$$output" | grep -m1 -oE '[A-Za-z0-9 "._-]+ not found' || echo 'export failed'); \
+			echo "  skip $$name: $$reason"; \
+			continue; \
+		fi; \
+		mv $(TEST_REPLAY_FOLDER)/replay-$$id.php $$file; \
+	done
