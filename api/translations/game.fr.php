@@ -290,6 +290,14 @@ return [
             'name' => 'Chat mort',
             'description' => 'Quand le joueur meurt, il revient à la vie avec {{value}} PV. Peut être utilisé {{value2}} fois avant d\'être défaussé.',
         ],
+        'DataMiner' => [
+            'name' => 'Data Miner',
+            'description' => 'Gagne {{value}} pièces au début de chaque tour. Chaque tour, le gain augmente de {{const}} pièces supplémentaires.',
+        ],
+        'DataCenter' => [
+            'name' => 'DataCenter',
+            'description' => 'Fait apparaître {{value}} {{card}} tous les {{value2}} tours.',
+        ],
     ],
     // Effects
     'effects' => [

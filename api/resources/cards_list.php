@@ -4,6 +4,7 @@ use App\Game\Card;
 
 return [
 	'Charlie' => Card\Character\CharlieCard::class,
+	'DataCenter' => Card\Character\DataCenterCard::class,
 	'Isaac' => Card\Character\IsaacCard::class,
 	'Maxime' => Card\Character\MaximeCard::class,
 	'Necromancian' => Card\Character\NecromancianCard::class,
@@ -40,6 +41,7 @@ return [
 	'Crypto4Noob' => Card\Monster\Crypto4NoobCard::class,
 	'DDT' => Card\Monster\DDTCard::class,
 	'DartMonkey' => Card\Monster\DartMonkeyCard::class,
+	'DataMiner' => Card\Monster\DataMinerCard::class,
 	'DeadGameXD' => Card\Monster\DeadGameXDCard::class,
 	'Goofy' => Card\Monster\GoofyCard::class,
 	'GrilledClotty' => Card\Monster\GrilledClottyCard::class,
