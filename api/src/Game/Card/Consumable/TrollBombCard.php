@@ -6,7 +6,7 @@ namespace App\Game\Card\Consumable;
 
 use App\Enum\CardRarityEnum;
 use App\Enum\GameEventTypeEnum;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\GameContext;
 use App\Game\GameUtils;
 
@@ -55,7 +55,7 @@ final class TrollBombCard extends AbstractConsumableCard
             return;
         }
 
-        foreach (CardHelper::getAllCardInGroups($context, 'bomb') as $bomb) {
+        foreach (CardActions::getAllCardInGroups($context, 'bomb') as $bomb) {
             $context->pushGameEvent(GameEventTypeEnum::CARD_CONSUMED, [
                 'cardId' => $bomb->instanceId,
                 'playerId' => $bomb->ownerId,

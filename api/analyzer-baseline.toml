@@ -151,7 +151,7 @@ message = 'Invalid return type for function `app\entity\user::getuseridentifier`
 count = 1
 
 [[issues]]
-file = "src/Game/Card/CardHelper.php"
+file = "src/Game/Card/CardActions.php"
 code = "mixed-method-access"
 message = "Attempting to access a method on a non-object type (`mixed`)."
 count = 1
@@ -183,7 +183,7 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Character/CharlieCard.php"
 code = "possibly-null-argument"
-message = 'Argument #2 of method `app\game\card\cardhelper::generatedandplay` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #2 of method `app\game\card\cardactions::generatedandplay` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
@@ -279,7 +279,7 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Monster/MegaClottyCard.php"
 code = "possibly-null-argument"
-message = 'Argument #2 of method `app\game\card\cardhelper::generatedandplay` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #2 of method `app\game\card\cardactions::generatedandplay` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]

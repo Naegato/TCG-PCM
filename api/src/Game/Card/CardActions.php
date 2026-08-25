@@ -10,11 +10,7 @@ use App\Game\GameContext;
 use App\Game\GameUtils;
 use App\Service\Game\Helper\CardHelper as HelperCardHelper;
 
-/**
- * @todo add tests but I'm a little sad rn
- * @todo rename
- */
-final /* static */ class CardHelper
+final /* static */ class CardActions
 {
     /**
      * @return string[]

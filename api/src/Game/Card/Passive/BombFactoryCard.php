@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Game\Card\Passive;
 
 use App\Enum\CardRarityEnum;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Trait\BaseOnTurnTrait;
 use App\Game\GameContext;
@@ -62,6 +62,6 @@ final class BombFactoryCard extends AbstractPassiveCard implements TurnAwareInte
             return;
         }
 
-        CardHelper::generatedAndPlay($gameContext, $ownerId, self::SPAWNED_CARD_ID);
+        CardActions::generatedAndPlay($gameContext, $ownerId, self::SPAWNED_CARD_ID);
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Game\Card\Consumable;
 
 use App\Enum\CardRarityEnum;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\GameContext;
 use App\Game\GameUtils;
 
@@ -44,7 +44,7 @@ final class SuperMonkeyBombCard extends AbstractConsumableCard
 
     public function play(GameContext $context, array $data = []): void
     {
-        foreach (CardHelper::getAllMonster($context) as $monster) {
+        foreach (CardActions::getAllMonster($context) as $monster) {
             $context->damageCard($monster, $this->getValue(self::DAMAGE, true));
         }
     }

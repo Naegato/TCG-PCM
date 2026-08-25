@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Game\Card\Character;
 
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Trait\BaseOnTurnTrait;
 use App\Game\GameContext;
@@ -51,7 +51,7 @@ final class DataCenterCard extends AbstractCharacterCard implements TurnAwareInt
         }
 
         for ($i = 1; $i <= $this->getValue(self::SPAWN_QUANTITY, true); $i++) {
-            CardHelper::generatedAndPlay($gameContext, $ownerId, self::SPAWNED_CARD_ID, true);
+            CardActions::generatedAndPlay($gameContext, $ownerId, self::SPAWNED_CARD_ID, true);
         }
     }
 }
