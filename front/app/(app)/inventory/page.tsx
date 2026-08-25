@@ -10,6 +10,10 @@ import {
 type InventoryPageProps = {
   searchParams: Promise<{
     tab?: string;
+    q?: string;
+    set?: string;
+    rarity?: string;
+    type?: string;
   }>;
 };
 
@@ -22,7 +26,7 @@ export default async function InventoryPage({
   const decksResponse = await authApiGet<DeckCollectionResponse>("/decks");
   const deckLimits = await authApiGet<DeckLimits>("/decks/limits");
   const decks = normalizeDeckCollection(decksResponse);
-  const { tab } = await searchParams;
+  const { tab, q, set, rarity, type } = await searchParams;
 
   return (
     <CollectionPageClient
@@ -30,6 +34,7 @@ export default async function InventoryPage({
       decks={decks}
       deckLimits={deckLimits}
       initialTab={tab === "decks" ? "decks" : "cards"}
+      initialFilters={{ search: q, set, rarity, type }}
     />
   );
 }
