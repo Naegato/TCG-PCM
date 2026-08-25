@@ -1,12 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AiOutlineLock } from "react-icons/ai";
+import { MdFilterAltOff } from "react-icons/md";
 
 import type { CardCollectionEntry } from "@/app/types/collection";
 import { CardRaririty, CardSet, CardSize, CardType } from "@/constants/card";
 import type { BasicCard } from "@/lib/cards/types/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import Card from "@/components/molecules/Card";
 import CardWithZoom from "@/components/organisms/card/CardWithZoom";
 import CardQuantityBadge from "@/components/atoms/collection/CardQuantityBadge";
@@ -14,7 +17,23 @@ import LazyMount from "@/components/atoms/LazyMount";
 
 type InventoryCardsPanelProps = {
   entries: CardCollectionEntry[];
+  initialFilters?: {
+    search?: string;
+    set?: string;
+    rarity?: string;
+    type?: string;
+  };
 };
+
+function parseEnumFilter<T extends string>(
+  value: string | undefined,
+  allowedValues: readonly T[],
+): T | typeof ALL {
+  if (value && (allowedValues as readonly string[]).includes(value)) {
+    return value as T;
+  }
+  return ALL;
+}
 
 const SET_LABELS: Record<CardSet, string> = {
   [CardSet.ORIGINAL]: "Original",
@@ -41,13 +60,53 @@ const ALL = "ALL" as const;
 
 export default function InventoryCardsPanel({
   entries,
+  initialFilters,
 }: InventoryCardsPanelProps) {
-  const [search, setSearch] = useState("");
-  const [setFilter, setSetFilter] = useState<CardSet | typeof ALL>(ALL);
-  const [rarityFilter, setRarityFilter] = useState<CardRaririty | typeof ALL>(
-    ALL,
+  const pathname = usePathname();
+  const [search, setSearch] = useState(initialFilters?.search?.trim() ?? "");
+  const [setFilter, setSetFilter] = useState<CardSet | typeof ALL>(() =>
+    parseEnumFilter(initialFilters?.set, Object.values(CardSet)),
   );
-  const [typeFilter, setTypeFilter] = useState<CardType | typeof ALL>(ALL);
+  const [rarityFilter, setRarityFilter] = useState<CardRaririty | typeof ALL>(
+    () => parseEnumFilter(initialFilters?.rarity, Object.values(CardRaririty)),
+  );
+  const [typeFilter, setTypeFilter] = useState<CardType | typeof ALL>(() =>
+    parseEnumFilter(initialFilters?.type, Object.values(CardType)),
+  );
+
+  const hasActiveFilters =
+    search.trim() !== "" ||
+    setFilter !== ALL ||
+    rarityFilter !== ALL ||
+    typeFilter !== ALL;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const filterValues: Record<string, string> = {
+      q: search.trim(),
+      set: setFilter === ALL ? "" : setFilter,
+      rarity: rarityFilter === ALL ? "" : rarityFilter,
+      type: typeFilter === ALL ? "" : typeFilter,
+    };
+
+    Object.entries(filterValues).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `${pathname}?${query}` : pathname);
+  }, [search, setFilter, rarityFilter, typeFilter, pathname]);
+
+  const resetFilters = () => {
+    setSearch("");
+    setSetFilter(ALL);
+    setRarityFilter(ALL);
+    setTypeFilter(ALL);
+  };
 
   const filteredEntries = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -131,6 +190,16 @@ export default function InventoryCardsPanel({
             </option>
           ))}
         </select>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={resetFilters}
+          disabled={!hasActiveFilters}
+        >
+          <MdFilterAltOff /> Réinitialiser les filtres
+        </Button>
 
         <p className="text-sm text-muted-foreground sm:ml-auto">
           {unlockedFilteredCount} / {filteredEntries.length} cartes debloquées
