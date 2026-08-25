@@ -63,7 +63,6 @@ final class DataMinerCardTest extends CardTestCase
         self::assertCount(1, $events);
         self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[0]->type);
         self::assertSame($card->getInstanceId(), $events[0]->data['cardId']);
-        self::assertSame('1', $events[0]->data['playerId']);
         self::assertSame(['currentCoins' => 1], $events[0]->data['stateToUpdate']);
     }
 

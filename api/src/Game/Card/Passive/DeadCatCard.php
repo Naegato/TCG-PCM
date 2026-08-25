@@ -41,7 +41,6 @@ final class DeadCatCard extends AbstractPassiveCard implements DeathAwareInterfa
 
         $gameContext->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $this->getInstanceId(),
-            'playerId' => $this->getOwnerId(),
             'stateToUpdate' => [
                 'counter' => --$this->counter,
             ],

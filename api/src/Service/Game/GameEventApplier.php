@@ -305,7 +305,7 @@ class GameEventApplier implements GameEventApplierInterface
 
         if (null === ($newStats = $event->data['stateToUpdate'] ?? null) || !\is_array($newStats)) {
             if (null === ($event->data['canAttack'] ?? null) || !$state instanceof MonsterCardState) {
-                throw new \LogicException('Update card state requires a playerId');
+                throw new \LogicException('Update card state requires a stateToUpdate array or a canAttack flag');
             }
             $newState = $state->withCanAttack($event->data['canAttack']);
         } else {

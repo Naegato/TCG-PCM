@@ -65,7 +65,6 @@ final class DataMinerCard extends AbstractMonsterCard implements TurnAwareInterf
 
         $gameContext->pushGameEvent(GameEventTypeEnum::CARD_STATE_UPDATED, [
             'cardId' => $this->getInstanceId(),
-            'playerId' => $this->getOwnerId(),
             'stateToUpdate' => [
                 'currentCoins' => ++$this->currentCoins,
             ],

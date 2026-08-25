@@ -44,7 +44,6 @@ final class DeadCatCardTest extends CardTestCase
 
         self::assertSame(GameEventTypeEnum::CARD_STATE_UPDATED, $events[1]->type);
         self::assertSame('test_card', $events[1]->data['cardId']);
-        self::assertSame('1', $events[1]->data['playerId']);
         self::assertSame(8, $events[1]->data['stateToUpdate']['counter']);
     }
 
