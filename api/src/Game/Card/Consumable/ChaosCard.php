@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Game\Card\Consumable;
 
 use App\Enum\CardRarityEnum;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\Card\Monster\AbstractMonsterCard;
 use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\GameContext;
@@ -53,7 +53,7 @@ final class ChaosCard extends AbstractConsumableCard
 
             $context->discardCard($cardId);
 
-            CardHelper::generatedAndPlay($context, $cardState->ownerId, $replacementTemplateId, $isMonster);
+            CardActions::generatedAndPlay($context, $cardState->ownerId, $replacementTemplateId, $isMonster);
         }
     }
 

@@ -4,7 +4,7 @@ namespace App\Game\Card\Consumable;
 
 use App\Enum\CardRarityEnum;
 use App\Enum\GameEventTypeEnum;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\GameContext;
 
 final class BombFestCard extends AbstractConsumableCard
@@ -26,7 +26,7 @@ final class BombFestCard extends AbstractConsumableCard
 
     public function play(GameContext $context, array $data = []): void
     {
-        $cards = CardHelper::getAllCardInGroups($context, 'bomb');
+        $cards = CardActions::getAllCardInGroups($context, 'bomb');
 
         foreach ($cards as $card) {
             $context->pushGameEvent(GameEventTypeEnum::CARD_CONSUMED, [

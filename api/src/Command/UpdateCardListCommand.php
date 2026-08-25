@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Game\AbstractCard;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\Card\CardState;
 use App\Game\Card\Character\AbstractCharacterCard;
 use App\Game\Card\Consumable\AbstractConsumableCard;
@@ -30,7 +30,7 @@ final class UpdateCardListCommand
         AbstractPassiveCard::class,
         AbstractConsumableCard::class,
         CardState::class,
-        CardHelper::class,
+        CardActions::class,
         MonsterCardState::class,
         EffectCollection::class,
     ];

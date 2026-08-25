@@ -7,7 +7,7 @@ namespace App\Game\Card\Monster;
 use App\Enum\CardRarityEnum;
 use App\Enum\CardSetEnum;
 use App\Enum\GameEventTypeEnum;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\GameContext;
 use App\Game\GameUtils;
 
@@ -70,7 +70,7 @@ final class MegaClottyCard extends AbstractMonsterCard
 
         $clottiesOnBoard = 0;
 
-        $clottyCards = CardHelper::getAllCardInGroups($context, 'clotty');
+        $clottyCards = CardActions::getAllCardInGroups($context, 'clotty');
         foreach ($this->getAllActivePlayAreaCards($context) as $cardId) {
             if (!(isset($clottyCards[$cardId]) && $cardId !== $instanceId)) {
                 continue;
@@ -104,7 +104,7 @@ final class MegaClottyCard extends AbstractMonsterCard
         for ($i = 0; $i < self::NUMBER_OF_CLOTTIES_SPAWNED; $i++) {
             $cardTemplateId = 'Clotty';
 
-            CardHelper::generatedAndPlay($gameContext, $this->getOwnerId(), $cardTemplateId, true);
+            CardActions::generatedAndPlay($gameContext, $this->getOwnerId(), $cardTemplateId, true);
         }
     }
 }

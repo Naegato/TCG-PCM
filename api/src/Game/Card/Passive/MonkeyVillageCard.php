@@ -7,7 +7,7 @@ namespace App\Game\Card\Passive;
 use App\Enum\CardRarityEnum;
 use App\Enum\CardSetEnum;
 use App\Enum\GameEventTypeEnum;
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Trait\TurnAwareTrait;
 use App\Game\GameContext;
@@ -60,7 +60,7 @@ final class MonkeyVillageCard extends AbstractPassiveCard implements TurnAwareIn
         }
 
         $ownerState = $gameContext->getPlayerStateById($ownerId);
-        $monkeyCards = CardHelper::getAllCardInGroups($gameContext, 'monkey');
+        $monkeyCards = CardActions::getAllCardInGroups($gameContext, 'monkey');
 
         foreach ($ownerState->playArea->monsterCards as $cardId) {
             $cardState = $gameContext->state->getCardState($cardId);

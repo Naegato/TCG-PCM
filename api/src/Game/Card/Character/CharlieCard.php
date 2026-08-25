@@ -2,7 +2,7 @@
 
 namespace App\Game\Card\Character;
 
-use App\Game\Card\CardHelper;
+use App\Game\Card\CardActions;
 use App\Game\Card\Interface\TurnAwareInterface;
 use App\Game\Card\Passive\AbstractPassiveCard;
 use App\Game\Card\Trait\BaseOnTurnTrait;
@@ -48,7 +48,7 @@ final class CharlieCard extends AbstractCharacterCard implements TurnAwareInterf
         if ($context->isCurrentPlayer($this->getOwnerId())) {
             $randomPassiveCardId = $this->pickRandomPassiveCardId($context);
 
-            CardHelper::generatedAndPlay($context, $this->getOwnerId(), $randomPassiveCardId, false);
+            CardActions::generatedAndPlay($context, $this->getOwnerId(), $randomPassiveCardId, false);
         }
     }
 
