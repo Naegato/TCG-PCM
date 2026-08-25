@@ -266,6 +266,38 @@ return [
             'name' => 'Mega Clotty',
             'description' => 'When played, absorbs all clotties in play, gaining +{{value}} HP and +{{value2}} attack for each clottie absorbed. When it dies, spawns two clotties.',
         ],
+        'DecoyBomb' => [
+            'name' => 'Decoy Bomb',
+            'description' => 'A fake bomb. Steals {{value}} coins from the opponent instead of exploding.',
+        ],
+        'SuperMonkeyBomb' => [
+            'name' => 'Super Monkey Bomb',
+            'description' => 'Deal {{value}} damage to all monsters in play.',
+        ],
+        'TimeBomb' => [
+            'name' => 'Time Bomb',
+            'description' => 'After {{value2}} turns, deals {{value}} damage to the opponent, then is discarded.',
+        ],
+        'MegaBomb' => [
+            'name' => 'Mega Bomb',
+            'description' => 'Every {{value2}} turns, deals {{value}} damage to the opponent.',
+        ],
+        'BombFactory' => [
+            'name' => 'Bomb Factory',
+            'description' => 'Every {{value}} turn(s), generates a {{card}}.',
+        ],
+        'ChainBomb' => [
+            'name' => 'Chain Bomb',
+            'description' => 'Deal {{value}} damage to the opponent. Also detonates a random other bomb card in play, if any.',
+        ],
+        'TrollBomb' => [
+            'name' => 'Troll Bomb',
+            'description' => 'Usually deals only {{value}} damage... but there is a small chance it detonates every bomb in play instead.',
+        ],
+        'StickyBomb' => [
+            'name' => 'Sticky Bomb',
+            'description' => 'Deal {{value}} damage to a targeted card.',
+        ],
     ],
     // Effects
     'effects' => [

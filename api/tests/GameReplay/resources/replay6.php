@@ -73,7 +73,7 @@ return
             ],
             'lastEventId' => [
                 null,
-                14 => 69,
+                14 => 195,
             ],
             'seed' => [
                 1234,
@@ -253,10 +253,10 @@ return
         ],
         'App\\Game\\State\\GameEvent' => [
             'id' => [
-                10 => 66,
-                67,
-                68,
-                69,
+                10 => 192,
+                193,
+                194,
+                195,
             ],
             'type' => [
                 10 => \App\Enum\GameEventTypeEnum::TURN_STARTED,

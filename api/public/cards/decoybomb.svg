@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#e8d9b5"/>
+      <stop offset="100%" stop-color="#b79c6b"/>
+    </radialGradient>
+    <linearGradient id="cardboard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9a86a"/>
+      <stop offset="100%" stop-color="#a9834b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="500" height="700" fill="url(#bg)"/>
+
+  <!-- wooden stick handle behind the cutout -->
+  <rect x="238" y="360" width="24" height="220" rx="8" fill="#7a5230"/>
+
+  <!-- cardboard cutout bomb silhouette, held up like a puppet -->
+  <g stroke="#5c431f" stroke-width="6" stroke-dasharray="14 10" stroke-linejoin="round">
+    <circle cx="250" cy="330" r="150" fill="url(#cardboard)"/>
+    <path d="M340 220 Q400 170 430 190" fill="none"/>
+  </g>
+  <circle cx="430" cy="188" r="14" fill="#e2b04a" stroke="#5c431f" stroke-width="6"/>
+
+  <!-- crude marker face -->
+  <g stroke="#5c431f" stroke-width="10" stroke-linecap="round" fill="none">
+    <line x1="200" y1="300" x2="222" y2="322"/>
+    <line x1="222" y1="300" x2="200" y2="322"/>
+    <line x1="278" y1="300" x2="300" y2="322"/>
+    <line x1="300" y1="300" x2="278" y2="322"/>
+    <path d="M205 380 Q250 350 295 380"/>
+  </g>
+
+  <!-- "FAKE" tag -->
+  <g transform="translate(160,470)">
+    <rect x="0" y="0" width="180" height="60" rx="10" fill="#f4e8c8" stroke="#5c431f" stroke-width="5"/>
+    <text x="90" y="40" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#5c431f" font-weight="bold">FAKE</text>
+  </g>
+</svg>
