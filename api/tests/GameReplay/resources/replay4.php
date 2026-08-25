@@ -122,7 +122,7 @@ return
             ],
             'lastEventId' => [
                 null,
-                29 => 279,
+                29 => 166,
             ],
             'seed' => [
                 2188139164,
@@ -178,15 +178,15 @@ return
                 'MegaClotty',
                 'Pills',
                 'MimeticPrismRuby',
-                'BloodSucker',
+                'Racism',
                 'Justice',
-                'MonkeyVillage',
+                'consolation_prices',
                 'ViciousBee',
                 'WizardMonkey',
                 'NinjaMonkey',
-                'ImStillStanding',
+                'BloodSucker',
                 'PierreSaidNoMonsterZone',
-                'Play2Hurt',
+                'BloodSucker',
             ],
             'ownerId' => [
                 1 => '2',
@@ -290,8 +290,8 @@ return
             'healthPoints' => [
                 15 => 125,
                 18 => 125,
-                45 => 95,
-                47 => 95,
+                45 => 105,
+                47 => 105,
             ],
             'maxHealthPoints' => [
                 15 => 125,
@@ -576,14 +576,14 @@ return
         ],
         'App\\Game\\State\\GameEvent' => [
             'id' => [
-                21 => 272,
-                273,
-                274,
-                275,
-                276,
-                277,
-                278,
-                279,
+                21 => 159,
+                160,
+                161,
+                162,
+                163,
+                164,
+                165,
+                166,
             ],
             'type' => [
                 21 => \App\Enum\GameEventTypeEnum::TURN_ENDED,

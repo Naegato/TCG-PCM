@@ -298,6 +298,38 @@ return [
             'name' => 'DataCenter',
             'description' => 'Fait apparaître {{value}} {{card}} tous les {{value2}} tours.',
         ],
+        'DecoyBomb' => [
+            'name' => 'Bombe Leurre',
+            'description' => 'Une fausse bombe. Vole {{value}} pièces à l\'adversaire au lieu d\'exploser.',
+        ],
+        'SuperMonkeyBomb' => [
+            'name' => 'Super Monkey Bomb',
+            'description' => 'Inflige {{value}} dégâts à tous les monstres en jeu.',
+        ],
+        'TimeBomb' => [
+            'name' => 'Bombe à Retardement',
+            'description' => 'Après {{value2}} tours, inflige {{value}} dégâts à l\'adversaire, puis est défaussée.',
+        ],
+        'MegaBomb' => [
+            'name' => 'Méga Bombe',
+            'description' => 'Tous les {{value2}} tours, inflige {{value}} dégâts à l\'adversaire.',
+        ],
+        'BombFactory' => [
+            'name' => 'Usine à Bombes',
+            'description' => 'Tous les {{value}} tour(s), génère une {{card}}.',
+        ],
+        'ChainBomb' => [
+            'name' => 'Bombe en Chaîne',
+            'description' => 'Inflige {{value}} dégâts à l\'adversaire. Fait aussi exploser une autre bombe aléatoire en jeu, s\'il y en a une.',
+        ],
+        'TrollBomb' => [
+            'name' => 'Bombe Troll',
+            'description' => 'N\'inflige généralement que {{value}} dégâts... mais il y a une petite chance qu\'elle fasse exploser toutes les bombes en jeu.',
+        ],
+        'StickyBomb' => [
+            'name' => 'Bombe Collante',
+            'description' => 'Inflige {{value}} dégâts à une carte ciblée.',
+        ],
     ],
     // Effects
     'effects' => [

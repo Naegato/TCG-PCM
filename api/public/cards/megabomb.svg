@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="85%">
+      <stop offset="0%" stop-color="#4a0d5c"/>
+      <stop offset="60%" stop-color="#210828"/>
+      <stop offset="100%" stop-color="#0a0210"/>
+    </radialGradient>
+    <radialGradient id="body" cx="35%" cy="28%" r="75%">
+      <stop offset="0%" stop-color="#3a3a3a"/>
+      <stop offset="100%" stop-color="#020202"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="500" height="700" fill="url(#bg)"/>
+
+  <!-- shockwave rings -->
+  <g fill="none" stroke="#ff7a1f" opacity="0.55">
+    <circle cx="250" cy="360" r="200" stroke-width="6"/>
+    <circle cx="250" cy="360" r="255" stroke-width="4"/>
+    <circle cx="250" cy="360" r="305" stroke-width="2"/>
+  </g>
+
+  <!-- spikes -->
+  <g fill="#1a1a1a">
+    <polygon points="250,140 268,205 232,205"/>
+    <polygon points="250,580 268,515 232,515"/>
+    <polygon points="90,360 155,342 155,378"/>
+    <polygon points="410,360 345,342 345,378"/>
+    <polygon points="140,220 192,268 165,290"/>
+    <polygon points="360,220 308,268 335,290"/>
+    <polygon points="140,500 192,452 165,430"/>
+    <polygon points="360,500 308,452 335,430"/>
+  </g>
+
+  <!-- bomb body -->
+  <circle cx="250" cy="360" r="175" fill="url(#body)"/>
+  <ellipse cx="195" cy="300" rx="50" ry="32" fill="#ffffff" opacity="0.1"/>
+
+  <!-- fuse -->
+  <path d="M250 185 Q310 130 275 80" stroke="#111" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <polygon points="275,45 315,90 270,105 250,65" fill="#ffb703"/>
+  <polygon points="270,55 300,80 268,100 258,78" fill="#ff3d00"/>
+</svg>
