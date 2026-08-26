@@ -56,17 +56,17 @@ final class GameReplayTest extends KernelTestCase
     public static function replayProvider(): array
     {
         return [
-            'replay1' => ['replay1'],
-            'replay2' => ['replay2'],
-            'replay3' => ['replay3'],
-            'replay4' => ['replay4'],
-            'replay5' => ['replay5'],
-            'replay6' => ['replay6'],
-            'replay7' => ['replay7'],
-            'replay8' => ['replay8'],
-            'replay9' => ['replay9'],
-            'replay10' => ['replay10'],
-            'replay11' => ['replay11'],
+            'basic' => ['1-basic'],
+            'game2' => ['2-game2'],
+            'game3' => ['3-game3'],
+            'damage' => ['4-damage'],
+            'combat' => ['5-combat'],
+            'draw' => ['6-draw'],
+            'attack' => ['7-attack'],
+            'multi-attack' => ['8-multi-attack'],
+            'game9' => ['9-game9'],
+            'game10' => ['10-game10'],
+            'bombs' => ['11-bombs'],
         ];
     }
 
