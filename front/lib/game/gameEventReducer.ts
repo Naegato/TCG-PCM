@@ -9,7 +9,109 @@ export type AnnouncementPayload = {
   text: string;
   tone: AnnouncementTone;
   presentation?: "normal" | "giant";
+  // Set for a played consumable's giant reveal — lets GameAnnouncements show the card's own art
+  // instead of the dice visuals a plain giant announcement gets by default.
+  cardImage?: string;
+  cardName?: string;
 };
+
+export type CardMarkerPayload = {
+  text: string;
+  tone: "positive" | "negative";
+};
+
+/**
+ * Short "+1"/"-2 PV"-style marker for an event caused by a specific card's CARD_TRIGGERED_ACTION
+ * (see processEvents in GameContext.tsx, which resolves which card via event.parentId) — shown
+ * floating on that card instead of the generic toast, since the card itself is who acted.
+ */
+export function getCardMarker(event: GameEvent): CardMarkerPayload | null {
+  switch (event.type) {
+    case GameEventType.COINS_GAINED:
+      return typeof event.data?.amount === "number"
+        ? { text: `+${event.data.amount}`, tone: "positive" }
+        : null;
+    case GameEventType.COINS_LOST:
+      return typeof event.data?.amount === "number"
+        ? { text: `-${event.data.amount}`, tone: "negative" }
+        : null;
+    case GameEventType.HEAL_APPLIED:
+      return typeof event.data?.amount === "number"
+        ? { text: `+${event.data.amount} PV`, tone: "positive" }
+        : null;
+    case GameEventType.DAMAGE_DEALT:
+      return typeof event.data?.damage === "number"
+        ? { text: `-${event.data.damage} PV`, tone: "negative" }
+        : null;
+    default:
+      return null;
+  }
+}
+
+/**
+ * The backend resolves breadth-first: every card's CARD_TRIGGERED_ACTION for a given trigger is
+ * generated before any of their own effects (e.g. two cards reacting to TURN_STARTED both get
+ * triggered, *then* both of their COINS_GAINED reactions follow) — correct for game logic, but
+ * played back literally it reads as "every card shakes, then every effect fires" instead of one
+ * card finishing before the next starts.
+ *
+ * Regroups the batch so each CARD_TRIGGERED_ACTION is immediately followed by everything caused
+ * by it (found by walking event.parentId), while preserving the original relative order both
+ * across groups and within them — a stable bucket sort, not a resort. Events with no
+ * CARD_TRIGGERED_ACTION anywhere in their ancestry (e.g. TURN_STARTED itself, or a direct
+ * attack's DAMAGE_DEALT) are left exactly where they were, each standing alone.
+ */
+export function reorderEventsForPlayback(events: GameEvent[]): GameEvent[] {
+  const eventById = new Map(events.map((e) => [e.id, e]));
+  const cardTriggerAncestorCache = new Map<number, number | null>();
+
+  const findCardTriggerAncestor = (event: GameEvent): number | null => {
+    if (cardTriggerAncestorCache.has(event.id)) {
+      return cardTriggerAncestorCache.get(event.id) ?? null;
+    }
+
+    // Set before recursing so a cycle (shouldn't happen, but the data comes over the wire)
+    // resolves to "no ancestor" instead of looping forever.
+    cardTriggerAncestorCache.set(event.id, null);
+
+    let result: number | null = null;
+    if (event.type === GameEventType.CARD_TRIGGERED_ACTION) {
+      result = event.id;
+    } else if (event.parentId != null) {
+      const parent = eventById.get(event.parentId);
+      result = parent ? findCardTriggerAncestor(parent) : null;
+    }
+
+    cardTriggerAncestorCache.set(event.id, result);
+    return result;
+  };
+
+  const buckets = new Map<number, GameEvent[]>();
+  const orderedKeys: number[] = [];
+
+  for (const event of events) {
+    const key = findCardTriggerAncestor(event) ?? event.id;
+    let bucket = buckets.get(key);
+
+    if (!bucket) {
+      bucket = [];
+      buckets.set(key, bucket);
+      orderedKeys.push(key);
+    }
+
+    bucket.push(event);
+  }
+
+  const orderedEvents = orderedKeys.flatMap((key) => buckets.get(key)!);
+  const drawEvents = orderedEvents.filter(
+    (event) => event.type === GameEventType.CARD_DRAWN,
+  );
+  const otherEvents = orderedEvents.filter(
+    (event) => event.type !== GameEventType.CARD_DRAWN,
+  );
+
+  return [...drawEvents, ...otherEvents];
+}
 
 export function getPlayerKey(
   state: GameState,
@@ -66,6 +168,22 @@ export function animateGameEvent(
       }
       return null;
     }
+    case GameEventType.CARD_CONSUMED: {
+      // A consumable never stays on the board — this is the only moment its identity is ever
+      // shown to the opponent, so give it a proper reveal rather than the usual small toast.
+      const card = event.view.card || getCard(state, view.cardId);
+      const player = getPlayer(state, view.playerId);
+      if (card && player) {
+        return {
+          text: `${player.player.name} joue ${card.name} !`,
+          tone: "neutral",
+          presentation: "giant",
+          cardImage: card.image,
+          cardName: card.name,
+        };
+      }
+      return null;
+    }
     case GameEventType.CARD_REDRAWN: {
       const card = getCard(state, view.cardId);
       const player = getPlayer(state, view.playerId);
@@ -109,7 +227,7 @@ export function animateGameEvent(
         const damageDealt = event.data.damage;
 
         if (attackerCard && targetName && damageDealt > 0) {
-          let text = `${attackerCard.name} attaque ${targetName} pour ${damageDealt} dégâts.`;
+          const text = `${attackerCard.name} attaque ${targetName} pour ${damageDealt} dégâts.`;
           return { text, tone: "neutral" };
         }
       }
@@ -389,6 +507,34 @@ export function applyGameView(
                 ? [...player.playArea.monsterCards, cardId]
                 : player.playArea.monsterCards,
           },
+        },
+        cards: {
+          ...state.cards,
+          ...(view.card ? { [cardId]: view.card } : {}),
+        },
+      };
+    }
+
+    case GameEventType.CARD_CONSUMED: {
+      // A consumable is used and discarded in the same breath — it never sits in a play area,
+      // so unlike CARD_PLACED_IN_*, there's nothing to add there. Still leaves hand and reveals
+      // the card into state.cards, so the CARD_DISCARDED that immediately follows already knows
+      // it (and, for the opponent, this is the only place its identity is ever learned at all).
+      const cardId = view.cardId;
+      const card = view.card || state.cards[cardId];
+
+      const playerKey = getPlayerKey(state, view.playerId);
+      const player = state[playerKey];
+
+      if (card) {
+        emitter.emit("card:played", { card, playerId: view.playerId });
+      }
+
+      return {
+        ...state,
+        [playerKey]: {
+          ...player,
+          hand: player.hand.filter((id) => id !== cardId),
         },
         cards: {
           ...state.cards,

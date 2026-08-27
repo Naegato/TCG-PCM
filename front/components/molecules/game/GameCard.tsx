@@ -1,11 +1,16 @@
 "use client";
 
-import { CSSProperties, memo, useContext } from "react";
+import { CSSProperties, memo, useContext, useEffect, useRef, useState } from "react";
 import { CardSize, CardTargetFlag, CardType } from "@/constants/card";
 import type { BasicCard } from "@/lib/cards/types/card";
 import CardWithZoom from "@/components/organisms/card/CardWithZoom";
 import CardEffectBadges from "@/components/molecules/game/CardEffectBadges";
 import { GameContext } from "@/contexts/GameContext";
+import { emitter } from "@/lib/eventBus";
+import {
+  CARD_TRIGGERED_SHAKE_DURATION,
+  CARD_MARKER_DURATION,
+} from "@/lib/game/animationTimings";
 
 type GameCardProps = {
   card: BasicCard;
@@ -41,7 +46,7 @@ function getAnimatedCardStyle(
       zIndex: 50,
       boxShadow:
         "0 50px 40px rgba(0, 0, 0, 0.5), 0 10px 20px rgba(0, 0, 0, 0.3)",
-      transition: "transform 300ms ease-in",
+      transition: "transform 500ms ease-in",
     };
   }
 
@@ -73,12 +78,74 @@ function GameCard({
 }: GameCardProps) {
   const { targeting, targetingActions, game, currentUsername, getCardById } =
     useContext(GameContext);
-  const { isTargeting, hoveredTargetId, selectedAttackerId, pendingPlayCardId } =
-    targeting;
+  const { isTargeting, selectedAttackerId, pendingPlayCardId } = targeting;
 
   const isSelectedSource = selectedAttackerId === card.instanceId;
-  const isHovered =
-    hoveredTargetId === targetId && isTargeting && !isSelectedSource;
+  const [isTriggered, setIsTriggered] = useState(false);
+  const triggeredTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const handleCardTriggered = (event: { cardId: string }) => {
+      if (event.cardId !== card.instanceId) {
+        return;
+      }
+
+      if (triggeredTimeoutRef.current) {
+        clearTimeout(triggeredTimeoutRef.current);
+      }
+
+      setIsTriggered(true);
+      triggeredTimeoutRef.current = setTimeout(() => {
+        setIsTriggered(false);
+        triggeredTimeoutRef.current = null;
+      }, CARD_TRIGGERED_SHAKE_DURATION);
+    };
+
+    emitter.on("card:triggered", handleCardTriggered);
+
+    return () => {
+      emitter.off("card:triggered", handleCardTriggered);
+      if (triggeredTimeoutRef.current) {
+        clearTimeout(triggeredTimeoutRef.current);
+      }
+    };
+  }, [card.instanceId]);
+
+  const [marker, setMarker] = useState<{ text: string; tone: "positive" | "negative" } | null>(
+    null,
+  );
+  const markerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const handleCardMarker = (event: {
+      cardId: string;
+      text: string;
+      tone: "positive" | "negative";
+    }) => {
+      if (event.cardId !== card.instanceId) {
+        return;
+      }
+
+      if (markerTimeoutRef.current) {
+        clearTimeout(markerTimeoutRef.current);
+      }
+
+      setMarker({ text: event.text, tone: event.tone });
+      markerTimeoutRef.current = setTimeout(() => {
+        setMarker(null);
+        markerTimeoutRef.current = null;
+      }, CARD_MARKER_DURATION);
+    };
+
+    emitter.on("card:marker", handleCardMarker);
+
+    return () => {
+      emitter.off("card:marker", handleCardMarker);
+      if (markerTimeoutRef.current) {
+        clearTimeout(markerTimeoutRef.current);
+      }
+    };
+  }, [card.instanceId]);
 
   const loggedPlayerState =
     game && currentUsername
@@ -165,7 +232,16 @@ function GameCard({
           className="absolute -top-2 left-1 z-30 pointer-events-none"
         />
       )}
-      <CardWithZoom card={card} size={size} />
+      {marker && (
+        <span
+          className={`card-marker ${marker.tone === "positive" ? "card-marker-positive" : "card-marker-negative"}`}
+        >
+          {marker.text}
+        </span>
+      )}
+      <div className={isTriggered ? "card-triggered-shake" : undefined}>
+        <CardWithZoom card={card} size={size} />
+      </div>
     </div>
   );
 }

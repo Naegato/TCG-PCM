@@ -12,7 +12,7 @@ type CardRowProps = {
   isLoggedPlayerSide?: boolean;
 };
 
-const CARD_PLAY_ANIMATION_TIME = 200;
+const CARD_PLAY_ANIMATION_TIME = 500;
 
 function CardRow({
   cardIds,
@@ -22,6 +22,7 @@ function CardRow({
   const { getCardById, targeting } = useContext(GameContext);
   const { isTargeting } = targeting;
   const [playingCardIds, setPlayingCardIds] = useState<Set<string>>(new Set());
+  const [pendingCardIds, setPendingCardIds] = useState<Set<string>>(new Set());
   const timersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
     new Map(),
   );
@@ -30,36 +31,64 @@ function CardRow({
     const handleCardPlayed = (event: { card: { instanceId: string } }) => {
       const playedId = event.card.instanceId;
 
-      setPlayingCardIds((prev) => new Set(prev).add(playedId));
-
-      const existingTimer = timersRef.current.get(playedId);
-      if (existingTimer) {
-        clearTimeout(existingTimer);
-      }
-
-      const timeoutId = setTimeout(() => {
-        setPlayingCardIds((prev) => {
-          const next = new Set(prev);
-          next.delete(playedId);
-          return next;
-        });
-        timersRef.current.delete(playedId);
-      }, CARD_PLAY_ANIMATION_TIME);
-
-      timersRef.current.set(playedId, timeoutId);
+      setPendingCardIds((prev) => new Set(prev).add(playedId));
     };
 
     emitter.on("card:played", handleCardPlayed);
     emitter.on("card:stolen", handleCardPlayed);
 
+    const timers = timersRef.current;
     return () => {
       emitter.off("card:played", handleCardPlayed);
-      for (const timeoutId of timersRef.current.values()) {
+      for (const timeoutId of timers.values()) {
         clearTimeout(timeoutId);
       }
-      timersRef.current.clear();
+      timers.clear();
     };
   }, []);
+
+  useEffect(() => {
+    const cardsReadyToAnimate = [...pendingCardIds].filter((cardId) =>
+      cardIds.includes(cardId),
+    );
+
+    if (cardsReadyToAnimate.length === 0) {
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      setPendingCardIds((prev) => {
+        const next = new Set(prev);
+        cardsReadyToAnimate.forEach((cardId) => next.delete(cardId));
+        return next;
+      });
+      setPlayingCardIds((prev) => {
+        const next = new Set(prev);
+        cardsReadyToAnimate.forEach((cardId) => next.add(cardId));
+        return next;
+      });
+
+      cardsReadyToAnimate.forEach((cardId) => {
+        const existingTimer = timersRef.current.get(cardId);
+        if (existingTimer) {
+          clearTimeout(existingTimer);
+        }
+
+        const timeoutId = setTimeout(() => {
+          setPlayingCardIds((prev) => {
+            const next = new Set(prev);
+            next.delete(cardId);
+            return next;
+          });
+          timersRef.current.delete(cardId);
+        }, CARD_PLAY_ANIMATION_TIME);
+
+        timersRef.current.set(cardId, timeoutId);
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [cardIds, pendingCardIds]);
 
   const cardIdsLength = cardIds.length;
 

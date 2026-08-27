@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import GameProjectile from "./GameProjectile";
 import { emitter } from "@/lib/eventBus";
 import { CardSet } from "@/constants/card";
@@ -9,14 +9,29 @@ export default function GameAttack() {
     targetId: string;
     cardSet: CardSet;
   } | null>(null);
+  const [impactFlash, setImpactFlash] = useState(false);
   const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(
     null,
   );
   const [endPos, setEndPos] = useState<{ x: number; y: number } | null>(null);
   const gameAreaRef = useRef<HTMLDivElement | null>(null);
+  const flashTimeoutRef = useRef<number | null>(null);
+
+  const clearFlashTimeout = useCallback(() => {
+    if (flashTimeoutRef.current !== null) {
+      window.clearTimeout(flashTimeoutRef.current);
+      flashTimeoutRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     gameAreaRef.current = document.querySelector<HTMLDivElement>(".game-board");
+  }, [clearFlashTimeout]);
+
+  useEffect(() => {
+    return () => {
+      clearFlashTimeout();
+    };
   }, []);
 
   useEffect(() => {
@@ -25,6 +40,8 @@ export default function GameAttack() {
       targetId: string;
       cardSet: CardSet;
     }) => {
+      clearFlashTimeout();
+      setImpactFlash(false);
       setAttack({
         attackerId: event.attackerId,
         targetId: event.targetId,
@@ -95,20 +112,30 @@ export default function GameAttack() {
     }
   }, [attack]);
 
-  if (!attack || !startPos || !endPos) {
+  if (!attack && !impactFlash) {
     return null;
   }
 
   return (
-    <GameProjectile
-      startPosition={startPos}
-      endPosition={endPos}
-      duration={300}
-      cardSet={attack.cardSet}
-      onAnimationComplete={() => {
-        emitter.emit("attack-animation:completed", attack);
-        setAttack(null);
-      }}
-    />
+    <>
+      {attack && startPos && endPos && (
+        <GameProjectile
+          startPosition={startPos}
+          endPosition={endPos}
+          duration={300}
+          cardSet={attack.cardSet}
+          onAnimationComplete={() => {
+            emitter.emit("attack-animation:completed", attack);
+            setImpactFlash(true);
+            clearFlashTimeout();
+            flashTimeoutRef.current = window.setTimeout(() => {
+              setImpactFlash(false);
+            }, 180);
+            setAttack(null);
+          }}
+        />
+      )}
+      {impactFlash && <div className="attack-flash" />}
+    </>
   );
 }

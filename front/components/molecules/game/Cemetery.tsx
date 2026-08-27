@@ -18,7 +18,7 @@ type CemeteryProps = {
   mirrored?: boolean;
 };
 
-const CARD_PLAY_ANIMATION_TIME = 300;
+const CARD_PLAY_ANIMATION_TIME = 500;
 const TOOLTIP_TAP_DURATION_MS = 1800;
 
 export default function Cemetery({

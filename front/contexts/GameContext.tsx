@@ -12,6 +12,8 @@ import {
   AnnouncementTone,
   animateGameEvent,
   applyGameView,
+  getCardMarker,
+  reorderEventsForPlayback,
 } from "@/lib/game/gameEventReducer";
 import { CardType, CardSet } from "@/constants/card";
 
@@ -27,6 +29,11 @@ import {
 import { PlayerActionType } from "@/lib/game/type/playerAction";
 import { emitter } from "@/lib/eventBus";
 import { GameEventType } from "@/lib/game/type/eventType";
+import {
+  CARD_TRIGGERED_SHAKE_DURATION,
+  CARD_MARKER_DURATION,
+  CONSUMABLE_REVEAL_DURATION_MS,
+} from "@/lib/game/animationTimings";
 
 export type { AnnouncementTone };
 
@@ -37,6 +44,11 @@ export type GameAnnouncement = {
 
 const ANNOUNCEMENT_LIFETIME_MS = 2200;
 const ANNOUNCEMENT_FADE_MS = 450;
+
+// Pacing for one-by-one event playback in processEvents — how long to hold on each event
+// before starting the next, based on what (if anything) it shows the player.
+const SILENT_EVENT_STEP_MS = 0;
+const ANNOUNCEMENT_STEP_MS = 250;
 
 type ActionObject = {
   playCard: (cardId: string, data?: Record<string, unknown>) => void;
@@ -220,6 +232,11 @@ export const GameProvider = ({
       { id, ...announcement },
     ]);
 
+    // Consumable reveals need to stay mounted long enough for the card to display and fade out.
+    const lifetime = announcement.cardImage
+      ? CONSUMABLE_REVEAL_DURATION_MS
+      : ANNOUNCEMENT_LIFETIME_MS;
+
     const fadeTimeoutId = window.setTimeout(() => {
       setAnnouncements((current: GameAnnouncement[]) =>
         current.map((announcement: GameAnnouncement) =>
@@ -245,7 +262,7 @@ export const GameProvider = ({
       timeoutRefs.current = timeoutRefs.current.filter(
         (currentTimeoutId: number) => currentTimeoutId !== fadeTimeoutId,
       );
-    }, ANNOUNCEMENT_LIFETIME_MS);
+    }, lifetime);
 
     timeoutRefs.current.push(fadeTimeoutId);
   }, []);
@@ -327,27 +344,92 @@ export const GameProvider = ({
   }, [gameId]);
 
   const processEvents = useCallback(
-    (events: GameEvent[]) => {
+    async (events: GameEvent[]) => {
       if (!gameRef.current) {
         return;
       }
-      let next = { ...gameRef.current };
 
-      for (const event of events) {
-        const previous = next;
-        const announcement = animateGameEvent(previous, event);
+      // Locks out incoming batches (see the `if (isAnimating)` queueing check in the
+      // game_events handler below) for the whole time it takes to play this one through —
+      // reusing the same lock the opponent-attack animation already relies on.
+      setIsAnimating(true);
 
-        if (announcement) {
-          pushAnnouncement(announcement);
+      try {
+        let next = { ...gameRef.current };
+
+        // Batch-level lookahead: a CARD_TRIGGERED_ACTION only gets animated if something in
+        // this same batch actually resulted from it (an empty trigger has nothing worth
+        // showing), and an event caused by one is grouped with — and animated on — that card
+        // instead of a generic toast. Both need the whole batch, not just the current event,
+        // hence computing them here rather than inside animateGameEvent/applyGameView.
+        const eventIdsWithChildren = new Set(
+          events.filter((e) => e.parentId != null).map((e) => e.parentId),
+        );
+        const cardIdByTriggerEventId = new Map<number, string>();
+        for (const e of events) {
+          if (
+            e.type === GameEventType.CARD_TRIGGERED_ACTION &&
+            typeof e.data?.cardId === "string"
+          ) {
+            cardIdByTriggerEventId.set(e.id, e.data.cardId);
+          }
         }
 
-        next = applyGameView(next, event, username, omniscient);
+        // Regroup so each card's trigger is immediately followed by its own effects (see
+        // reorderEventsForPlayback) — otherwise BFS resolution order plays as "every card
+        // shakes, then every effect fires" instead of one card finishing before the next.
+        const orderedEvents = reorderEventsForPlayback(events);
+
+        // Played one at a time — each event waits for its own animation (or a short beat if it
+        // has nothing to show) before the next one starts, instead of the whole batch landing
+        // in a single tick where simultaneous reactions were unreadable.
+        for (const event of orderedEvents) {
+          const previous = next;
+          let stepDelay = SILENT_EVENT_STEP_MS;
+
+          if (event.type === GameEventType.CARD_TRIGGERED_ACTION) {
+            if (
+              typeof event.data?.cardId === "string" &&
+              eventIdsWithChildren.has(event.id)
+            ) {
+              emitter.emit("card:triggered", { cardId: event.data.cardId });
+              stepDelay = CARD_TRIGGERED_SHAKE_DURATION;
+            }
+          } else {
+            const triggeringCardId =
+              event.parentId != null
+                ? cardIdByTriggerEventId.get(event.parentId)
+                : undefined;
+            const marker = triggeringCardId ? getCardMarker(event) : null;
+
+            if (triggeringCardId && marker) {
+              emitter.emit("card:marker", { cardId: triggeringCardId, ...marker });
+              stepDelay = CARD_MARKER_DURATION;
+            } else {
+              const announcement = animateGameEvent(previous, event);
+
+              if (announcement) {
+                pushAnnouncement(announcement);
+                stepDelay = announcement.cardImage
+                  ? CONSUMABLE_REVEAL_DURATION_MS
+                  : event.type === GameEventType.TURN_STARTED
+                    ? 0
+                    : ANNOUNCEMENT_STEP_MS;
+              }
+            }
+          }
+
+          next = applyGameView(next, event, username, omniscient);
+
+          const normalizedNext = normalizeGameState(next);
+          gameRef.current = normalizedNext;
+          setGame(normalizedNext);
+
+          await new Promise((resolve) => setTimeout(resolve, stepDelay));
+        }
+      } finally {
+        setIsAnimating(false);
       }
-
-      const normalizedNext = normalizeGameState(next);
-
-      gameRef.current = normalizedNext;
-      setGame(normalizedNext);
     },
     [normalizeGameState, pushAnnouncement, username, omniscient],
   );

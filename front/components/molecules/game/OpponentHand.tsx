@@ -103,7 +103,7 @@ export default function OpponentHand({
             style={{
               transform: `translate(calc(-50% + ${positionedCard.x}px), calc(50% + ${displayY}px)) rotateZ(${positionedCard.rotation}deg) scale(${scale})`,
               zIndex: positionedCard.rank,
-              transition: `transform 300ms ease-in-out`,
+              transition: `transform 250ms ease-in-out`,
             }}
           >
             <DummyFaceDownCard size={CardSize.MD} />

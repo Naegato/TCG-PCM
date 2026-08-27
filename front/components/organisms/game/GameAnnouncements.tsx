@@ -3,11 +3,41 @@
 import { useContext } from "react";
 import { GameContext } from "@/contexts/GameContext";
 import type { GameAnnouncement } from "@/contexts/GameContext";
+import { getImage } from "@/lib/api/api";
 
 type GameAnnouncementsProps = {
   regularAnnouncements: GameAnnouncement[];
   giantAnnouncement: GameAnnouncement | null;
 };
+
+function ConsumableCardReveal({
+  announcement,
+}: {
+  announcement: GameAnnouncement;
+}) {
+  return (
+    <>
+      <div
+        className={`pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 px-6 transition-opacity duration-150 ease-out ${
+          announcement.leaving ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        <div>
+          <div className="animate-card-reveal-in">
+            <img
+              src={getImage(announcement.cardImage!)}
+              alt={announcement.cardName ?? ""}
+              className="w-[min(96vw,52rem)] rounded-[2.5rem] border-8 border-ink-outline shadow-[var(--sticker-shadow-lg)]"
+            />
+          </div>
+          <div className="mt-6 rounded-full border-4 border-ink-outline bg-white px-10 py-4 text-center font-display text-4xl font-extrabold leading-none tracking-tight text-ink-outline shadow-[var(--sticker-shadow-sm)] sm:text-7xl">
+            {announcement.text}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default function GameAnnouncements({
   regularAnnouncements,
@@ -40,23 +70,30 @@ export default function GameAnnouncements({
         )}
       </div>
 
-      {giantAnnouncement && (
-        <div
-          className={`pointer-events-none absolute inset-0 z-30 flex items-center justify-center px-6 transition-opacity duration-[450ms] ease-out ${
-            giantAnnouncement.leaving ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          <div className="flex min-h-64 min-w-64 flex-col items-center justify-center rounded-[2.5rem] border-4 border-ink-outline bg-white px-10 py-8 text-center shadow-[var(--sticker-shadow-lg)]">
-            <div className="relative">
-              <div className="dice-burst" />
-              <div className="dice-face" />
-            </div>
-            <div className="mt-4 font-display text-7xl font-extrabold leading-none tracking-tight text-ink-outline sm:text-[8rem]">
-              {giantAnnouncement.text.replace(/^🎲\s*/, "")}
+      {giantAnnouncement &&
+        (giantAnnouncement.cardImage ? (
+          // Keyed by announcement id so consecutive consumables get independent reveals.
+          <ConsumableCardReveal
+            key={giantAnnouncement.id}
+            announcement={giantAnnouncement}
+          />
+        ) : (
+          <div
+            className={`pointer-events-none absolute inset-0 z-30 flex items-center justify-center px-6 transition-opacity duration-[450ms] ease-out ${
+              giantAnnouncement.leaving ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            <div className="flex min-h-64 min-w-64 flex-col items-center justify-center rounded-[2.5rem] border-4 border-ink-outline bg-white px-10 py-8 text-center shadow-[var(--sticker-shadow-lg)]">
+              <div className="relative">
+                <div className="dice-burst" />
+                <div className="dice-face" />
+              </div>
+              <div className="mt-4 font-display text-7xl font-extrabold leading-none tracking-tight text-ink-outline sm:text-[8rem]">
+                {giantAnnouncement.text.replace(/^🎲\s*/, "")}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        ))}
     </>
   );
 }

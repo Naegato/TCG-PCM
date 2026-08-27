@@ -104,7 +104,7 @@ export default function DraggedCard({
     zIndex: z,
     cursor: "grabbing",
     transition: shouldTransition
-      ? "transform 300ms cubic-bezier(.2,.8,.2,1)"
+      ? "transform 250ms cubic-bezier(.2,.8,.2,1)"
       : undefined,
   };
 

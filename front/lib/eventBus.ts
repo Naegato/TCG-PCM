@@ -27,6 +27,8 @@ type Events = {
   "attack-animation:start": { attackerId: string; targetId: string; cardSet: CardSet };
   "attack-animation:completed": { attackerId: string; targetId: string };
   "card:stolen": { card: BasicCard; fromPlayerId: string; toPlayerId: string };
+  "card:triggered": { cardId: string };
+  "card:marker": { cardId: string; text: string; tone: "positive" | "negative" };
 };
 
 export const emitter = mitt<Events>();
