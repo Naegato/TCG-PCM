@@ -1,4 +1,4 @@
-ARG NODE_VERSION=24.13.0-slim
+ARG NODE_VERSION=24.20.0-slim
 # =========================
 # BASE
 # =========================
@@ -35,7 +35,7 @@ RUN npm run build
 # =========================
 # PROD
 # =========================
-FROM node:20-alpine AS prod
+FROM node:24-alpine AS prod
 WORKDIR /app
 
 ENV NODE_ENV=production

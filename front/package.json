@@ -15,7 +15,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^1.18.0",
     "mitt": "^3.0.1",
-    "next": "16.1.6",
+    "next": "16.3.3",
     "radix-ui": "^1.5.0",
     "react": "19.2.3",
     "react-confetti": "^6.4.0",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
