@@ -7,6 +7,7 @@ on:
 
 permissions:
   pull-requests: write
+  issues: write
   contents: read
 
 jobs:
@@ -18,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
@@ -48,10 +49,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: |
             ~/.composer/cache
@@ -78,7 +79,7 @@ jobs:
 
     services:
       mariadb:
-        image: mariadb:10.4
+        image: mariadb:11.8
         ports:
           - 3306:3306
         env:
@@ -87,10 +88,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: |
             ~/.composer/cache
@@ -107,7 +108,7 @@ jobs:
 
       - name: Download artifact
         id: download-artifact
-        uses: dawidd6/action-download-artifact@v18
+        uses: dawidd6/action-download-artifact@v24
         if: github.event_name == 'pull_request'
         with:
           workflow: api_tests_metrics.yml
@@ -143,6 +144,7 @@ jobs:
 
       - name: Comment json-verify result on PR
         if: steps.verify.outcome != 'success'
+        continue-on-error: true
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,15 +1,33 @@
 variant = "loose"
 
 [[issues]]
+file = "src/Api/Provider/BoosterObtainableCardsProvider.php"
+code = "possibly-null-argument"
+message = 'Argument #1 of method `App\Service\Booster\BoosterRegistry::createBooster` is possibly `null`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
 file = "src/Api/Provider/CardCollectionProvider.php"
 code = "possibly-invalid-argument"
-message = '''Possible argument type mismatch for argument #1 of `App\Api\Provider\CardCollectionProvider::sortcards`: expected `array<array-key, array{'card': App\Api\DTO\CollectionCardDTO}>`, but possibly received `list<array{'card': App\Api\DTO\CollectionCardDTO, 'quantity': int|int(0)}>`.'''
+message = '''Possible argument type mismatch for argument #1 of `App\Api\Provider\CardCollectionProvider::sortCards`: expected `array<array-key, array{'card': App\Api\DTO\CollectionCardDTO}>`, but possibly received `list<array{'card': App\Api\DTO\CollectionCardDTO, 'quantity': int}>`.'''
 count = 1
 
 [[issues]]
 file = "src/Api/Provider/GameProvider.php"
 code = "possibly-null-operand"
 message = "Left operand in `==` comparison might be `null` (type `int|null`)."
+count = 1
+
+[[issues]]
+file = "src/Api/Provider/UserSearchProvider.php"
+code = "possibly-null-argument"
+message = "Argument #1 of function `trim` is possibly `null`, but parameter type `string` does not accept it."
+count = 1
+
+[[issues]]
+file = "src/Api/Provider/UserSearchProvider.php"
+code = "possibly-null-operand"
+message = "Possibly null middle operand used in string concatenation (type `null|string`)."
 count = 1
 
 [[issues]]
@@ -39,19 +57,19 @@ count = 2
 [[issues]]
 file = "src/Command/ImportGameReplayCommand.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Entity\Room::setopponentdeck` is possibly `null`, but parameter type `App\Entity\Deck` does not accept it.'
+message = 'Argument #1 of method `App\Entity\Room::__construct` is possibly `null`, but parameter type `App\Entity\User` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Command/ImportGameReplayCommand.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Entity\Room::setownerdeck` is possibly `null`, but parameter type `App\Entity\Deck` does not accept it.'
+message = 'Argument #1 of method `App\Entity\Room::setOpponentDeck` is possibly `null`, but parameter type `App\Entity\Deck` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Command/ImportGameReplayCommand.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `app\entity\room::__construct` is possibly `null`, but parameter type `App\Entity\User` does not accept it.'
+message = 'Argument #1 of method `App\Entity\Room::setOwnerDeck` is possibly `null`, but parameter type `App\Entity\Deck` does not accept it.'
 count = 1
 
 [[issues]]
@@ -133,6 +151,12 @@ message = "Unsafe array assignment on type `mixed`."
 count = 1
 
 [[issues]]
+file = "src/Dev/MakeCard.php"
+code = "non-existent-class-like"
+message = 'Class, interface, enum, or trait `App\Tests\Unit\Game\Card\CardTestCase` not found.'
+count = 1
+
+[[issues]]
 file = "src/Doctrine/Type/PlayerStateType.php"
 code = "mixed-argument"
 message = "Invalid argument type for argument #1 of `json_decode`: expected `string`, but found `nonnull`."
@@ -141,13 +165,37 @@ count = 1
 [[issues]]
 file = "src/Domain/Command/Room/JoinRoomHandler.php"
 code = "possibly-false-argument"
-message = 'Argument #2 of method `symfony\component\mercure\update::__construct` is possibly `false`, but parameter type `string` does not accept it.'
+message = 'Argument #2 of method `Symfony\Component\Mercure\Update::__construct` is possibly `false`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
+file = "src/Entity/Inventory/Inventory.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$id`: expected `int`, but got `int|null`."
 count = 1
 
 [[issues]]
 file = "src/Entity/User.php"
 code = "invalid-return-statement"
-message = 'Invalid return type for function `app\entity\user::getuseridentifier`: expected `non-empty-string`, but found `string`.'
+message = 'Invalid return type for function `App\Entity\User::getUserIdentifier`: expected `non-empty-string`, but found `string`.'
+count = 1
+
+[[issues]]
+file = "src/Entity/UserBadge.php"
+code = "invalid-property-assignment-value"
+message = 'Invalid type for property `$user`: expected `App\Entity\User`, but got `App\Entity\User|null`.'
+count = 1
+
+[[issues]]
+file = "src/Entity/UserInfo.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$id`: expected `int`, but got `int|null`."
+count = 1
+
+[[issues]]
+file = "src/Entity/UserWallet.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$id`: expected `int`, but got `int|null`."
 count = 1
 
 [[issues]]
@@ -177,19 +225,19 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Character/CharlieCard.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\game\card\character\charliecard::getpassivetemplatepool`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Game\Card\Character\CharlieCard::getPassiveTemplatePool`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Character/CharlieCard.php"
 code = "possibly-null-argument"
-message = 'Argument #2 of method `app\game\card\cardactions::generatedandplay` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #2 of method `App\Game\Card\CardActions::generatedAndPlay` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Character/NecromancianCard.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\State\GameState::getplayer` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #1 of method `App\Game\State\GameState::getPlayer` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
@@ -207,13 +255,13 @@ count = 2
 [[issues]]
 file = "src/Game/Card/Consumable/ChaosCard.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\game\card\consumable\chaoscard::getmonstertemplatepool`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Game\Card\Consumable\ChaosCard::getMonsterTemplatePool`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Consumable/ChaosCard.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\game\card\consumable\chaoscard::getpassivetemplatepool`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Game\Card\Consumable\ChaosCard::getPassiveTemplatePool`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
@@ -279,7 +327,7 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Monster/MegaClottyCard.php"
 code = "possibly-null-argument"
-message = 'Argument #2 of method `app\game\card\cardactions::generatedandplay` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #2 of method `App\Game\Card\CardActions::generatedAndPlay` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
@@ -291,37 +339,37 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Passive/DeadCatCard.php"
 code = "mixed-property-type-coercion"
-message = "A value with a less specific type `nonnull` is being assigned to property `$$counter` (int)."
+message = "A value with a less specific type `nonnull` is being assigned to property `$counter` (int)."
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Passive/DeadCatCard.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\GameContext::discardcard` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #1 of method `App\Game\GameContext::discardCard` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Passive/DeadCatCard.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\GameContext::getplayerstatebyid` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #1 of method `App\Game\GameContext::getPlayerStateById` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Passive/ImStillStandingCard.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\GameContext::discardcard` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #1 of method `App\Game\GameContext::discardCard` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Passive/ImStillStandingCard.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\State\GameState::getplayer` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #1 of method `App\Game\State\GameState::getPlayer` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Game/Card/Passive/StackyStackitoCard.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\State\GameState::getplayer` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #1 of method `App\Game\State\GameState::getPlayer` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
@@ -333,7 +381,7 @@ count = 1
 [[issues]]
 file = "src/Game/Card/Trait/BaseOnTurnTrait.php"
 code = "mixed-property-type-coercion"
-message = "A value with a less specific type `nonnull` is being assigned to property `$$turnRemainingBeforeAction` (int)."
+message = "A value with a less specific type `nonnull` is being assigned to property `$turnRemainingBeforeAction` (int)."
 count = 1
 
 [[issues]]
@@ -351,7 +399,7 @@ count = 1
 [[issues]]
 file = "src/Game/GameContext.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\game\gamecontext::selectrandomcardin`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Game\GameContext::selectRandomCardIn`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
@@ -363,13 +411,13 @@ count = 1
 [[issues]]
 file = "src/Game/GameRandomizer.php"
 code = "mixed-property-type-coercion"
-message = 'A value with a less specific type `mixed` is being assigned to property `$$engine` (Random\Engine).'
+message = 'A value with a less specific type `mixed` is being assigned to property `$engine` (Random\Engine).'
 count = 1
 
 [[issues]]
 file = "src/Game/GameRandomizer.php"
 code = "mixed-property-type-coercion"
-message = "A value with a less specific type `mixed` is being assigned to property `$$seed` (int|null)."
+message = "A value with a less specific type `mixed` is being assigned to property `$seed` (int|null)."
 count = 1
 
 [[issues]]
@@ -381,13 +429,25 @@ count = 1
 [[issues]]
 file = "src/Game/GameUtils.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\game\gameutils::t`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Game\GameUtils::t`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Kernel.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `app\game\gameutils::setcontainer`: expected `Psr\Container\ContainerInterface`, but found `mixed`.'
+message = 'Invalid argument type for argument #1 of `App\Game\GameUtils::setContainer`: expected `Psr\Container\ContainerInterface`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Kernel.php"
+code = "non-existent-class-like"
+message = 'Class, interface, enum, or trait `App\Tests\Resources\MockCardRegistry` not found.'
+count = 1
+
+[[issues]]
+file = "src/Kernel.php"
+code = "non-existent-class-like"
+message = 'Class, interface, enum, or trait `App\Tests\Resources\MockHub` not found.'
 count = 1
 
 [[issues]]
@@ -399,145 +459,145 @@ count = 1
 [[issues]]
 file = "src/Repository/DeckRepository.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\repository\deckrepository::findactivebyuser`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Repository\DeckRepository::findActiveByUser`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Repository/DeckRepository.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\repository\deckrepository::findfirstactivebyuser`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Repository\DeckRepository::findFirstActiveByUser`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Repository/FriendshipRepository.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\repository\friendshiprepository::findbetween`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Repository\FriendshipRepository::findBetween`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Repository/Game/ChatMessageRepository.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\repository\game\chatmessagerepository::findbyroom`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Repository\Game\ChatMessageRepository::findByRoom`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Repository/Game/GameEventRepository.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\repository\game\gameeventrepository::geteventsince`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Repository\Game\GameEventRepository::getEventSince`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Repository/TradeRepository.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\repository\traderepository::findactiveforuser`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Repository\TradeRepository::findActiveForUser`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Repository/UserBadgeRepository.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\repository\userbadgerepository::findbyuserandbadge`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Repository\UserBadgeRepository::findByUserAndBadge`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/CardRegistry.php"
 code = "mixed-return-statement"
-message = 'Could not infer a precise return type for function `app\service\game\cardregistry::getcardslist`. Saw type `mixed`.'
+message = 'Could not infer a precise return type for function `App\Service\Game\CardRegistry::getCardsList`. Saw type `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "less-specific-nested-argument-type"
-message = 'Argument type mismatch for argument #1 of `App\Game\State\PlayerState::withnewhandanddeck`: expected `array<array-key, string>`, but provided type `list{nonnull, ...<string>}` is less specific.'
+message = 'Argument type mismatch for argument #1 of `App\Game\State\PlayerState::withNewHandAndDeck`: expected `array<array-key, string>`, but provided type `list{nonnull, ...<string>}` is less specific.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `App\Game\Card\MonsterCardState::withcanattack`: expected `bool`, but found `nonnull`.'
+message = 'Invalid argument type for argument #1 of `App\Game\Card\MonsterCardState::withCanAttack`: expected `bool`, but found `nonnull`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `App\Game\Card\MonsterCardState::withcurrenthealthpoints`: expected `int`, but found `nonnull`.'
+message = 'Invalid argument type for argument #1 of `App\Game\Card\MonsterCardState::withCurrentHealthPoints`: expected `int`, but found `nonnull`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `App\Game\State\GameState::getcardstate`: expected `string`, but found `nonnull`.'
+message = 'Invalid argument type for argument #1 of `App\Game\State\GameState::getCardState`: expected `string`, but found `nonnull`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #2 of `app\game\card\effect\effectstate::__construct`: expected `array<array-key, mixed>`, but found `nonnull`.'
+message = 'Invalid argument type for argument #2 of `App\Game\Card\Effect\EffectState::__construct`: expected `array<array-key, mixed>`, but found `nonnull`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "possibly-invalid-argument"
-message = 'Possible argument type mismatch for argument #1 of `App\Game\State\PlayerState::withnewhandanddeck`: expected `array<array-key, string>`, but possibly received `list{null|string, ...<string>}`.'
+message = 'Possible argument type mismatch for argument #1 of `App\Game\State\PlayerState::withNewHandAndDeck`: expected `array<array-key, string>`, but possibly received `list{null|string, ...<string>}`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Game\State\GameState::addcard` is possibly `null`, but parameter type `App\Game\Card\CardState` does not accept it.'
+message = 'Argument #1 of method `App\Game\Card\CardState::__construct` is possibly `null`, but parameter type `string` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `app\game\card\cardstate::__construct` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #1 of method `App\Game\State\GameState::addCard` is possibly `null`, but parameter type `App\Game\Card\CardState` does not accept it.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventApplier.php"
 code = "possibly-null-argument"
-message = 'Argument #2 of method `app\game\card\cardstate::__construct` is possibly `null`, but parameter type `string` does not accept it.'
+message = 'Argument #2 of method `App\Game\Card\CardState::__construct` is possibly `null`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
+file = "src/Service/Game/GameEventApplier.php"
+code = "redundant-isset-check"
+message = "Redundant condition: variable `$discard[$cardId]` (type `string`) is always considered set (not null)."
+count = 1
+
+[[issues]]
+file = "src/Service/Game/GameEventApplier.php"
+code = "redundant-null-coalesce"
+message = "Redundant null coalesce: left-hand side can never be `null` or undefined."
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventResolver.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `App\Game\State\GameState::getcardstate`: expected `string`, but found `mixed`.'
-count = 2
-
-[[issues]]
-file = "src/Service/Game/GameEventResolver.php"
-code = "mixed-operand"
-message = "Invalid right operand: type `mixed` cannot be reliably used in string concatenation."
+message = 'Invalid argument type for argument #1 of `App\Game\State\GameState::getCardState`: expected `string`, but found `mixed`.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameEventResolver.php"
 code = "possibly-null-argument"
-message = 'Argument #1 of method `App\Service\Game\CardRuntimeMap::getbystate` is possibly `null`, but parameter type `App\Game\Card\CardState` does not accept it.'
+message = 'Argument #1 of method `App\Service\Game\CardRuntimeMap::getByState` is possibly `null`, but parameter type `App\Game\Card\CardState` does not accept it.'
 count = 2
 
 [[issues]]
 file = "src/Service/Game/GameStateConverter.php"
 code = "less-specific-argument"
-message = 'Argument type mismatch for argument #15 of `app\api\dto\carddto::__construct`: expected `array<string, mixed>`, but provided type `array<array-key, mixed>` is less specific.'
+message = 'Argument type mismatch for argument #15 of `App\Api\DTO\CardDTO::__construct`: expected `array<string, mixed>`, but provided type `array<array-key, mixed>` is less specific.'
 count = 1
 
 [[issues]]
 file = "src/Service/Game/GameStateRebuilder.php"
 code = "less-specific-nested-return-statement"
-message = '''Returned type `array{}|list<mixed>` is less specific than the declared return type `array<array-key, float|int|string>` for function `app\service\game\gamestaterebuilder::filterrandomevents` due to nested 'mixed'.'''
+message = '''Returned type `array{}|list<mixed>` is less specific than the declared return type `array<array-key, float|int|string>` for function `App\Service\Game\GameStateRebuilder::filterRandomEvents` due to nested 'mixed'.'''
 count = 1
 
 [[issues]]
 file = "src/Service/Game/Pipeline/GamePipelineMiddlewareStack.php"
 code = "mixed-property-type-coercion"
-message = 'A value with a less specific type `Generator<mixed, mixed, mixed, void>` is being assigned to property `$$generator` (Generator<App\Service\Game\Pipeline\Middleware\GameMiddlewareInterface, void, mixed, mixed>).'
-count = 1
-
-[[issues]]
-file = "src/Service/GameEventPresenter.php"
-code = "mixed-array-index"
-message = 'Invalid index type `mixed` used for array access on `array<string, App\Game\Card\CardState>`.'
+message = 'A value with a less specific type `Generator<mixed, mixed, mixed, void>` is being assigned to property `$generator` (Generator<App\Service\Game\Pipeline\Middleware\GameMiddlewareInterface, void, mixed, mixed>).'
 count = 1
 
 [[issues]]
@@ -549,5 +609,5 @@ count = 2
 [[issues]]
 file = "src/Utils/KillSwitch.php"
 code = "mixed-property-type-coercion"
-message = "A value with a less specific type `mixed` is being assigned to property `$$features` (array<string, bool>)."
+message = "A value with a less specific type `mixed` is being assigned to property `$features` (array<string, bool>)."
 count = 1

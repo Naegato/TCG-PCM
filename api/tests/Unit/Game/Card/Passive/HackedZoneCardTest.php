@@ -64,7 +64,10 @@ final class HackedZoneCardTest extends CardTestCase
         $events = $gameContext->flushEvents();
 
         self::assertCount(16, $events);
-        $cardIds = array_map(static fn($event) => $event->data['cardId'], array_filter($events, static fn($a) => GameEventTypeEnum::EFFECT_ADDED === $a->type));
+        $cardIds = array_values(array_map(
+            static fn($event) => $event->data['cardId'],
+            array_filter($events, static fn($a) => GameEventTypeEnum::EFFECT_ADDED === $a->type),
+        ));
         self::assertCount(8, array_unique($cardIds));
         self::assertEqualsCanonicalizing(
             [
