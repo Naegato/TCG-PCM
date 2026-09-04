@@ -27,7 +27,7 @@ final class GoofyCard extends AbstractMonsterCard implements TurnAwareInterface
 
     public function getImage(): string
     {
-        return 'https://www.shutterstock.com/image-photo/milan-lombardy-italy-november-20-260nw-2393466175.jpg';
+        return 'https://static.wikia.nocookie.net/characters/images/a/a5/Disneygoofy2012.jpeg/revision/latest?cb=20141230040221';
     }
 
     public function getBaseAttack(): int
