@@ -22,6 +22,10 @@ return [
             'name' => 'Pierrot',
             'description' => 'Applique {{effect}} à {{value1}} carte tous les {{value2}} tours.',
         ],
+        'Philippe' => [
+            'name' => 'Philippe!',
+            'description' => 'Pousse un cri strident : applique {{effect}} à toutes les cartes de la zone de jeu adverse.',
+        ],
         'Maxime' => [
             'name' => 'Maxime',
             'description' => 'Mange {{value1}} carte adverse aléatoire tous les {{value2}} tours (les personnages prennent {{value3}} dégâts à la place).',
