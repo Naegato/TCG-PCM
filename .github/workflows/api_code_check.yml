@@ -7,6 +7,7 @@ on:
 
 permissions:
   pull-requests: write
+  issues: write
   contents: read
 
 jobs:
@@ -143,6 +144,7 @@ jobs:
 
       - name: Comment json-verify result on PR
         if: steps.verify.outcome != 'success'
+        continue-on-error: true
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
