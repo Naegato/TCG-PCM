@@ -25,6 +25,7 @@ return [
 	'Gitman' => Card\Consumable\GitmanCard::class,
 	'Horsepill' => Card\Consumable\HorsepillCard::class,
 	'Justice' => Card\Consumable\JusticeCard::class,
+	'Philippe' => Card\Consumable\PhilippeCard::class,
 	'PierreSaidNoMonsterZone' => Card\Consumable\PierreSaidNoMonsterZone::class,
 	'Pills' => Card\Consumable\PillsCard::class,
 	'RiskyBet' => Card\Consumable\RiskyBetCard::class,

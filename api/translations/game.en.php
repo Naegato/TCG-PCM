@@ -22,6 +22,10 @@ return [
             'name' => 'Pierrot',
             'description' => 'Apply {{effect}} {{value1}} card every {{value2}} turns.',
         ],
+        'Philippe' => [
+            'name' => 'Philippe!',
+            'description' => 'Screams so loud it applies {{effect}} to every card in the opponent\'s play area.',
+        ],
         'D6' => [
             'name' => 'D6',
             'description' => 'Roll a six-sided dice and draw that many cards',
