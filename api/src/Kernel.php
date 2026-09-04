@@ -28,7 +28,7 @@ class Kernel extends BaseKernel
 
     public function configureContainer(ContainerConfigurator $container, LoaderInterface $loader, ContainerBuilder $builder): void
     {
-        $this->defaultConfigureContainer($container, $loader, $builder);
+        $this->defaultConfigureContainer($container);
         $gameConfigDir = $this->getConfigDir().'/game';
 
         $loader->load($gameConfigDir.'/game.php');

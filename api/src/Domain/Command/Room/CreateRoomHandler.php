@@ -11,6 +11,7 @@ use App\Service\Auth\CurrentUserProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Jwt\Grant;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -37,7 +38,7 @@ final class CreateRoomHandler
         $this->roomRepository->save($room);
 
         $topic = \sprintf('game/%s', $room->getId());
-        $token = $this->hub->getFactory()?->create([$topic], []);
+        $token = $this->hub->getFactory()?->create([new Grant([Grant::ACTION_SUBSCRIBE], [$topic])], []);
         $url = \sprintf('%s?topic=%s', $this->hub->getPublicUrl(), $topic);
 
         return [
