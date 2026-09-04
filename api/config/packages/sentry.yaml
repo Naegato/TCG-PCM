@@ -1,0 +1,25 @@
+when@prod:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        options:
+            # Add request headers, cookies, IP address and the authenticated user
+            # see https://docs.sentry.io/platforms/php/data-management/data-collected/ for more info
+            # send_default_pii: true
+            ignore_exceptions:
+                - 'Symfony\Component\ErrorHandler\Error\FatalError'
+                - 'Symfony\Component\Debug\Exception\FatalErrorException'
+            # Specify a fixed sample rate
+            traces_sample_rate: 1.0
+            # Enable logs to be sent to Sentry
+            enable_logs: true
+
+    monolog:
+        handlers:
+            # Use this for structured log integration
+            sentry_logs:
+                type: service
+                id: Sentry\SentryBundle\Monolog\LogsHandler
+    services:
+        Sentry\SentryBundle\Monolog\LogsHandler:
+            arguments:
+                - !php/const Monolog\Logger::INFO
